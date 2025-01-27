@@ -1,0 +1,8 @@
+{
+  "permissions": [
+    "administrateur",
+    "publier",
+    "supprimer",
+    "modifier"
+  ]
+}

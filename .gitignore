@@ -1,0 +1,12 @@
+.env
+
+bruno-collection
+bruno-collection/
+
+node_modules
+node_modules/
+
+.idea
+.idea/
+
+.devtools/minio
