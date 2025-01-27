@@ -29,7 +29,6 @@ router.post("/", async (req, res) => {
                 assignees
             }),
         });
-        console.log(response);
         if (response.status !== 201) {
             res.status(500).json({ message: 'Internal server error: Unable to create issue' });
             return;
