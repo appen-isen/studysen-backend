@@ -10,3 +10,6 @@ node_modules/
 .idea/
 
 .devtools/minio
+
+dist
+dist/

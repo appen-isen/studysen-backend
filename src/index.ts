@@ -16,11 +16,13 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 
 // Définition des routes
+/*
 app.use("/v1/events", eventRoutes);
 app.use("/v1/participants", participantsRoutes);
 app.use("/v1/permissions", permissionsRoutes);
 app.use("/v1/users", usersRoutes);
 app.use("/v1/organizations", organizationsRoutes);
+ */
 app.use("/v1/github", githubRoutes);
 
 
