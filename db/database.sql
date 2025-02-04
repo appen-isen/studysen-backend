@@ -80,3 +80,14 @@ CREATE TABLE user_organizations (
     FOREIGN KEY (user_id) REFERENCES users(user_id), -- Clé étrangère vers la table users
     FOREIGN KEY (organization_id) REFERENCES organizations(organization_id) -- Clé étrangère vers la table organizations
 );
+
+-- Création de la table des notifications
+CREATE TABLE notifications (
+    notification_id SERIAL PRIMARY KEY, -- Identifiant unique de la notification
+    user_id INT NOT NULL,               -- Référence à l'utilisateur
+    device_id TEXT NOT NULL,            -- Identifiant du périphérique
+    title TEXT NOT NULL,                -- Titre de la notification
+    message TEXT NOT NULL,              -- Message de la notification
+    date TIMESTAMP NOT NULL,            -- Date de la notification
+    FOREIGN KEY (user_id) REFERENCES users(user_id) -- Clé étrangère vers la table users
+);
