@@ -41,6 +41,7 @@ export async function sendNotification(user_id: string, device_id: string, title
 async function checkAndSendNotifications() {
     const client = await connectToPool();
     const currentDate = new Date();
+    
 
     try {
         // Query for notifications that need to be sent

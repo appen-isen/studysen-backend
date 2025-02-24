@@ -45,9 +45,15 @@ CREATE TABLE post_organizations (
     FOREIGN KEY (organization_id) REFERENCES organizations(organization_id) -- Clé étrangère vers la table organizations
 );
 
+-- Création de la table des utilisateurs
+CREATE TABLE users (
+    user_id SERIAL PRIMARY KEY,        -- Identifiant unique de l'utilisateur
+    email VARCHAR(100) NOT NULL        -- Email de l'utilisateur
+);
+
 -- Création de la table des participants
 CREATE TABLE event_participants (
-    user_id VARCHAR(100) NOT NULL,       -- Email du participant
+    user_id INT NOT NULL,       -- Email du participant
     event_id INT NOT NULL,             -- Référence à l'événement
     FOREIGN KEY (event_id) REFERENCES events(event_id), -- Clé étrangère vers la table events
     FOREIGN KEY (user_id) REFERENCES users(user_id) -- Clé étrangère vers la table users
@@ -57,12 +63,6 @@ CREATE TABLE event_participants (
 CREATE TABLE permissions (
     permission_id SERIAL PRIMARY KEY,       -- Identifiant unique de la permission
     permission_name VARCHAR(50) NOT NULL    -- Nom de la permission
-);
-
--- Création de la table des utilisateurs
-CREATE TABLE users (
-    user_id SERIAL PRIMARY KEY,        -- Identifiant unique de l'utilisateur
-    email VARCHAR(100) NOT NULL        -- Email de l'utilisateur
 );
 
 -- Création de la table des permissions des utilisateurs
