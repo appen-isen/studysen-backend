@@ -29,7 +29,7 @@ router.post("/add-notifications", async (req, res) => {
     // @ts-ignore
     res
       .status(500)
-      .json({ message: "Internal server error: " + error.message });
+      .json({ message: "Internal server error: " + error });
   }
 });
 
@@ -42,7 +42,7 @@ router.post("/send-notifications", async (req, res) => {
     // @ts-ignore
     res
       .status(500)
-      .json({ message: "Internal server error: " + error.message });
+      .json({ message: "Internal server error: " + error });
   }
 });
 
@@ -61,7 +61,7 @@ router.delete("/delete-notifications/:user_id", async (req, res) => {
     // @ts-ignore
     res
       .status(500)
-      .json({ message: "Internal server error: " + error.message });
+      .json({ message: "Internal server error: " + error });
   }
 });
 
