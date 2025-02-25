@@ -1,78 +1,102 @@
-import { Expo } from 'expo-server-sdk';
+import { Expo } from "expo-server-sdk";
 import { connectToPool } from "@/utils/database";
 
 let expo = new Expo();
 
-export async function sendNotification(user_id: string, device_id: string, title: string, message: string, date: string) {
-    const currentDate = new Date();
-    const notificationDate = new Date(date);
+export async function sendNotification(
+  user_id: string,
+  device_id: string,
+  title: string,
+  message: string,
+  date: string,
+) {
+  // Create the message
+  let messages = [];
+  if (!Expo.isExpoPushToken(device_id)) {
+    console.error(`Push token ${device_id} is not a valid Expo push token`);
+    return;
+  }
 
-    // Check if the notification date is older than the current date
-    if (notificationDate < currentDate) {
-        // Create the message
-        let messages = [];
-        if (!Expo.isExpoPushToken(device_id)) {
-            console.error(`Push token ${device_id} is not a valid Expo push token`);
-            return;
-        }
+  messages.push({
+    to: device_id,
+    sound: "default",
+    title: title,
+    body: message,
+    data: { user_id, device_id, title, message, date },
+  });
 
-        messages.push({
-            to: device_id,
-            sound: 'default',
-            title: title,
-            body: message,
-            data: { user_id, device_id, title, message, date },
-        });
-
-        // Send the notification
-        let chunks = expo.chunkPushNotifications(messages);
-        let tickets = [];
-        for (let chunk of chunks) {
-            try {
-                let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-                tickets.push(...ticketChunk);
-            } catch (error) {
-                console.error(error);
-            }
-        }
+  // Send the notification
+  let chunks = expo.chunkPushNotifications(messages);
+  let tickets = [];
+  for (let chunk of chunks) {
+    try {
+      let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+      tickets.push(...ticketChunk);
+    } catch (error) {
+      console.error(error);
     }
+  }
 }
 
 async function checkAndSendNotifications() {
-    const client = await connectToPool();
+  const client = await connectToPool();
+
+  try {
+    // Définition de la fenêtre de temps pour les notifications
     const currentDate = new Date();
-    
-
-    try {
-        // Query for notifications that need to be sent
-        const query = `
-            SELECT * FROM notifications
-            WHERE date < $1
+    const futureDate = new Date(currentDate.getTime() + 60000); // +1 minute
+    // Requête principale simplifiée
+    const query = `
+            SELECT * FROM notifications 
+            WHERE date >= $1::timestamp
+            AND date <= $2::timestamp
+            ORDER BY date ASC;
         `;
-        const result = await client.query(query, [currentDate]);
 
-        // Send and delete each notification
-        for (const notification of result.rows) {
-            await sendNotification(
-                notification.user_id,
-                notification.device_id,
-                notification.title,
-                notification.message,
-                notification.date
-            );
+    // Exécution de la requête principale
+    const result = await client.query(query, [
+      currentDate.toISOString(),
+      futureDate.toISOString(),
+    ]);
 
-            // Delete the notification from the database
-            const deleteQuery = `
-                DELETE FROM notifications
-                WHERE notification_id = $1
-            `;
-            await client.query(deleteQuery, [notification.notification_id]);
-        }
-    } catch (error) {
-        console.error('Error checking and sending notifications:', error);
-    } finally {
-        client.release();
+    // Traitement des notifications trouvées
+    for (const notification of result.rows) {
+      try {
+        // Envoi de la notification
+        await sendNotification(
+          notification.user_id.toString(),
+          notification.device_id,
+          notification.title,
+          notification.message,
+          notification.date,
+        );
+
+        // Suppression après envoi réussi
+        const deleteQuery = `
+                    DELETE FROM notifications
+                    WHERE notification_id = $1
+                    RETURNING notification_id, title
+                `;
+        const deleteResult = await client.query(deleteQuery, [
+          notification.notification_id,
+        ]);
+      } catch (notifError) {
+        console.error(
+          `❌ Erreur lors du traitement de la notification ${notification.notification_id}:`,
+          notifError,
+        );
+      }
     }
+  } catch (error) {
+    console.error(
+      "❌ Erreur lors de la vérification des notifications:",
+      error,
+    );
+  } finally {
+    await client.release();
+  }
 }
+
+checkAndSendNotifications();
 
 setInterval(checkAndSendNotifications, 60000);
