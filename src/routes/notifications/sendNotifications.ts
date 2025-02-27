@@ -16,7 +16,7 @@ export async function sendNotification(
     console.error(`Push token ${device_id} is not a valid Expo push token`);
     return;
   }
-  console.log('[' + Date.now().toLocaleString + '] Sending notification to', device_id, 'with title:', title);
+  console.log('[' + Date.now().toLocaleString() + '] Sending notification to', device_id, 'with title:', title);
 
   messages.push({
     to: device_id,

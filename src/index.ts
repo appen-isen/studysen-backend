@@ -8,6 +8,7 @@ import usersRoutes from "@routes/users/users";
 import organizationsRoutes from "@routes/organizations/organizations";
 import githubRoutes from "@routes/github/github";
 import notificationsRoutes from "@routes/notifications/notifications";
+import pingRoutes from "@routes/ping/ping";
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use("/v1/users", usersRoutes);
 app.use("/v1/organizations", organizationsRoutes);
 app.use("/v1/github", githubRoutes);
 app.use("/v1/notifications", notificationsRoutes);
+app.use("/v1/ping", pingRoutes);
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
