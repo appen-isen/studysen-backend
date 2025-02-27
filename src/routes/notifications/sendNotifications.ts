@@ -16,6 +16,7 @@ export async function sendNotification(
     console.error(`Push token ${device_id} is not a valid Expo push token`);
     return;
   }
+  console.log('[' + Date.now().toLocaleString + '] Sending notification to', device_id, 'with title:', title);
 
   messages.push({
     to: device_id,
@@ -44,7 +45,7 @@ async function checkAndSendNotifications() {
   try {
     // Définition de la fenêtre de temps pour les notifications
     const currentDate = new Date();
-    const futureDate = new Date(currentDate.getTime() + 60000); // +1 minute
+    const futureDate = new Date(currentDate.getTime() + 60000); 
     // Requête principale simplifiée
     const query = `
             SELECT * FROM notifications 

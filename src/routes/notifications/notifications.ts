@@ -15,7 +15,6 @@ router.post("/add-notifications", async (req, res) => {
             INSERT INTO notifications (user_id, device_id, title, message, date)
             VALUES ($1, $2, $3, $4, $5) RETURNING *;
         `;
-    console.log("add-notifications", user_id, device_id, title, message, date);
     const result = await client.query(query, [
       user_id,
       device_id,
