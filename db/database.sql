@@ -30,11 +30,12 @@ CREATE TABLE event_organizations (
 
 -- Création de la table des postes
 CREATE TABLE posts (
-    post_id SERIAL PRIMARY KEY,       -- Identifiant unique de l'événement
-    title VARCHAR(100) NOT NULL,      -- Titre de l'événement
-    description TEXT,                 -- Description de l'événement
-    organizer_id INT NOT NULL ,   -- Organisateur de l'événement
-    image_url VARCHAR(255),            -- URL de l'image de l'événement
+    post_id SERIAL PRIMARY KEY,       -- Identifiant unique du poste
+    title VARCHAR(100) NOT NULL,      -- Titre du poste
+    description TEXT,                 -- Description du poste
+    organizer_id INT NOT NULL ,   -- Organisateur du poste
+    image_url VARCHAR(255),            -- URL de l'image du poste
+    posts_link VARCHAR(255),          -- URL de sortie du poste (type partenaire ou autre)
     FOREIGN KEY (organizer_id) REFERENCES organizations(organization_id) -- Clé étrangère vers la table organizations
 );
 
