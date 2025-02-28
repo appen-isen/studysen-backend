@@ -16,6 +16,7 @@ CREATE TABLE events (
     location VARCHAR(255) NOT NULL,   -- Lieu de l'événement
     organizer_id INT NOT NULL ,   -- Organisateur de l'événement
     image_url VARCHAR(255),            -- URL de l'image de l'événement
+    events_link VARCHAR(255),          -- URL d'incription à l'événement (si site externe type helloasso)
     FOREIGN KEY (organizer_id) REFERENCES organizations(organization_id) -- Clé étrangère vers la table organizations
 );
 
