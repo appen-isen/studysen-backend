@@ -50,7 +50,11 @@ CREATE TABLE post_organizations (
 -- Création de la table des utilisateurs
 CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,        -- Identifiant unique de l'utilisateur
-    email VARCHAR(100) NOT NULL        -- Email de l'utilisateur
+    email VARCHAR(255) NOT NULL,        -- Email de l'utilisateur
+    password TEXT NOT NULL,             -- Mot de passe de l'utilisateur
+    username VARCHAR(255) NOT NULL,     -- Nom d'utilisateur
+    promo VARCHAR(255),                 -- Promotion de l'utilisateur
+    isenId VARCHAR(255)                -- Identifiant ISEN de l'utilisateur
 );
 
 -- Création de la table des participants

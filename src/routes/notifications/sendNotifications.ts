@@ -72,6 +72,11 @@ async function checkAndSendNotifications() {
           notification.date,
         );
 
+        // Log de la notification envoyée avec la date d'envoi et le titre
+        console.log(
+          `✅ Notification envoyée à ${notification.device_id} le ${notification.date.toLocaleString()} avec le titre "${notification.title}"`,
+        );
+
         // Suppression après envoi réussi
         const deleteQuery = `
                     DELETE FROM notifications

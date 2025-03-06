@@ -64,4 +64,25 @@ router.delete("/delete-notifications/:user_id", async (req, res) => {
   }
 });
 
+router.get("/notifications/:user_id", async (req, res) => {
+  try {
+    const { user_id } = req.params
+    const client = await connectToPool()
+    const query = `
+          SELECT * FROM notifications WHERE user_id = $1;
+    `
+    const response = await client.query(query, [user_id])
+    client.release()
+    if (response.rowCount === 0) {
+      res.status(204).json({ message: "Empty" })
+    }
+    res.status(200).json({ message: response.rows })
+  } catch (error) {
+    // @ts-ignore
+    res
+      .status(500)
+      .json({ message: "Internal server error: " + error });
+  }
+})
+
 export default router;
