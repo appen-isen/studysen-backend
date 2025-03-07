@@ -29,7 +29,6 @@ router.get("/:email", async (req, res) => {
 });
 
 router.post("/:email", async (req, res) => {
-  console.log(req.params.email);
   try {
     const user = req.params.email;
     const newUser = await postUsers(user);
