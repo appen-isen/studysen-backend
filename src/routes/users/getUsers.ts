@@ -13,5 +13,5 @@ export async function getUserByEmail(email: string) {
   const query = "SELECT * FROM users WHERE email = $1";
   const result = await client.query(query, [email]);
   client.release();
-  return result.rows;
+  return result.rows[0];
 }
