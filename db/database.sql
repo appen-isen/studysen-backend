@@ -54,6 +54,7 @@ CREATE TABLE users (
     password TEXT NOT NULL,             -- Mot de passe de l'utilisateur
     username VARCHAR(255) NOT NULL,     -- Nom d'utilisateur
     promo VARCHAR(255),                 -- Promotion de l'utilisateur
+    campus VARCHAR(255),                -- Campus de l'utilisateur
     isenId VARCHAR(255)                -- Identifiant ISEN de l'utilisateur
 );
 

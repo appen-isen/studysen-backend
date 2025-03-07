@@ -11,14 +11,14 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 // Register route
 router.post("/register", async (req, res) => {
   try {
-    const { email, password, username, promo, isenId } = req.body;
+    const { email, password, username, promo, isenId, campus } = req.body;
     const client = await connectToPool();
     const query = `
-      INSERT INTO users (email, password, username, promo, isenId)
-      VALUES ($1, $2, $3, $4, $5) 
-      RETURNING user_id, email, username, promo, isenId;
+      INSERT INTO users (email, password, username, promo, isenId, campus)
+      VALUES ($1, $2, $3, $4, $5, $6) 
+      RETURNING user_id, email, username, promo, isenId, campus;
     `;
-    const result = await client.query(query, [email, password, username, promo, isenId]);
+    const result = await client.query(query, [email, password, username, promo, isenId, campus]);
     client.release();
 
     const user = result.rows[0];
@@ -28,7 +28,8 @@ router.post("/register", async (req, res) => {
           email: user.email,
           username: user.username,
           promo: user.promo,
-          isenId: user.isenid
+          isenId: user.isenid,
+          campus: user.campus,
         },
         JWT_SECRET,
         { expiresIn: '24h' }
@@ -40,7 +41,8 @@ router.post("/register", async (req, res) => {
         email: user.email,
         username: user.username,
         promo: user.promo,
-        isenId: user.isenid
+        isenId: user.isenid,
+        campus: user.campus,
       },
       token
     });
@@ -51,6 +53,7 @@ router.post("/register", async (req, res) => {
 });
 
 // Login route
+// @ts-ignore
 router.post("/login", async (req, res) => {
   try {
     if (req.body.token && !req.body.email && !req.body.password) {
@@ -62,7 +65,8 @@ router.post("/login", async (req, res) => {
               email: decoded.email,
               username: decoded.username,
               promo: decoded.promo,
-              isenId: decoded.isenId
+              isenId: decoded.isenId,
+              campus: decoded.campus
             },
             JWT_SECRET,
             { expiresIn: '24h' }
@@ -74,11 +78,13 @@ router.post("/login", async (req, res) => {
             email: decoded.email,
             username: decoded.username,
             promo: decoded.promo,
-            isenId: decoded.isenId
+            isenId: decoded.isenId,
+            campus: decoded.campus
           },
           token: newToken
         });
       } catch (error) {
+          console.error(error);
         return res.status(401).json({ message: "Invalid or expired token" });
       }
     }
@@ -103,7 +109,8 @@ router.post("/login", async (req, res) => {
           email: user.email,
           username: user.username,
           promo: user.promo,
-          isenId: user.isenid
+          isenId: user.isenid,
+          campus: user.campus,
         },
         JWT_SECRET,
         { expiresIn: '24h' }
@@ -115,7 +122,8 @@ router.post("/login", async (req, res) => {
         email: user.email,
         username: user.username,
         promo: user.promo,
-        isenId: user.isenid
+        isenId: user.isenid,
+        campus: user.campus,
       },
       token
     });
