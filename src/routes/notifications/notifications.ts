@@ -64,6 +64,7 @@ router.delete("/delete-notifications/:user_id", async (req, res) => {
   }
 });
 
+// @ts-ignore
 router.get("/:user_id", async (req, res) => {
   try {
     const { user_id } = req.params
