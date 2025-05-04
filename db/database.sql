@@ -86,6 +86,7 @@ CREATE TABLE clubs (
     name VARCHAR(100) NOT NULL,        -- Nom du club
     password TEXT NOT NULL,            -- Mot de passe du club pour l'accès au mode éditeur
     campus_num INT NOT NULL,           -- Numéro du campus
+    enabled BOOLEAN NOT NULL,          -- Indique si le club est actif et autorisé à poster
     image_url TEXT                     -- URL de l'image du club
 );
 
@@ -94,13 +95,13 @@ CREATE TABLE posts (
     post_id SERIAL PRIMARY KEY,       -- Identifiant unique du post
     title VARCHAR(255) NOT NULL,      -- Titre du post
     is_event BOOLEAN NOT NULL,        -- Indique si le post est un événement
-    date TIMESTAMP NOT NULL,          -- Date et heure du post
+    date DATE NOT NULL,               -- Date du post (sans l'heure)
     club_id INT NOT NULL ,            -- Propriétaire du post (club)
     description TEXT,                 -- Description du post
     location TEXT,                    -- Lieu de l'événement
     image_url TEXT,                   -- URL de l'image de l'événement
     link TEXT,                        -- URL d'incription à l'événement (si site externe type helloasso)
-    start_time TIME,                  -- Heure de début de l'événement
+    start_time VARCHAR(10),           -- Heure de début de l'événement
     price NUMERIC(10, 2),             -- Prix de l'événement
     age_limit INT,                    -- Limite d'âge pour l'événement
     FOREIGN KEY (club_id) REFERENCES clubs(club_id) -- Clé étrangère vers la table clubs

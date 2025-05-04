@@ -1,0 +1,19 @@
+meta {
+  name: createClub
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://127.0.0.1:3000/v1/clubs/create
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "TestClubA",
+    "password": "Test1234*",
+    "campusNum": 0 
+  }
+}
