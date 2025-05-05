@@ -30,6 +30,7 @@ async function checkBucketExists(bucketName: string): Promise<boolean> {
 	}
 }
 
+// Envoie une image vers le CDN
 export async function uploadImageToCDN(
 	file: Express.Multer.File
 ): Promise<string> {
@@ -58,4 +59,25 @@ export async function uploadImageToCDN(
 	fs.unlinkSync(file.path);
 	console.log("Image uploaded to CDN:", data.Location);
 	return data.Location || "";
+}
+
+// Supprime une image du CDN
+export async function deleteImageFromCDN(imageUrl: string): Promise<void> {
+	const bucketName = process.env.R2_BUCKET_NAME;
+	if (!bucketName) {
+		throw new Error("Bucket name is not defined in environment variables");
+	}
+
+	const bucketExists = await checkBucketExists(bucketName);
+	if (!bucketExists) {
+		throw new Error(`Bucket "${bucketName}" does not exist`);
+	}
+
+	const params = {
+		Bucket: bucketName,
+		Key: imageUrl.split("/").pop() || "",
+	};
+
+	await s3.deleteObject(params);
+	console.log("Image deleted from CDN:", imageUrl);
 }

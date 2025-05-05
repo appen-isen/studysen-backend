@@ -1,15 +1,18 @@
 import { AuthenticatedClubRequest, verifyClubAuth } from "@/middlewares/auth";
 import express from "express";
-import { createPost } from "./createPost";
-import { body, param } from "express-validator";
+import { addImageToPost, createPost } from "./createPost";
+import { body } from "express-validator";
 import Validate from "@/middlewares/validate";
 import { getAllPosts, getLastPost } from "./getPost";
+import multer from "multer";
+import { deletePost } from "./deletePost";
 
 const router = express.Router();
+const upload = multer({ dest: "uploads/" });
 
 // Route pour créer un post
 router.post(
-	"/create",
+	"/",
 	verifyClubAuth,
 	body("type")
 		.exists()
@@ -28,8 +31,33 @@ router.post(
 	(req, res) => createPost(req as AuthenticatedClubRequest, res)
 );
 
+// Route pour ajouter une image à un post
+router.put(
+	"/add-image",
+	verifyClubAuth,
+	upload.single("image"),
+	body("postId")
+		.exists()
+		.isInt()
+		.withMessage("Veuillez entrer un postId valide !"),
+	Validate,
+	(req, res) => addImageToPost(req as AuthenticatedClubRequest, res)
+);
+
+// Route pour supprimer un post
+router.delete(
+	"/",
+	verifyClubAuth,
+	body("postId")
+		.exists()
+		.isInt()
+		.withMessage("Veuillez entrer un postId valide !"),
+	Validate,
+	(req, res) => deletePost(req as AuthenticatedClubRequest, res)
+);
+
 // Route pour récupérer tous les posts
-router.get("/all", getAllPosts);
+router.get("/", getAllPosts);
 
 // Route pour récupérer le dernier post
 router.get("/last", getLastPost);
