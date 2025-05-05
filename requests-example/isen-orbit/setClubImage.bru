@@ -1,0 +1,19 @@
+meta {
+  name: setClubImage
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://127.0.0.1:3000/v1/clubs/image
+  body: multipartForm
+  auth: inherit
+}
+
+headers {
+  Cookie: 
+}
+
+body:multipart-form {
+  image: @file(C:\Users\doria\Pictures\Screenshots\Capture d'écran 2024-10-15 141450.png)
+}

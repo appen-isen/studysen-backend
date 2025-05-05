@@ -1,5 +1,5 @@
-import { Expo } from "expo-server-sdk";
-import { connectToPool } from "@/utils/database";
+import { Expo } from 'expo-server-sdk';
+import { connectToPool } from '@/utils/database';
 
 let expo = new Expo();
 
@@ -8,7 +8,7 @@ export async function sendNotification(
   device_id: string,
   title: string,
   message: string,
-  date: string,
+  date: string
 ) {
   // Create the message
   let messages = [];
@@ -16,14 +16,19 @@ export async function sendNotification(
     console.error(`Push token ${device_id} is not a valid Expo push token`);
     return;
   }
-  console.log('[' + Date.now().toLocaleString() + '] Sending notification to', device_id, 'with title:', title);
+  console.log(
+    '[' + Date.now().toLocaleString() + '] Sending notification to',
+    device_id,
+    'with title:',
+    title
+  );
 
   messages.push({
     to: device_id,
-    sound: "default",
+    sound: 'default',
     title: title,
     body: message,
-    data: { user_id, device_id, title, message, date },
+    data: { user_id, device_id, title, message, date }
   });
 
   // Send the notification
@@ -45,7 +50,7 @@ async function checkAndSendNotifications() {
   try {
     // Définition de la fenêtre de temps pour les notifications
     const currentDate = new Date();
-    const futureDate = new Date(currentDate.getTime() + 60000); 
+    const futureDate = new Date(currentDate.getTime() + 60000);
     // Requête principale simplifiée
     const query = `
             SELECT * FROM notifications 
@@ -55,10 +60,7 @@ async function checkAndSendNotifications() {
         `;
 
     // Exécution de la requête principale
-    const result = await client.query(query, [
-      currentDate.toISOString(),
-      futureDate.toISOString(),
-    ]);
+    const result = await client.query(query, [currentDate.toISOString(), futureDate.toISOString()]);
 
     // Traitement des notifications trouvées
     for (const notification of result.rows) {
@@ -69,12 +71,12 @@ async function checkAndSendNotifications() {
           notification.device_id,
           notification.title,
           notification.message,
-          notification.date,
+          notification.date
         );
 
         // Log de la notification envoyée avec la date d'envoi et le titre
         console.log(
-          `✅ Notification envoyée à ${notification.device_id} le ${notification.date.toLocaleString()} avec le titre "${notification.title}"`,
+          `✅ Notification envoyée à ${notification.device_id} le ${notification.date.toLocaleString()} avec le titre "${notification.title}"`
         );
 
         // Suppression après envoi réussi
@@ -83,21 +85,16 @@ async function checkAndSendNotifications() {
                     WHERE notification_id = $1
                     RETURNING notification_id, title
                 `;
-        const deleteResult = await client.query(deleteQuery, [
-          notification.notification_id,
-        ]);
+        const deleteResult = await client.query(deleteQuery, [notification.notification_id]);
       } catch (notifError) {
         console.error(
           `❌ Erreur lors du traitement de la notification ${notification.notification_id}:`,
-          notifError,
+          notifError
         );
       }
     }
   } catch (error) {
-    console.error(
-      "❌ Erreur lors de la vérification des notifications:",
-      error,
-    );
+    console.error('❌ Erreur lors de la vérification des notifications:', error);
   } finally {
     await client.release();
   }

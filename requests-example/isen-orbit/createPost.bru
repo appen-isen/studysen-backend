@@ -1,0 +1,23 @@
+meta {
+  name: createPost
+  type: http
+  seq: 6
+}
+
+post {
+  url: http://127.0.0.1:3000/v1/posts/
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+      "type": "post",
+      "date": "2025-05-05",
+      "title": "Test",
+      "description": "Ceci est un post de test",
+      "link": "https://google.com",
+      "location": "5 rue de Nantes 44000",
+      "imageUrl": "https://cnd.com/aaa"
+  }
+}

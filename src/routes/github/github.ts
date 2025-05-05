@@ -1,8 +1,6 @@
-import express from "express";
-import dotenv from "dotenv";
+import express from 'express';
 
 const router = express.Router();
-dotenv.config();
 
 interface ImageUploadResponse {
   content: {
@@ -29,7 +27,7 @@ function cleanBase64(base64String: string): string {
 }
 
 // Route pour créer une issue
-router.post("/", async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const { title, body, image, labels, assignees } = req.body;
     const githubIssueToken = process.env.GITHUB_ISSUE_TOKEN;
@@ -38,7 +36,7 @@ router.post("/", async (req, res) => {
 
     if (!githubIssueToken) {
       res.status(500).json({
-        message: "Internal server error: Github token is not defined",
+        message: 'Internal server error: Github token is not defined'
       });
       return;
     }
@@ -47,40 +45,34 @@ router.post("/", async (req, res) => {
 
     // Si une image est fournie, on la télécharge d'abord
     if (image) {
-      console.log("Image détectée, téléchargement en cours...");
+      console.log('Image détectée, téléchargement en cours...');
       try {
         // Vérifier si le dossier images existe
         try {
-          await fetch(
-            `https://api.github.com/repos/${repoOwner}/${repoName}/contents/images`,
-            {
-              method: "GET",
-              headers: {
-                Authorization: `Bearer ${githubIssueToken}`,
-                Accept: "application/vnd.github+json",
-                "X-GitHub-Api-Version": "2022-11-28",
-              },
+          await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/images`, {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${githubIssueToken}`,
+              Accept: 'application/vnd.github+json',
+              'X-GitHub-Api-Version': '2022-11-28'
             }
-          );
+          });
         } catch {
           // Créer le dossier images si nécessaire
-          await fetch(
-            `https://api.github.com/repos/${repoOwner}/${repoName}/contents/images/.gitkeep`,
-            {
-              method: "PUT",
-              headers: {
-                Authorization: `Bearer ${githubIssueToken}`,
-                "Content-Type": "application/json",
-                Accept: "application/vnd.github+json",
-                "X-GitHub-Api-Version": "2022-11-28",
-              },
-              body: JSON.stringify({
-                message: "Create images directory",
-                content: "",
-                branch: "main"
-              }),
-            }
-          );
+          await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/images/.gitkeep`, {
+            method: 'PUT',
+            headers: {
+              Authorization: `Bearer ${githubIssueToken}`,
+              'Content-Type': 'application/json',
+              Accept: 'application/vnd.github+json',
+              'X-GitHub-Api-Version': '2022-11-28'
+            },
+            body: JSON.stringify({
+              message: 'Create images directory',
+              content: '',
+              branch: 'main'
+            })
+          });
         }
 
         // Nettoyer et valider le base64
@@ -91,22 +83,22 @@ router.post("/", async (req, res) => {
 
         const timestamp = Date.now();
         const imageFileName = `issue_image_${timestamp}.jpg`;
-        
+
         const imageUploadResponse = await fetch(
           `https://api.github.com/repos/${repoOwner}/${repoName}/contents/images/${imageFileName}`,
           {
-            method: "PUT",
+            method: 'PUT',
             headers: {
               Authorization: `Bearer ${githubIssueToken}`,
-              "Content-Type": "application/json",
-              Accept: "application/vnd.github+json",
-              "X-GitHub-Api-Version": "2022-11-28",
+              'Content-Type': 'application/json',
+              Accept: 'application/vnd.github+json',
+              'X-GitHub-Api-Version': '2022-11-28'
             },
             body: JSON.stringify({
               message: `Upload image for issue: ${title}`,
               content: cleanedBase64,
-              branch: "main"
-            }),
+              branch: 'main'
+            })
           }
         );
 
@@ -120,7 +112,7 @@ router.post("/", async (req, res) => {
         finalBodyContent += `\n\n![Screenshot](${imageData.content.download_url})`;
       } catch (error) {
         console.error("Erreur lors du traitement de l'image:", error);
-        res.status(500).json({ 
+        res.status(500).json({
           message: "Erreur lors du traitement de l'image",
           error: error instanceof Error ? error.message : String(error)
         });
@@ -129,41 +121,38 @@ router.post("/", async (req, res) => {
     }
 
     // Création de l'issue
-    const response = await fetch(
-      `https://api.github.com/repos/${repoOwner}/${repoName}/issues`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/vnd.github+json",
-          "X-GitHub-Api-Version": "2022-11-28",
-          Authorization: `Bearer ${githubIssueToken}`,
-        },
-        body: JSON.stringify({
-          title,
-          body: finalBodyContent,
-          labels,
-          assignees,
-        }),
-      }
-    );
+    const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/issues`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28',
+        Authorization: `Bearer ${githubIssueToken}`
+      },
+      body: JSON.stringify({
+        title,
+        body: finalBodyContent,
+        labels,
+        assignees
+      })
+    });
 
     if (response.status !== 201) {
       const errorData = await response.text();
       console.error("Réponse de l'API GitHub:", errorData);
-      res.status(500).json({ 
-        message: "Internal server error: Unable to create issue",
+      res.status(500).json({
+        message: 'Internal server error: Unable to create issue',
         status: response.status,
         error: errorData
       });
       return;
     }
 
-    res.status(200).json({ message: "Issue created successfully" });
+    res.status(200).json({ message: 'Issue created successfully' });
   } catch (error) {
     console.error("Erreur lors de la création de l'issue:", error);
-    res.status(500).json({ 
-      message: "Internal server error",
+    res.status(500).json({
+      message: 'Internal server error',
       error: error instanceof Error ? error.message : String(error)
     });
   }

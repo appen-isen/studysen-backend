@@ -28,25 +28,6 @@ CREATE TABLE event_organizations (
     FOREIGN KEY (organization_id) REFERENCES organizations(organization_id) -- Clé étrangère vers la table organizations
 );
 
--- Création de la table des postes
-CREATE TABLE posts (
-    post_id SERIAL PRIMARY KEY,       -- Identifiant unique du poste
-    title VARCHAR(100) NOT NULL,      -- Titre du poste
-    description TEXT,                 -- Description du poste
-    organizer_id INT NOT NULL ,   -- Organisateur du poste
-    image_url VARCHAR(255),            -- URL de l'image du poste
-    posts_link VARCHAR(255),          -- URL de sortie du poste (type partenaire ou autre)
-    FOREIGN KEY (organizer_id) REFERENCES organizations(organization_id) -- Clé étrangère vers la table organizations
-);
-
--- Création de la table transversale entre les postes et les organisations
-CREATE TABLE post_organizations (
-    post_id INT NOT NULL,             -- Référence au poste
-    organization_id INT NOT NULL,     -- Référence à l'organisation
-    FOREIGN KEY (post_id) REFERENCES posts(post_id), -- Clé étrangère vers la table posts
-    FOREIGN KEY (organization_id) REFERENCES organizations(organization_id) -- Clé étrangère vers la table organizations
-);
-
 -- Création de la table des utilisateurs
 CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,        -- Identifiant unique de l'utilisateur
@@ -97,4 +78,31 @@ CREATE TABLE notifications (
     message TEXT NOT NULL,              -- Message de la notification
     date TIMESTAMP NOT NULL,            -- Date de la notification
     FOREIGN KEY (user_id) REFERENCES users(user_id) -- Clé étrangère vers la table users
+);
+
+-- Création de la table des clubs
+CREATE TABLE clubs (
+    club_id SERIAL PRIMARY KEY,        -- Identifiant unique du club
+    name VARCHAR(100) NOT NULL,        -- Nom du club
+    password TEXT NOT NULL,            -- Mot de passe du club pour l'accès au mode éditeur
+    campus_num INT NOT NULL,           -- Numéro du campus
+    enabled BOOLEAN NOT NULL,          -- Indique si le club est actif et autorisé à poster
+    image_url TEXT                     -- URL de l'image du club
+);
+
+-- Création de la table des posts des clubs
+CREATE TABLE posts (
+    post_id SERIAL PRIMARY KEY,       -- Identifiant unique du post
+    title VARCHAR(255) NOT NULL,      -- Titre du post
+    is_event BOOLEAN NOT NULL,        -- Indique si le post est un événement
+    date DATE NOT NULL,               -- Date du post (sans l'heure)
+    club_id INT NOT NULL ,            -- Propriétaire du post (club)
+    description TEXT,                 -- Description du post
+    location TEXT,                    -- Lieu de l'événement
+    image_url TEXT,                   -- URL de l'image de l'événement
+    link TEXT,                        -- URL d'incription à l'événement (si site externe type helloasso)
+    start_time VARCHAR(10),           -- Heure de début de l'événement
+    price NUMERIC(10, 2),             -- Prix de l'événement
+    age_limit INT,                    -- Limite d'âge pour l'événement
+    FOREIGN KEY (club_id) REFERENCES clubs(club_id) -- Clé étrangère vers la table clubs
 );

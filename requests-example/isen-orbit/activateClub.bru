@@ -1,0 +1,21 @@
+meta {
+  name: activateClub
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://127.0.0.1:3000/v1/clubs/activate
+  body: json
+  auth: inherit
+}
+
+headers {
+  X-Admin-Key: your_admin_key
+}
+
+body:json {
+  {
+    "clubId": 1
+  }
+}
