@@ -27,21 +27,16 @@ export async function createPost(req: AuthenticatedClubRequest, res: Response) {
 		const values = [
 			title,
 			type === "event",
-			new Date(date),
+			date,
 			clubId,
 			description ?? null,
 			location ?? null,
 			imageUrl ?? null,
 			link ?? null,
+			info?.startTime ?? null,
+			info?.price ?? null,
+			info?.ageLimit ?? null,
 		];
-		// On ajoute les informations supplémentaires si elles existent
-		if (info) {
-			values.push(
-				info.startTime ?? null,
-				info.price ?? null,
-				info.ageLimit ?? null
-			);
-		}
 
 		const result = await client.query(query, values);
 		client.release();

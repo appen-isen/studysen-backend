@@ -1,8 +1,12 @@
 import express from "express";
 import Validate from "@/middlewares/validate";
 import { body, param } from "express-validator";
-import { createClub, loginClub } from "./clubAuth";
-import { AuthenticatedClubRequest, verifyClubAuth } from "@/middlewares/auth";
+import { activateClub, createClub, loginClub } from "./clubAuth";
+import {
+	AuthenticatedClubRequest,
+	verifyAdminAuth,
+	verifyClubAuth,
+} from "@/middlewares/auth";
 import multer from "multer";
 import { addImageToClub, getClubImage } from "./clubImage";
 
@@ -48,6 +52,18 @@ router.post(
 	loginClub
 );
 
+// Route pour activer un club
+router.post(
+	"/activate",
+	verifyAdminAuth,
+	body("clubId")
+		.exists()
+		.isInt()
+		.withMessage("Veuillez entrer un clubId valide"),
+	Validate,
+	activateClub
+);
+
 // Route pour ajouter une image à un club
 router.put("/image", verifyClubAuth, upload.single("image"), (req, res) =>
 	addImageToClub(req as AuthenticatedClubRequest, res)
@@ -58,7 +74,7 @@ router.get(
 	"/image/:id",
 	param("id").isInt().withMessage("Identifiant de club invalide !"),
 	Validate,
-	(req, res) => getClubImage(req, res)
+	getClubImage
 );
 
 export default router;

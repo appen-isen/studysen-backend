@@ -29,3 +29,16 @@ export function verifyClubAuth(
 		return;
 	}
 }
+
+export function verifyAdminAuth(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	const admin = req.headers["x-admin-key"] as string;
+	if (!admin || admin !== process.env.ADMIN_KEY) {
+		res.status(401).json({ message: "Clé administrateur invalide !" });
+		return;
+	}
+	next();
+}

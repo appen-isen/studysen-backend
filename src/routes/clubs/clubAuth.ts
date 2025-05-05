@@ -2,9 +2,6 @@ import { connectToPool } from "@/utils/database";
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
@@ -105,6 +102,31 @@ export async function loginClub(req: Request, res: Response) {
 			httpOnly: true,
 		});
 		res.sendStatus(200);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({
+			message: "Internal server error: " + error,
+		});
+	}
+}
+
+// Activation d'un club
+export async function activateClub(req: Request, res: Response) {
+	try {
+		const { clubId } = req.body;
+		const client = await connectToPool();
+		const query = `
+	  UPDATE clubs
+	  SET enabled = TRUE
+	  WHERE club_id = $1;
+	`;
+
+		await client.query(query, [clubId]);
+		client.release();
+
+		res.status(200).json({
+			message: "Le club a été activé avec succès !",
+		});
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({
