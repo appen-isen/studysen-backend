@@ -1,35 +1,30 @@
-import { connectToPool } from "../../utils/database";
+import { connectToPool } from '../../utils/database';
 
 export async function getAllPermissions() {
   // Lis les permissions depuis le fichier permissions.json
-  const permissions = require("../../data/permissions.json");
+  const permissions = require('../../data/permissions.json');
 
   // Regarde dans la base de données si les permissions sont déjà enregistrées
   const client = await connectToPool();
-  const query = "SELECT * FROM permissions";
+  const query = 'SELECT * FROM permissions';
   const result = await client.query(query);
   if (result.rows.length === 0) {
     for (const permission of permissions.permissions) {
-      const query =
-        "INSERT INTO permissions (permission_name) VALUES ($1) RETURNING *";
+      const query = 'INSERT INTO permissions (permission_name) VALUES ($1) RETURNING *';
       const result = await client.query(query, [permission]);
     }
     client.release();
     return result.rows[0];
   }
   // Regarde si les permissions sont les mêmes
-  else if (
-    result.rows &&
-    result.rows.length === permissions.permissions.length
-  ) {
+  else if (result.rows && result.rows.length === permissions.permissions.length) {
     client.release();
     return result.rows;
   }
   // Si les permissions sont différentes, les met à jour
   else {
     for (const permission of permissions.permissions) {
-      const query =
-        "INSERT INTO permissions (permission_name) VALUES ($1) RETURNING *";
+      const query = 'INSERT INTO permissions (permission_name) VALUES ($1) RETURNING *';
       const result = await client.query(query, [permission]);
     }
     client.release();
@@ -39,7 +34,7 @@ export async function getAllPermissions() {
 
 export async function getPermissionById(id: number) {
   const client = await connectToPool();
-  const query = "SELECT * FROM permissions WHERE permission_id = $1";
+  const query = 'SELECT * FROM permissions WHERE permission_id = $1';
   const result = await client.query(query, [id]);
   client.release();
   return result.rows[0];
