@@ -22,7 +22,6 @@ router.post(
     .withMessage(
       'Le mot de passe doit avoir au minimum 8 caractères, une minuscule, une majuscule et un chiffre !'
     ),
-  body('campusNum').notEmpty().isInt(),
   Validate,
   createClub
 );

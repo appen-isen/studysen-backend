@@ -1,7 +1,7 @@
 import { AuthenticatedClubRequest, verifyClubAuth } from '@/middlewares/auth';
 import express from 'express';
 import { addImageToPost, createPost } from './createPost';
-import { body } from 'express-validator';
+import { body, query } from 'express-validator';
 import Validate from '@/middlewares/validate';
 import { getAllPosts, getLastPost } from './getPost';
 import multer from 'multer';
@@ -41,9 +41,19 @@ router.delete(
 );
 
 // Route pour récupérer tous les posts
-router.get('/', getAllPosts);
+router.get(
+  '/',
+  query('campus').exists().isInt().withMessage('Veuillez entrer un numéro de campus !'),
+  Validate,
+  getAllPosts
+);
 
 // Route pour récupérer le dernier post
-router.get('/last', getLastPost);
+router.get(
+  '/last',
+  query('campus').exists().isInt().withMessage('Veuillez entrer un numéro de campus !'),
+  Validate,
+  getLastPost
+);
 
 export default router;

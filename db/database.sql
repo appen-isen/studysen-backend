@@ -85,7 +85,7 @@ CREATE TABLE clubs (
     club_id SERIAL PRIMARY KEY,        -- Identifiant unique du club
     name VARCHAR(100) NOT NULL,        -- Nom du club
     password TEXT NOT NULL,            -- Mot de passe du club pour l'accès au mode éditeur
-    campus_num INT NOT NULL,           -- Numéro du campus
+    campus_id INT GENERATED ALWAYS AS IDENTITY UNIQUE, -- Numéro du campus
     enabled BOOLEAN NOT NULL,          -- Indique si le club est actif et autorisé à poster
     image_url TEXT                     -- URL de l'image du club
 );

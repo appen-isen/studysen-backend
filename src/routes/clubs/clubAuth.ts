@@ -8,7 +8,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 // Route pour créer un club
 export async function createClub(req: Request, res: Response) {
   try {
-    const { name, password, campusNum } = req.body;
+    const { name, password } = req.body;
     const client = await connectToPool();
 
     // Vérifier si le nom du club existe déjà
@@ -23,14 +23,14 @@ export async function createClub(req: Request, res: Response) {
     }
 
     const query = `
-	  INSERT INTO clubs (name, password, campus_num, enabled)
-	  VALUES ($1, $2, $3, FALSE) 
-	  RETURNING club_id, name, campus_num;
+	  INSERT INTO clubs (name, password, enabled)
+	  VALUES ($1, $2, FALSE) 
+	  RETURNING club_id, name, campus_id;
 	`;
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
 
-    const result = await client.query(query, [name, hash, campusNum]);
+    const result = await client.query(query, [name, hash]);
     client.release();
 
     const club = result.rows[0];
