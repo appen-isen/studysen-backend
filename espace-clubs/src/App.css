@@ -1,0 +1,149 @@
+#root {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.main-container {
+  max-width: 800px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.05);
+  padding: 2.5rem 1.5rem 2rem 1.5rem;
+}
+
+.title {
+  color: #fa4747;
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin-bottom: 2rem;
+  letter-spacing: -1px;
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.search-bar,
+.city-filter {
+  flex: 1;
+  padding: 0.7em 1em;
+  border: 1.5px solid #fa4747;
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+  background: #fff;
+  color: #222;
+  transition: border 0.2s;
+}
+.search-bar:focus,
+.city-filter:focus {
+  border-color: #c92c2c;
+}
+
+.club-list {
+  padding: 0;
+  margin: 0;
+}
+
+.club-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 2rem 1.5rem;
+  align-items: stretch;
+  justify-items: center;
+}
+
+.no-result {
+  color: #888;
+  padding: 2em 0;
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(34, 34, 34, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 32px 0 rgba(250, 71, 71, 0.13);
+  padding: 2.2rem 2rem 1.5rem 2rem;
+  min-width: 320px;
+  max-width: 90vw;
+  text-align: center;
+  position: relative;
+}
+.password-input {
+  width: 100%;
+  padding: 0.7em 1em;
+  border: 1.5px solid #fa4747;
+  border-radius: 8px;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+  outline: none;
+  background: #fff;
+  color: #222;
+}
+.submit-btn {
+  background: #fa4747;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7em 1.5em;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-right: 0.7em;
+  transition: background 0.2s;
+}
+.submit-btn:hover {
+  background: #c92c2c;
+}
+.close-btn {
+  background: none;
+  color: #fa4747;
+  border: none;
+  font-size: 1rem;
+  margin-top: 1.2em;
+  cursor: pointer;
+  font-weight: 600;
+}
+.error {
+  color: #fa4747;
+  font-size: 0.98em;
+  margin-bottom: 0.7em;
+}
+
+@media (max-width: 600px) {
+  .filters {
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .club-grid {
+    grid-template-columns: 1fr;
+    gap: 1.2rem 0.7rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .main-container {
+    width: 100%;
+    margin: 0 auto;
+  }
+  .title {
+    font-size: 1.8rem;
+  }
+}
