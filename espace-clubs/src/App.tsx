@@ -6,6 +6,7 @@ import { Input } from './components/Inputs';
 import { MultiToggle } from './components/Buttons';
 import Modal from './components/Modal';
 import { getCookie, setCookie } from './utils/cookies';
+import Loader from './components/Loader';
 
 // Liste des clubs disponibles (à remplacer par une récupération backend plus tard)
 const CLUBS: Club[] = [
@@ -36,6 +37,7 @@ function App() {
   const [password, setPassword] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState('');
+  const [isLoading, setLoading] = useState(true);
 
   // Filtrage des clubs selon la recherche et la ville sélectionnée
   const filteredClubs = CLUBS.filter(
@@ -67,6 +69,17 @@ function App() {
     setCookie('selectedCityIndex', String(cityIndex));
   }, [cityIndex]);
 
+  // On récupère les clubs depuis le backend
+  useEffect(() => {
+    const fetchClubs = async () => {
+      // Simule une récupération de données
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Ici, vous pouvez mettre à jour l'état avec les clubs récupérés
+      setLoading(false);
+    };
+    fetchClubs();
+  }, []);
+
   return (
     <div className="main-container">
       <h1 className="title">Sélectionnez votre club</h1>
@@ -80,13 +93,17 @@ function App() {
         />
         <MultiToggle options={CITIES} selectedIndex={cityIndex} onSelect={(index) => setCityIndex(index)} />
       </div>
-      {/* Grille des clubs filtrés */}
-      <div className="club-list club-grid">
-        {filteredClubs.length === 0 && <div className="no-result">Aucun club trouvé.</div>}
-        {filteredClubs.map((club) => (
-          <ClubCard key={club.name + club.city} club={club} onAccess={handleAccess} />
-        ))}
-      </div>
+      {isLoading && <Loader size={50} />}
+      {!isLoading && (
+        <div className="club-list club-grid">
+          {/* Grille des clubs filtrés */}
+          {filteredClubs.length === 0 && <div className="no-result">Aucun club trouvé.</div>}
+          {filteredClubs.map((club) => (
+            <ClubCard key={club.name + club.city} club={club} onAccess={handleAccess} />
+          ))}
+        </div>
+      )}
+
       {/* Modale d'accès à l'espace membre du club */}
       <Modal open={showModal} onClose={() => setShowModal(false)}>
         <h2>Accès à l'espace membre</h2>
