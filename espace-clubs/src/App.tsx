@@ -1,8 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 import ClubCard from './components/ClubCard';
 import type { Club } from './components/ClubCard';
+import { Input } from './components/Inputs';
+import { MultiToggle } from './components/Buttons';
+import Modal from './components/Modal';
+import { getCookie, setCookie } from './utils/cookies';
 
+// Liste des clubs disponibles (à remplacer par une récupération backend plus tard)
 const CLUBS: Club[] = [
   { name: 'Club Informatique', city: 'Nantes', logo: '/vite.svg' },
   { name: 'Club Robotique', city: 'Brest', logo: '/vite.svg' },
@@ -16,20 +21,28 @@ const CLUBS: Club[] = [
   { name: 'Club Cuisine', city: 'Paris', logo: '/vite.svg' }
 ];
 
+// Liste des villes pour le filtre
 const CITIES = ['Nantes', 'Brest', 'Caen', 'Rennes', 'Paris'];
 
 function App() {
   const [search, setSearch] = useState('');
-  const [city, setCity] = useState('');
+  // État pour l'index de la ville sélectionnée, initialisé depuis le cookie si présent
+  const [cityIndex, setCityIndex] = useState(() => {
+    const saved = getCookie('selectedCityIndex');
+    return saved !== null && !isNaN(Number(saved)) ? Number(saved) : 0;
+  });
+  // État pour le club sélectionné (pour la modale)
   const [selectedClub, setSelectedClub] = useState<Club | null>(null);
   const [password, setPassword] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState('');
 
+  // Filtrage des clubs selon la recherche et la ville sélectionnée
   const filteredClubs = CLUBS.filter(
-    (club) => club.name.toLowerCase().includes(search.toLowerCase()) && (city === '' || club.city === city)
+    (club) => club.name.toLowerCase().includes(search.toLowerCase()) && club.city === CITIES[cityIndex]
   );
 
+  // Ouvre la modale pour le club sélectionné
   const handleAccess = (club: Club) => {
     setSelectedClub(club);
     setShowModal(true);
@@ -37,8 +50,10 @@ function App() {
     setError('');
   };
 
+  // Gestion de la soumission du mot de passe
   const handlePasswordSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // Vérification du mot de passe (à remplacer par une logique backend plus tard)
     if (selectedClub && password === 'club2024') {
       alert(`Bienvenue dans l'espace membre du ${selectedClub.name} !`);
       setShowModal(false);
@@ -47,59 +62,59 @@ function App() {
     }
   };
 
+  // Sauvegarde la ville sélectionnée dans un cookie à chaque changement
+  useEffect(() => {
+    setCookie('selectedCityIndex', String(cityIndex));
+  }, [cityIndex]);
+
   return (
     <div className="main-container">
       <h1 className="title">Sélectionnez votre club</h1>
+      {/* Barre de recherche et sélection de la ville */}
       <div className="filters">
-        <input
-          type="text"
+        <Input
           placeholder="Rechercher un club..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="search-bar"
         />
-        <select value={city} onChange={(e) => setCity(e.target.value)} className="city-filter">
-          <option value="">Toutes les villes</option>
-          {CITIES.map((c) => (
-            <option key={c} value={c}>
-              {c}
-            </option>
-          ))}
-        </select>
+        <MultiToggle options={CITIES} selectedIndex={cityIndex} onSelect={(index) => setCityIndex(index)} />
       </div>
+      {/* Grille des clubs filtrés */}
       <div className="club-list club-grid">
         {filteredClubs.length === 0 && <div className="no-result">Aucun club trouvé.</div>}
         {filteredClubs.map((club) => (
           <ClubCard key={club.name + club.city} club={club} onAccess={handleAccess} />
         ))}
       </div>
-      {showModal && selectedClub && (
-        <div className="modal-overlay" onClick={() => setShowModal(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <h2>Accès à l'espace membre</h2>
-            <p>
-              Club : <b>{selectedClub.name}</b>
-            </p>
-            <form onSubmit={handlePasswordSubmit}>
-              <input
-                type="password"
-                placeholder="Mot de passe"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="password-input"
-                autoFocus
-              />
-              {error && <div className="error">{error}</div>}
-              <button type="submit" className="submit-btn">
-                Accéder
-              </button>
-            </form>
+      {/* Modale d'accès à l'espace membre du club */}
+      <Modal open={showModal} onClose={() => setShowModal(false)}>
+        <h2>Accès à l'espace membre</h2>
+        <form onSubmit={handlePasswordSubmit} className="login-form">
+          {selectedClub && (
+            <div className="club-info">
+              <img src={selectedClub.logo} alt="" className="club-logo" />
+            </div>
+          )}
+          <Input
+            password={true}
+            placeholder="Mot de passe"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="password-input"
+            autoFocus
+          />
+          {error && <div className="error">{error}</div>}
+          <div>
+            <button type="submit" className="submit-btn">
+              Accéder
+            </button>
             <button className="close-btn" onClick={() => setShowModal(false)}>
               Annuler
             </button>
           </div>
-        </div>
-      )}
+        </form>
+      </Modal>
     </div>
   );
 }

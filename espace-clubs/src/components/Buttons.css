@@ -1,0 +1,36 @@
+.multi-toggle-container {
+  position: relative;
+  display: flex;
+  background-color: #f0f0f0;
+  border-radius: 30px;
+  padding: 5px;
+  overflow: hidden;
+  width: fit-content;
+  margin: auto;
+}
+
+.multi-toggle-slider {
+  position: absolute;
+  top: 10%;
+  height: 80%;
+  background-color: white;
+  border-radius: 30px;
+  transition:
+    left 0.3s ease,
+    width 0.3s ease;
+  z-index: 0;
+}
+
+.multi-toggle-option {
+  font-family: 'Roboto', sans-serif;
+  position: relative;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: black;
+  background: none;
+  border: none;
+  z-index: 1;
+  cursor: pointer;
+  outline: none;
+}

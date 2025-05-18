@@ -1,0 +1,32 @@
+.input-container {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #e7e7e7;
+  border-radius: 15px;
+  padding: 10px 15px 10px 15px;
+  gap: 5px;
+}
+
+.input-container input {
+  flex: 1;
+  font-size: 18px;
+  font-family: 'Roboto', sans-serif;
+  background-color: transparent;
+  outline: none;
+  border: none;
+}
+
+.input-container .input-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  color: #868686;
+}
+
+.input-container .input-icon:hover {
+  cursor: pointer;
+}
