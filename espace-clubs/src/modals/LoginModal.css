@@ -1,0 +1,35 @@
+.login-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.submit-btn {
+  background: #fa4747;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7em 1.5em;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-right: 0.7em;
+  transition: background 0.2s;
+}
+.submit-btn:hover {
+  background: #c92c2c;
+}
+.close-btn {
+  background: none;
+  color: #fa4747;
+  border: none;
+  font-size: 1rem;
+  margin-top: 1.2em;
+  cursor: pointer;
+  font-weight: 600;
+}
+.error {
+  color: #fa4747;
+  font-size: 0.98em;
+  margin-bottom: 0.7em;
+}
