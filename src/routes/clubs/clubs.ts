@@ -5,23 +5,30 @@ import { activateClub, createClub, loginClub } from './clubAuth';
 import { AuthenticatedClubRequest, verifyAdminAuth, verifyClubAuth } from '@/middlewares/auth';
 import multer from 'multer';
 import { addImageToClub, getClubImage } from './clubImage';
+import { getClubsByCampus } from './getClubs';
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
 
+// Route pour récupérer tous les clubs
+router.get(
+  '/:campusId',
+  param('campusId').isInt().withMessage('Veuillez entrer un campusId valide'),
+  Validate,
+  getClubsByCampus
+);
+
 // Route pour créer un club
 router.post(
   '/create',
-  // Les verifications de données
+  // Vérification combinée du mot de passe avec une seule regex
   body('name').isLength({ min: 2 }).withMessage('Veuillez entrer un nom valide !'),
   body('password')
-    .isLength({ min: 8 })
-    .matches(/[a-z]/)
-    .matches(/[A-Z]/)
-    .matches(/\d/)
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/)
     .withMessage(
       'Le mot de passe doit avoir au minimum 8 caractères, une minuscule, une majuscule et un chiffre !'
     ),
+  body('campusId').isInt().withMessage('Veuillez entrer un campusId valide'),
   Validate,
   createClub
 );
@@ -29,12 +36,9 @@ router.post(
 // Route pour se connecter à un club
 router.post(
   '/login',
-  body('clubId').notEmpty().isInt().withMessage('Veuillez entrer un identifiant valide !'),
+  body('clubId').isInt().withMessage('Veuillez entrer un identifiant valide !'),
   body('password')
-    .isLength({ min: 8 })
-    .matches(/[a-z]/)
-    .matches(/[A-Z]/)
-    .matches(/\d/)
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/)
     .withMessage(
       'Le mot de passe doit avoir au minimum 8 caractères, une minuscule, une majuscule et un chiffre !'
     ),
@@ -46,7 +50,7 @@ router.post(
 router.post(
   '/activate',
   verifyAdminAuth,
-  body('clubId').exists().isInt().withMessage('Veuillez entrer un clubId valide'),
+  body('clubId').isInt().withMessage('Veuillez entrer un clubId valide'),
   Validate,
   activateClub
 );

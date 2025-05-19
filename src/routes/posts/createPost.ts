@@ -38,7 +38,7 @@ export async function createPost(req: AuthenticatedClubRequest, res: Response) {
       postId: result.rows[0].post_id
     });
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error ' + error });
+    res.status(500).json({ message: 'Internal server error' });
   }
 }
 
@@ -78,6 +78,6 @@ export async function addImageToPost(req: AuthenticatedClubRequest, res: Respons
       url: imageUrl
     });
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error ' + error });
+    res.status(500).json({ message: 'Internal server error' });
   }
 }

@@ -14,9 +14,9 @@ const upload = multer({ dest: 'uploads/' });
 router.post(
   '/',
   verifyClubAuth,
-  body('type').exists().isString().isIn(['event', 'post']).withMessage('Veuillez entrer un type valide !'),
+  body('type').isString().isIn(['event', 'post']).withMessage('Veuillez entrer un type valide !'),
   body('title').isString().notEmpty().withMessage('Veuillez entrer un titre valide !'),
-  body('date').exists().isDate().withMessage('Veuillez entrer une date valide !'),
+  body('date').isDate().withMessage('Veuillez entrer une date valide !'),
   Validate,
   (req, res) => createPost(req as AuthenticatedClubRequest, res)
 );
@@ -26,7 +26,7 @@ router.put(
   '/add-image',
   verifyClubAuth,
   upload.single('image'),
-  body('postId').exists().isInt().withMessage('Veuillez entrer un postId valide !'),
+  body('postId').isInt().withMessage('Veuillez entrer un postId valide !'),
   Validate,
   (req, res) => addImageToPost(req as AuthenticatedClubRequest, res)
 );
@@ -35,7 +35,7 @@ router.put(
 router.delete(
   '/',
   verifyClubAuth,
-  body('postId').exists().isInt().withMessage('Veuillez entrer un postId valide !'),
+  body('postId').isInt().withMessage('Veuillez entrer un postId valide !'),
   Validate,
   (req, res) => deletePost(req as AuthenticatedClubRequest, res)
 );
@@ -43,7 +43,7 @@ router.delete(
 // Route pour récupérer tous les posts
 router.get(
   '/',
-  query('campus').exists().isInt().withMessage('Veuillez entrer un numéro de campus !'),
+  query('campus').isInt().withMessage('Veuillez entrer un numéro de campus !'),
   Validate,
   getAllPosts
 );
@@ -51,7 +51,7 @@ router.get(
 // Route pour récupérer le dernier post
 router.get(
   '/last',
-  query('campus').exists().isInt().withMessage('Veuillez entrer un numéro de campus !'),
+  query('campus').isInt().withMessage('Veuillez entrer un numéro de campus !'),
   Validate,
   getLastPost
 );

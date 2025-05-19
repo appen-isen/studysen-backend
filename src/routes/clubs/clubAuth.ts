@@ -8,7 +8,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 // Route pour créer un club
 export async function createClub(req: Request, res: Response) {
   try {
-    const { name, password } = req.body;
+    const { name, password, campusId } = req.body;
     const client = await connectToPool();
 
     // Vérifier si le nom du club existe déjà
@@ -23,20 +23,21 @@ export async function createClub(req: Request, res: Response) {
     }
 
     const query = `
-	  INSERT INTO clubs (name, password, enabled)
-	  VALUES ($1, $2, FALSE) 
+	  INSERT INTO clubs (name, password, campus_id, enabled)
+	  VALUES ($1, $2, $3, FALSE) 
 	  RETURNING club_id, name, campus_id;
 	`;
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
 
-    const result = await client.query(query, [name, hash]);
+    const result = await client.query(query, [name, hash, campusId]);
     client.release();
 
     const club = result.rows[0];
     res.status(201).json({
       club: {
         clubId: club.club_id,
+        campusId: club.campus_id,
         name: club.name
       },
       message: "Le club a été créé avec succès, veuillez attendre son activation pour l'utiliser !"
@@ -44,7 +45,7 @@ export async function createClub(req: Request, res: Response) {
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      message: 'Internal server error: ' + error
+      message: 'Internal server error'
     });
   }
 }
@@ -104,7 +105,7 @@ export async function loginClub(req: Request, res: Response) {
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      message: 'Internal server error: ' + error
+      message: 'Internal server error'
     });
   }
 }
@@ -129,7 +130,7 @@ export async function activateClub(req: Request, res: Response) {
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      message: 'Internal server error: ' + error
+      message: 'Internal server error'
     });
   }
 }

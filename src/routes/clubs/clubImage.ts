@@ -31,7 +31,8 @@ export async function addImageToClub(req: AuthenticatedClubRequest, res: Respons
       url: imageUrl
     });
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error ' + error });
+    console.error("Erreur lors de l'ajout de l'image au club:", error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 }
 
@@ -70,6 +71,7 @@ export async function getClubImage(req: Request, res: Response) {
       imageUrl: imageUrl
     });
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error ' + error });
+    console.error("Erreur lors de la récupération de l'image du club:", error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 }

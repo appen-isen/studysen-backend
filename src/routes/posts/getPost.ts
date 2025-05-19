@@ -44,7 +44,7 @@ export async function getAllPosts(req: Request, res: Response) {
 
     res.status(200).json(posts);
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error ' + error });
+    res.status(500).json({ message: 'Internal server error' });
   }
 }
 
@@ -113,6 +113,6 @@ export async function getLastPost(req: Request, res: Response) {
 
     res.status(200).json(post[0]);
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error ' + error });
+    res.status(500).json({ message: 'Internal server error' });
   }
 }

@@ -30,6 +30,6 @@ export async function deletePost(req: AuthenticatedClubRequest, res: Response) {
 
     res.status(200).json({ message: 'Post supprimé avec succès' });
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error', error });
+    res.status(500).json({ message: 'Internal server error' });
   }
 }
