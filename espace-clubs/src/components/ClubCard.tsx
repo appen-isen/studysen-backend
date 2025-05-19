@@ -16,7 +16,7 @@ const ClubCard: React.FC<ClubCardProps> = ({ club, onAccess }) => {
         <div className="club-name">{club.name}</div>
         <div className="club-city">{getCampusName(club.campusId)}</div>
       </div>
-      <button className="access-btn">Accéder</button>
+      <button className="btn access-btn">Accéder</button>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import Modal from '../components/Modal';
-import type { Club } from '../utils/types';
-import { Input } from '../components/Inputs';
+import Modal from '../../components/Modal';
+import type { Club } from '../../utils/types';
+import { Input } from '../../components/Inputs';
 import './LoginModal.css';
 
 type LoginModalProps = {
@@ -51,7 +51,7 @@ export default function LoginModal(props: LoginModalProps) {
         />
         {error && <div className="error">{error}</div>}
         <div>
-          <button className="submit-btn" onClick={handleLogin}>
+          <button className="btn submit-btn" onClick={handleLogin}>
             Accéder
           </button>
           <button className="close-btn" onClick={closeModal}>

@@ -8,7 +8,9 @@ import Loader from './components/Loader';
 import type { Club } from './utils/types';
 import { CITIES } from './utils/campus';
 import ApiClient from './utils/http';
-import LoginModal from './modals/LoginModal';
+import LoginModal from './modals/clubs/LoginModal';
+import { FaPlus } from 'react-icons/fa6';
+import CreateModal from './modals/clubs/CreateModal';
 
 function App() {
   const [search, setSearch] = useState('');
@@ -22,6 +24,7 @@ function App() {
   // État pour le club sélectionné (pour la modale)
   const [selectedClub, setSelectedClub] = useState<Club | null>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
   const [isLoading, setLoading] = useState(true);
 
   // Filtrage des clubs selon la recherche et la ville sélectionnée
@@ -56,6 +59,7 @@ function App() {
 
   return (
     <div className="main-container">
+      <FaPlus size={20} className="new-btn" onClick={() => setShowCreateModal(true)} />
       <h1 className="title">Sélectionnez votre club</h1>
       {/* Barre de recherche et sélection de la ville */}
       <div className="filters">
@@ -80,10 +84,12 @@ function App() {
 
       {/* Modale d'accès à l'espace membre du club */}
       <LoginModal
-        onClose={() => setShowLoginModal(false)}
+        onClose={() => setShowCreateModal(false)}
         open={showLoginModal}
         selectedClub={selectedClub}
       />
+      {/* Modale de création d'un espace membre */}
+      <CreateModal onClose={() => setShowCreateModal(false)} open={showCreateModal} />
     </div>
   );
 }

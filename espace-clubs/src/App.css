@@ -4,12 +4,29 @@
 }
 
 .main-container {
+  display: flex;
+  flex-direction: column;
   max-width: 800px;
   margin: 40px auto;
   background: #fff;
   border-radius: 18px;
   box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.05);
   padding: 2.5rem 1.5rem 2rem 1.5rem;
+}
+.new-btn {
+  justify-self: flex-start;
+  background: #fa4747;
+  color: #fff;
+  border-radius: 8px;
+  padding: 0.2em 0.2em;
+  font-size: 2rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+  z-index: 10;
+}
+.new-btn:hover {
+  background: #c92c2c;
 }
 
 .title {
