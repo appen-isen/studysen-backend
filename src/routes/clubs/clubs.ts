@@ -5,7 +5,7 @@ import { activateClub, createClub, loginClub } from './clubAuth';
 import { AuthenticatedClubRequest, verifyAdminAuth, verifyClubAuth } from '@/middlewares/auth';
 import multer from 'multer';
 import { addImageToClub, getClubImage } from './clubImage';
-import { getClubsByCampus } from './getClubs';
+import { getClubsByCampus, getCurrentClub } from './getClubs';
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
@@ -45,6 +45,17 @@ router.post(
   Validate,
   loginClub
 );
+
+// Route pour se déconnecter d'un club
+router.post('/logout', (req, res) => {
+  res.clearCookie('token', {
+    httpOnly: true
+  });
+  res.sendStatus(200);
+});
+
+// Route récupérer les informations du club actuellement connecté
+router.get('/me', verifyClubAuth, (req, res) => getCurrentClub(req as AuthenticatedClubRequest, res));
 
 // Route pour activer un club
 router.post(
