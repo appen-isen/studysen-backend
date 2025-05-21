@@ -22,7 +22,7 @@
 .club-logo {
   width: 64px;
   height: 64px;
-  border-radius: 12px;
+  border-radius: 100%;
   margin: 0 auto;
 }
 .club-info {

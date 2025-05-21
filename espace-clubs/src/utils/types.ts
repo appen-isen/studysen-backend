@@ -1,5 +1,5 @@
 export type Club = {
-  id: number;
+  clubId: number;
   name: string;
   campusId: number;
   imageUrl: string;

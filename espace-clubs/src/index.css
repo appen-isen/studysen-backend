@@ -24,3 +24,12 @@
 .btn:hover {
   background: #c92c2c;
 }
+
+/* SweetAlert */
+
+.swal2-confirm {
+  background-color: #fa4747 !important;
+}
+.swal2-confirm:hover {
+  background-color: #c92c2c !important;
+}

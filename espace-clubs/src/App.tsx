@@ -84,7 +84,7 @@ function App() {
 
       {/* Modale d'accès à l'espace membre du club */}
       <LoginModal
-        onClose={() => setShowCreateModal(false)}
+        onClose={() => setShowLoginModal(false)}
         open={showLoginModal}
         selectedClub={selectedClub}
       />

@@ -3,6 +3,8 @@ import Modal from '../../components/Modal';
 import type { Club } from '../../utils/types';
 import { Input } from '../../components/Inputs';
 import './LoginModal.css';
+import Swal from 'sweetalert2';
+import ApiClient from '../../utils/http';
 
 type LoginModalProps = {
   open: boolean;
@@ -12,25 +14,43 @@ type LoginModalProps = {
 
 export default function LoginModal(props: LoginModalProps) {
   const { open, onClose, selectedClub } = props;
-
-  const [error, setError] = useState('');
   const [password, setPassword] = useState('');
 
   const closeModal = () => {
-    setError('');
     setPassword('');
     onClose();
   };
 
   // On gère la connexion
   const handleLogin = () => {
-    // Vérification du mot de passe (à remplacer par une logique backend plus tard)
-    if (selectedClub && password === 'club2024') {
-      alert(`Bienvenue dans l'espace membre du ${selectedClub.name} !`);
-      closeModal();
-    } else {
-      setError('Mot de passe incorrect');
+    //Validation
+    let errorMessage = '';
+    if (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(password) === false) {
+      errorMessage =
+        'Le mot de passe doit avoir au minimum 8 caractères, une minuscule, une majuscule et un chiffre !';
     }
+    if (errorMessage) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Erreur',
+        text: errorMessage
+      }).then(() => closeModal());
+      return;
+    }
+    ApiClient.post('/clubs/login', {
+      password: password,
+      clubId: selectedClub?.clubId
+    })
+      .then(() => {
+        closeModal();
+      })
+      .catch((error) => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Erreur',
+          text: error.response?.data?.message || error.message
+        }).then(() => closeModal());
+      });
   };
   return (
     <Modal open={open} onClose={closeModal}>
@@ -46,10 +66,8 @@ export default function LoginModal(props: LoginModalProps) {
           placeholder="Mot de passe"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="password-input"
           autoFocus
         />
-        {error && <div className="error">{error}</div>}
         <div>
           <button className="btn submit-btn" onClick={handleLogin}>
             Accéder
