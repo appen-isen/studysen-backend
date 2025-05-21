@@ -16,7 +16,6 @@ type CreateModalProps = {
 
 export default function CreateModal(props: CreateModalProps) {
   const { open, onClose } = props;
-
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [clubName, setClubName] = useState('');

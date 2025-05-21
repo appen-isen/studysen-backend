@@ -5,6 +5,7 @@ import { Input } from '../../components/Inputs';
 import './LoginModal.css';
 import Swal from 'sweetalert2';
 import ApiClient from '../../utils/http';
+import { useNavigate } from 'react-router';
 
 type LoginModalProps = {
   open: boolean;
@@ -13,6 +14,7 @@ type LoginModalProps = {
 };
 
 export default function LoginModal(props: LoginModalProps) {
+  const navigate = useNavigate();
   const { open, onClose, selectedClub } = props;
   const [password, setPassword] = useState('');
 
@@ -43,6 +45,7 @@ export default function LoginModal(props: LoginModalProps) {
     })
       .then(() => {
         closeModal();
+        navigate('/dashboard', { state: selectedClub });
       })
       .catch((error) => {
         Swal.fire({
