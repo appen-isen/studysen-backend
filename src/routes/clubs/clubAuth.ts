@@ -34,6 +34,21 @@ export async function createClub(req: Request, res: Response) {
     client.release();
 
     const club = result.rows[0];
+
+    //Génération du token
+    const token = jwt.sign(
+      {
+        clubId: club.club_id
+      },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+    // Envoi du token dans le cookie
+    res.cookie('token', token, {
+      maxAge: 24 * 3600 * 1000,
+      sameSite: 'lax',
+      httpOnly: true
+    });
     res.status(201).json({
       club: {
         clubId: club.club_id,
