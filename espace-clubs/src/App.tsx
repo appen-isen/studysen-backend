@@ -3,7 +3,7 @@ import './App.css';
 import ClubCard from './components/ClubCard';
 import { Input } from './components/Inputs';
 import { MultiToggle } from './components/Buttons';
-import { getCookie, setCookie } from './utils/cookies';
+import { getCookie, removeCookie, setCookie } from './utils/cookies';
 import Loader from './components/Loader';
 import type { Club } from './utils/types';
 import { CITIES } from './utils/campus';
@@ -11,6 +11,7 @@ import ApiClient from './utils/http';
 import LoginModal from './modals/clubs/LoginModal';
 import { FaPlus } from 'react-icons/fa6';
 import CreateModal from './modals/clubs/CreateModal';
+import { useNavigate } from 'react-router';
 
 function App() {
   const [search, setSearch] = useState('');
@@ -26,6 +27,7 @@ function App() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [isLoading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   // Filtrage des clubs selon la recherche et la ville sélectionnée
   const filteredClubs = clubs.filter(
@@ -37,11 +39,6 @@ function App() {
     setSelectedClub(club);
     setShowLoginModal(true);
   };
-
-  // Sauvegarde la ville sélectionnée dans un cookie à chaque changement
-  useEffect(() => {
-    setCookie('selectedCityIndex', String(cityIndex));
-  }, [cityIndex]);
 
   // On récupère les clubs depuis le backend
   useEffect(() => {
@@ -55,7 +52,33 @@ function App() {
         console.error('Erreur lors de la récupération des clubs:', error);
         setLoading(false);
       });
+    // On sauvegarde l'index de la ville dans le cookie
+    setCookie('selectedCityIndex', String(cityIndex));
   }, [cityIndex]);
+
+  //Connexion automatique si le cookie est présent
+  useEffect(() => {
+    const autoConnect = Boolean(getCookie('autoConnect'));
+    if (autoConnect) {
+      ApiClient.get('/clubs/me')
+        .then((response) => {
+          const club = response.data;
+          setCookie('autoConnect', 'true');
+          // On redirige vers le tableau de bord
+          navigate('/dashboard', {
+            state: {
+              clubId: club.id,
+              name: club.name,
+              campusId: club.campusId,
+              imageUrl: club.imageUrl
+            } as Club
+          });
+        })
+        .catch(() => {
+          removeCookie('autoConnect');
+        });
+    }
+  }, []);
 
   return (
     <div className="main-container">

@@ -6,6 +6,7 @@ import './LoginModal.css';
 import Swal from 'sweetalert2';
 import ApiClient from '../../utils/http';
 import { useNavigate } from 'react-router';
+import { setCookie } from '../../utils/cookies';
 
 type LoginModalProps = {
   open: boolean;
@@ -44,6 +45,7 @@ export default function LoginModal(props: LoginModalProps) {
       clubId: selectedClub?.clubId
     })
       .then(() => {
+        setCookie('autoConnect', 'true');
         closeModal();
         navigate('/dashboard', { state: selectedClub });
       })

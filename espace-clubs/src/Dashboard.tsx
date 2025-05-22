@@ -3,20 +3,29 @@ import './Dashboard.css';
 import { useLocation, useNavigate } from 'react-router';
 import type { Club } from './utils/types';
 import ApiClient from './utils/http';
+import { useEffect } from 'react';
+import { removeCookie } from './utils/cookies';
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const location = useLocation();
   const club: Club = location.state;
-  // Vérification de l'existence du club
-  if (club === null || club === undefined) {
-    navigate('/');
-    return;
-  }
 
   const handleLogout = () => {
+    removeCookie('autoConnect');
     ApiClient.post('/clubs/logout').finally(() => navigate('/'));
   };
+
+  // Vérification de l'existence du club
+  useEffect(() => {
+    if (club === null || club === undefined) {
+      navigate('/');
+    }
+  }, [club, navigate]);
+
+  if (club === null || club === undefined) {
+    return null;
+  }
   return (
     <div className="dashboard-container">
       {/* En tête de la page */}
