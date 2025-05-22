@@ -10,6 +10,9 @@ import { getClubsByCampus, getCurrentClub } from './getClubs';
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
 
+// Route récupérer les informations du club actuellement connecté
+router.get('/me', verifyClubAuth, (req, res) => getCurrentClub(req as AuthenticatedClubRequest, res));
+
 // Route pour récupérer tous les clubs
 router.get(
   '/:campusId',
@@ -53,9 +56,6 @@ router.post('/logout', (req, res) => {
   });
   res.sendStatus(200);
 });
-
-// Route récupérer les informations du club actuellement connecté
-router.get('/me', verifyClubAuth, (req, res) => getCurrentClub(req as AuthenticatedClubRequest, res));
 
 // Route pour activer un club
 router.post(
