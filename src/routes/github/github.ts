@@ -32,7 +32,7 @@ router.post('/', async (req, res) => {
     const { title, body, image, labels, assignees } = req.body;
     const githubIssueToken = process.env.GITHUB_ISSUE_TOKEN;
     const repoOwner = process.env.GITHUB_REPO_OWNER || 'appen-isen';
-    const repoName = process.env.GITHUB_REPO_NAME || 'isen-orbit';
+    const repoName = process.env.GITHUB_REPO_NAME || 'studysen';
 
     if (!githubIssueToken) {
       res.status(500).json({
