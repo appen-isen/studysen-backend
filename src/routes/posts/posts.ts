@@ -1,9 +1,9 @@
 import { AuthenticatedClubRequest, verifyClubAuth } from '@/middlewares/auth';
 import express from 'express';
 import { addImageToPost, createPost } from './createPost';
-import { body, query } from 'express-validator';
+import { body, param, query } from 'express-validator';
 import Validate from '@/middlewares/validate';
-import { getAllPosts, getLastPost } from './getPost';
+import { getAllPosts, getClubPosts, getLastPost } from './getPost';
 import multer from 'multer';
 import { deletePost } from './deletePost';
 
@@ -54,6 +54,14 @@ router.get(
   query('campus').isInt().withMessage('Veuillez entrer un numéro de campus !'),
   Validate,
   getLastPost
+);
+
+// Route pour récupérer les posts d'un club spécifique
+router.get(
+  '/club/:clubId',
+  param('clubId').isInt().withMessage('Veuillez entrer un clubId valide'),
+  Validate,
+  getClubPosts
 );
 
 export default router;
