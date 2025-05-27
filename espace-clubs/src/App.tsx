@@ -65,13 +65,9 @@ function App() {
           const club = response.data;
           setCookie('autoConnect', 'true');
           // On redirige vers le tableau de bord
+          console.log(club);
           navigate('/dashboard', {
-            state: {
-              clubId: club.id,
-              name: club.name,
-              campusId: club.campusId,
-              imageUrl: club.imageUrl
-            } as Club
+            state: club
           });
         })
         .catch(() => {

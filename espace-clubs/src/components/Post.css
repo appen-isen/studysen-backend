@@ -3,7 +3,6 @@
   border-radius: 18px;
   box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.07);
   padding: 1.5rem 1.2rem 1.2rem 1.2rem;
-  margin: 1.5rem auto;
   max-width: 370px;
   display: flex;
   flex-direction: column;
@@ -53,42 +52,46 @@
   align-self: flex-start;
   font-weight: 800;
   color: #222;
-  margin-bottom: 0.2em;
+  margin-bottom: 0.1em;
 }
 .post-club {
   display: flex;
   align-items: center;
-  gap: 0.5em;
-  margin-bottom: 0.2em;
+  align-self: flex-start;
+  background-color: #e7e7e7;
+  border-radius: 50px;
+  padding: 0.2em;
+  gap: 0.1em;
+  margin-bottom: 0.1em;
 }
 .post-club-avatar {
   width: 32px;
   height: 32px;
   border-radius: 100%;
-  object-fit: cover;
-  border: 2px solid #e7e7e7;
 }
 .post-club-badge {
-  background: #e7e7e7;
-  color: #222;
   font-weight: 700;
   font-size: 1em;
   border-radius: 16px;
   padding: 0.2em 1em;
 }
 .post-description {
-  color: #222;
+  text-align: start;
   font-size: 1.08rem;
   margin-bottom: 0.2em;
 }
 .post-address {
   display: flex;
   align-items: center;
-  gap: 0.5em;
+  align-self: flex-start;
+  gap: 0.2em;
   color: #fa4747;
   font-weight: 600;
   font-size: 1.05em;
   margin-bottom: 0.2em;
+  background: #ffe3e3;
+  border-radius: 8px;
+  padding: 0.25em 0.8em;
 }
 .post-address-icon {
   font-size: 1.1em;
@@ -112,9 +115,48 @@
   font-size: 0.85em;
   font-weight: 600;
   margin-bottom: 0.1em;
+  align-self: flex-start;
 }
 .post-info-value {
-  color: #222;
   font-size: 1.08em;
-  font-weight: 700;
+  align-self: flex-start;
+}
+
+/* Les actions */
+.post-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.7em;
+  margin-top: 0.8em;
+}
+.post-edit-btn {
+  background-color: #e7e7e7;
+  color: #222;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 0.5em 2em;
+  font-size: 1em;
+  border: none;
+  transition: background 0.2s;
+}
+.post-edit-btn:hover {
+  background-color: #c8c7c7;
+  cursor: pointer;
+}
+.post-delete-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fa4747;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 0.8em 0.8em;
+  font-size: 1em;
+  border: none;
+  transition: background 0.2s;
+}
+.post-delete-btn:hover {
+  background: #c92c2c;
+  cursor: pointer;
 }

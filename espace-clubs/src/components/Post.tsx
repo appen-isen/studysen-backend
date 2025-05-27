@@ -1,11 +1,30 @@
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import type { PostType } from '../utils/types';
 import './Post.css';
+import { FaTrash } from 'react-icons/fa6';
+import Swal from 'sweetalert2';
 
 //Composant qui représente un post de club
 export function Post(props: { post: PostType }) {
   const { type, date, title, club, description, address, info, imageUri } = props.post;
 
+  const handleDelete = () => {
+    Swal.fire({
+      title: 'Supprimer le post',
+
+      text: 'Êtes-vous sûr de vouloir supprimer ce post ?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Oui, supprimer',
+      cancelButtonText: 'Annuler'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        //On envoie la requête de suppression au backend
+
+        Swal.fire('Supprimé !', 'Le post a été supprimé.', 'success');
+      }
+    });
+  };
   return (
     <div className="post">
       <div className="post-header">
@@ -20,6 +39,7 @@ export function Post(props: { post: PostType }) {
         </div>
       )}
       <div className="post-title">{title}</div>
+      {/* Le club qui a posté */}
       <div className="post-club">
         <img src={club.image} alt={club.name} className="post-club-avatar" />
         <span className="post-club-badge">{club.name}</span>
@@ -41,15 +61,21 @@ export function Post(props: { post: PostType }) {
         {info?.price && (
           <div className="post-info">
             <span className="post-info-label">ENTRÉE</span>
-            <span className="post-info-value">{info.price}</span>
+            <span className="post-info-value">{info.price} €</span>
           </div>
         )}
         {info?.ageLimit && (
           <div className="post-info">
             <span className="post-info-label">AGE MINIMAL</span>
-            <span className="post-info-value">{info.ageLimit}</span>
+            <span className="post-info-value">{info.ageLimit} ans</span>
           </div>
         )}
+      </div>
+      <div className="post-actions">
+        <button className="post-edit-btn">Modifier</button>
+        <button className="post-delete-btn" onClick={handleDelete}>
+          <FaTrash></FaTrash>
+        </button>
       </div>
     </div>
   );
