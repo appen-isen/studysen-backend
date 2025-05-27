@@ -5,10 +5,21 @@ export type Club = {
   imageUrl: string;
 };
 
-export type Post = {
-  id: number;
+export type PostType = {
+  type: 'event' | 'post';
+  date: string;
   title: string;
-  content: string;
-  createdAt: string;
-  // Ajoute d'autres champs si besoin
+  club: {
+    name: string;
+    image: string;
+  };
+  description: string;
+  link?: string;
+  address?: string;
+  info?: {
+    startTime?: string;
+    price?: string;
+    ageLimit?: string;
+  };
+  imageUri?: string;
 };

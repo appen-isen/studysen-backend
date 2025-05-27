@@ -1,0 +1,120 @@
+.post {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.07);
+  padding: 1.5rem 1.2rem 1.2rem 1.2rem;
+  margin: 1.5rem auto;
+  max-width: 370px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+.post-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.2em;
+}
+.post-badge {
+  background: #ffe3e3;
+  color: #fa4747;
+  font-weight: 700;
+  font-size: 0.95em;
+  border-radius: 8px;
+  padding: 0.25em 0.8em;
+  margin-right: 0.7em;
+}
+.post-date {
+  color: #222;
+  font-size: 1.1em;
+  font-weight: 500;
+}
+.post-text-separator {
+  width: 20px;
+  height: 3px;
+  border-radius: 10px;
+  margin: 0 10px 0 10px;
+  background-color: #000;
+}
+.post-image-container {
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 0.2em;
+}
+.post-image {
+  width: 100%;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 14px;
+  display: block;
+}
+.post-title {
+  font-size: 1.25rem;
+  align-self: flex-start;
+  font-weight: 800;
+  color: #222;
+  margin-bottom: 0.2em;
+}
+.post-club {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-bottom: 0.2em;
+}
+.post-club-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 100%;
+  object-fit: cover;
+  border: 2px solid #e7e7e7;
+}
+.post-club-badge {
+  background: #e7e7e7;
+  color: #222;
+  font-weight: 700;
+  font-size: 1em;
+  border-radius: 16px;
+  padding: 0.2em 1em;
+}
+.post-description {
+  color: #222;
+  font-size: 1.08rem;
+  margin-bottom: 0.2em;
+}
+.post-address {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  color: #fa4747;
+  font-weight: 600;
+  font-size: 1.05em;
+  margin-bottom: 0.2em;
+}
+.post-address-icon {
+  font-size: 1.1em;
+}
+.post-infos {
+  display: flex;
+  gap: 0.7em;
+  margin-top: 0.5em;
+}
+.post-info {
+  background: #e7e7e7;
+  border-radius: 10px;
+  padding: 0.5em 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 70px;
+}
+.post-info-label {
+  color: #868686;
+  font-size: 0.85em;
+  font-weight: 600;
+  margin-bottom: 0.1em;
+}
+.post-info-value {
+  color: #222;
+  font-size: 1.08em;
+  font-weight: 700;
+}

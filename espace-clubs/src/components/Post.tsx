@@ -1,0 +1,56 @@
+import { FaMapMarkerAlt } from 'react-icons/fa';
+import type { PostType } from '../utils/types';
+import './Post.css';
+
+//Composant qui représente un post de club
+export function Post(props: { post: PostType }) {
+  const { type, date, title, club, description, address, info, imageUri } = props.post;
+
+  return (
+    <div className="post">
+      <div className="post-header">
+        <span className="post-badge">{type === 'event' ? 'ÉVÉNEMENT' : 'POST'}</span>
+        <div className="post-text-separator"></div>
+        <span className="post-date">{date}</span>
+      </div>
+      {/* Bannière (environ 400x100) */}
+      {imageUri && (
+        <div className="post-image-container">
+          <img src={imageUri} alt={title} className="post-image" />
+        </div>
+      )}
+      <div className="post-title">{title}</div>
+      <div className="post-club">
+        <img src={club.image} alt={club.name} className="post-club-avatar" />
+        <span className="post-club-badge">{club.name}</span>
+      </div>
+      <div className="post-description">{description}</div>
+      {address && (
+        <div className="post-address">
+          <FaMapMarkerAlt className="post-address-icon" />
+          <span>{address}</span>
+        </div>
+      )}
+      <div className="post-infos">
+        {info?.startTime && (
+          <div className="post-info">
+            <span className="post-info-label">DÉBUTE À</span>
+            <span className="post-info-value">{info.startTime}</span>
+          </div>
+        )}
+        {info?.price && (
+          <div className="post-info">
+            <span className="post-info-label">ENTRÉE</span>
+            <span className="post-info-value">{info.price}</span>
+          </div>
+        )}
+        {info?.ageLimit && (
+          <div className="post-info">
+            <span className="post-info-label">AGE MINIMAL</span>
+            <span className="post-info-value">{info.ageLimit}</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
