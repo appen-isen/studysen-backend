@@ -6,6 +6,7 @@ export type Club = {
 };
 
 export type PostType = {
+  id: number;
   type: 'event' | 'post';
   date: string;
   title: string;

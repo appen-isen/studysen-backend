@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { removeCookie } from './utils/cookies';
 import { Post } from './components/Post';
 import Loader from './components/Loader';
+import Swal from 'sweetalert2';
 
 export default function Dashboard() {
   const [isLoading, setLoading] = useState(true);
@@ -16,8 +17,19 @@ export default function Dashboard() {
   const club: Club = location.state;
 
   const handleLogout = () => {
-    removeCookie('autoConnect');
-    ApiClient.post('/clubs/logout').finally(() => navigate('/'));
+    Swal.fire({
+      title: 'Déconnexion',
+      text: 'Êtes-vous sûr de vouloir vous déconnecter ?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Oui, déconnecter',
+      cancelButtonText: 'Annuler'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        removeCookie('autoConnect');
+        ApiClient.post('/clubs/logout').finally(() => navigate('/'));
+      }
+    });
   };
 
   useEffect(() => {
@@ -27,7 +39,6 @@ export default function Dashboard() {
       //On charge les posts depuis le backend
       ApiClient.get(`/posts/club/${club.clubId}`)
         .then((response) => {
-          console.log('Posts chargés:', response.data);
           setPosts(response.data);
           setLoading(false);
         })
@@ -51,7 +62,9 @@ export default function Dashboard() {
           <h3>{club.name}</h3>
           <FaArrowRightFromBracket className="logout" onClick={handleLogout} />
         </div>
-        <button className="btn">Nouveau post</button>
+        <button className="btn" onClick={() => navigate('/post/new')}>
+          Nouveau post
+        </button>
       </div>
       <h1>Vos posts</h1>
       {/* Les posts du clubs  */}

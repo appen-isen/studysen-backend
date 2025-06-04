@@ -3,9 +3,12 @@ import type { PostType } from '../utils/types';
 import './Post.css';
 import { FaTrash } from 'react-icons/fa6';
 import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router';
+import ApiClient from '../utils/http';
 
 //Composant qui représente un post de club
 export function Post(props: { post: PostType }) {
+  const navigate = useNavigate();
   const { type, date, title, club, description, address, info, imageUri } = props.post;
 
   const handleDelete = () => {
@@ -19,10 +22,28 @@ export function Post(props: { post: PostType }) {
       cancelButtonText: 'Annuler'
     }).then((result) => {
       if (result.isConfirmed) {
-        //On envoie la requête de suppression au backend
-
-        Swal.fire('Supprimé !', 'Le post a été supprimé.', 'success');
+        ApiClient.delete(`/posts/`, {
+          data: {
+            postId: props.post.id
+          }
+        })
+          .then(() => {
+            Swal.fire('Supprimé !', 'Le post a été supprimé.', 'success');
+          })
+          .catch((error) => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Erreur lors de la suppression du post',
+              text: error.response?.data?.message || error.message
+            });
+          });
       }
+    });
+  };
+
+  const handleEdit = () => {
+    navigate(`/post/edit/${props.post.id}`, {
+      state: props.post
     });
   };
   return (
@@ -72,7 +93,9 @@ export function Post(props: { post: PostType }) {
         )}
       </div>
       <div className="post-actions">
-        <button className="post-edit-btn">Modifier</button>
+        <button className="post-edit-btn" onClick={handleEdit}>
+          Modifier
+        </button>
         <button className="post-delete-btn" onClick={handleDelete}>
           <FaTrash></FaTrash>
         </button>

@@ -1,0 +1,182 @@
+.postform-container {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.07);
+  max-width: 720px;
+  margin: 40px auto;
+  padding: 2.2rem 1.5rem 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+.back-icon {
+  font-size: 1.8rem;
+  color: #fa4747;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.back-icon:hover {
+  cursor: pointer;
+  color: #d32f2f;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+.postform-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.3em;
+}
+.postform-row-labels {
+  gap: 2.5em;
+  align-items: flex-end;
+}
+.postform-label-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+  flex: 1;
+}
+.postform-label {
+  font-size: 1em;
+  font-weight: 600;
+  color: #fa4747;
+  margin-bottom: 0.1em;
+  margin-left: 0.1em;
+}
+.postform-textarea {
+  border: none;
+  border-radius: 10px;
+  background: #e7e7e7;
+  font-size: 1.08rem;
+  font-family: 'Roboto', sans-serif;
+  padding: 10px 15px;
+  resize: vertical;
+  outline: none;
+}
+.postform-image-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1em;
+}
+.postform-image-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f0f0f0;
+  border-radius: 18px;
+  padding: 0.7em 1.2em;
+  color: #fa4747;
+  font-weight: 600;
+  font-size: 1.08rem;
+  cursor: pointer;
+  border: 2px dashed #fa4747;
+  transition:
+    background 0.2s,
+    border 0.2s;
+}
+.postform-image-label:hover {
+  background: #fff;
+  border: 2px solid #fa4747;
+}
+.postform-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1em;
+  margin-top: 1.2em;
+}
+.postform-tip {
+  color: #868686;
+  font-size: 0.98em;
+  margin-bottom: 0.3em;
+  text-align: left;
+}
+.postform-banner-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.postform-banner-label {
+  width: 100%;
+  max-width: 400px;
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f0f0;
+  border: 2px dashed #fa4747;
+  border-radius: 16px;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border 0.2s;
+  overflow: hidden;
+  position: relative;
+}
+.postform-banner-label:hover {
+  background: #fff6f6;
+  border: 2px solid #fa4747;
+}
+.postform-banner-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100px;
+  color: #fa4747;
+  font-weight: 600;
+  font-size: 1.08rem;
+  gap: 0.5em;
+}
+.postform-banner-preview {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px 0 rgba(250, 71, 71, 0.13);
+  display: block;
+}
+.postform-date-input {
+  background: #e7e7e7;
+  color: #222;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 0.7em 1.2em;
+  height: 20px;
+  font-size: 1.08em;
+  border: none;
+  outline: none;
+  min-width: 140px;
+  transition: background 0.2s;
+}
+.postform-date-input:hover {
+  cursor: pointer;
+  background: #fa4747;
+  color: #fff;
+}
+
+.postform-date-input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .postform-container {
+    padding: 1.5rem;
+    margin: 20px auto;
+  }
+  .postform-row {
+    flex-direction: column;
+    gap: 0.5em;
+  }
+  .postform-row-labels {
+    flex-direction: column;
+    align-items: center;
+  }
+  .postform-label-group {
+    width: 100%;
+  }
+}
