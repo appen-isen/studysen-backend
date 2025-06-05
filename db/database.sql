@@ -102,7 +102,7 @@ CREATE TABLE posts (
     image_url TEXT,                   -- URL de l'image de l'événement
     link TEXT,                        -- URL d'incription à l'événement (si site externe type helloasso)
     start_time VARCHAR(10),           -- Heure de début de l'événement
-    price NUMERIC(10, 2),             -- Prix de l'événement
+    price TEXT,                       -- Prix de l'événement
     age_limit INT,                    -- Limite d'âge pour l'événement
     FOREIGN KEY (club_id) REFERENCES clubs(club_id) -- Clé étrangère vers la table clubs
 );

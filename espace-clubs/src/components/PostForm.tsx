@@ -7,6 +7,7 @@ import { useNavigate, useLocation } from 'react-router';
 import type { PostType } from '../utils/types';
 import Swal from 'sweetalert2';
 import ApiClient from '../utils/http';
+import Loader from './Loader';
 
 const POST_TYPES = [
   { label: 'Événement', value: 'event' },
@@ -33,6 +34,7 @@ export default function PostForm({ mode = 'create' }: PostFormProps) {
   const [ageLimit, setAgeLimit] = useState(post?.info?.ageLimit || '');
   const [imagePreview, setImagePreview] = useState<string | undefined>(post?.imageUri);
   const [image, setImage] = useState<File | null>(null);
+  const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
     if (mode === 'edit' && post) {
@@ -63,6 +65,9 @@ export default function PostForm({ mode = 'create' }: PostFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (isLoading) {
+      return;
+    }
     // Validation des champs obligatoires
     if (!title.trim()) {
       Swal.fire({ icon: 'error', title: 'Erreur', text: 'Le titre est obligatoire.' });
@@ -70,6 +75,10 @@ export default function PostForm({ mode = 'create' }: PostFormProps) {
     }
     if (!description.trim()) {
       Swal.fire({ icon: 'error', title: 'Erreur', text: 'La description est obligatoire.' });
+      return;
+    }
+    if (!image && mode === 'create') {
+      Swal.fire({ icon: 'error', title: 'Erreur', text: 'La bannière est obligatoire.' });
       return;
     }
     if (typeIndex === 0) {
@@ -91,6 +100,16 @@ export default function PostForm({ mode = 'create' }: PostFormProps) {
       }
     }
 
+    if (mode === 'edit') {
+      editPost();
+    } else {
+      createPost();
+    }
+  };
+
+  //On créer un post
+  const createPost = () => {
+    setLoading(true);
     ApiClient.post('/posts', {
       type: typeIndex === 0 ? 'event' : 'post',
       title,
@@ -105,39 +124,113 @@ export default function PostForm({ mode = 'create' }: PostFormProps) {
       }
     })
       .then((response) => {
-        if (response.data.id) {
-          //On envoie l'image au format multipart
+        const showSuccess = () => {
+          setLoading(false);
+          Swal.fire({
+            icon: 'success',
+            title: 'Succès',
+            text: 'Le post a été créé avec succès.'
+          }).then(() => navigate(-1));
+        };
+        if (response.data.postId && image) {
           const formData = new FormData();
-          formData.append('image', image!);
-          formData.append('postId', response.data.id);
+          formData.append('image', image);
+          formData.append('postId', response.data.postId);
 
-          ApiClient.put(`/clubs/image`, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
+          ApiClient.put(`/posts/add-image`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
           })
-            .then(() => {
-              Swal.fire({
-                icon: 'success',
-                title: 'Succès',
-                text: 'Le post a été créé avec succès.'
-              });
-            })
+            .then(showSuccess)
             .catch((error) => {
               Swal.fire({
                 icon: 'error',
                 title: "Erreur lors de l'envoi de l'image",
                 text: error.response?.data?.message || error.message
               });
+              setLoading(false);
             });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Erreur',
+            text: "Le post a été créé, mais aucune image n'a été envoyée."
+          });
+          setLoading(false);
         }
       })
       .catch((error) => {
         Swal.fire({
           icon: 'error',
-          title: 'Erreur lors de la suppression du post',
+          title: 'Erreur lors de la création du post',
           text: error.response?.data?.message || error.message
         });
+        setLoading(false);
+      });
+  };
+  //On modifie un post existant
+  const editPost = () => {
+    if (!post) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Erreur',
+        text: 'Le post à modifier est introuvable.'
+      });
+      return;
+    }
+    setLoading(true);
+    ApiClient.put(`/posts`, {
+      postId: post.id,
+      type: typeIndex === 0 ? 'event' : 'post',
+      title,
+      description,
+      date: typeIndex === 0 ? date : new Date().toISOString().split('T')[0],
+      link,
+      location: address,
+      info: {
+        startTime: startTime,
+        price: price,
+        ageLimit: ageLimit
+      }
+    })
+      .then(() => {
+        const showSuccess = () => {
+          setLoading(false);
+          Swal.fire({
+            icon: 'success',
+            title: 'Succès',
+            text: 'Le post a été modifié avec succès.'
+          }).then(() => navigate(-1));
+        };
+
+        if (image) {
+          const formData = new FormData();
+          formData.append('image', image);
+          formData.append('postId', post.id.toString());
+
+          ApiClient.put(`/posts/add-image`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+          })
+            .then(showSuccess)
+            .catch((error) => {
+              Swal.fire({
+                icon: 'error',
+                title: "Erreur lors de l'envoi de l'image",
+                text: error.response?.data?.message || error.message
+              });
+              setLoading(false);
+            });
+        } else {
+          showSuccess();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Erreur lors de la modification du post',
+          text: error.response?.data?.message || error.message
+        });
+        setLoading(false);
       });
   };
 
@@ -219,11 +312,8 @@ export default function PostForm({ mode = 'create' }: PostFormProps) {
                 />
               </div>
             </div>
-            <Input
-              placeholder="Adresse (optionnelle)"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-            />
+            <p className="postform-label">Champs optionnels</p>
+            <Input placeholder="Adresse" value={address} onChange={(e) => setAddress(e.target.value)} />
             <div className="postform-row">
               <Input
                 placeholder="Prix (ex: Gratuit, 5€...)"
@@ -241,7 +331,8 @@ export default function PostForm({ mode = 'create' }: PostFormProps) {
 
         <div className="postform-actions">
           <button className="btn submit-btn" type="submit">
-            {mode === 'edit' ? 'Enregistrer' : 'Publier'}
+            {isLoading && <Loader size={10} color="#fff" />}
+            {!isLoading ? (mode === 'edit' ? 'Enregistrer' : 'Publier') : ''}
           </button>
         </div>
       </form>

@@ -7,10 +7,11 @@ import { useNavigate } from 'react-router';
 import ApiClient from '../utils/http';
 
 //Composant qui représente un post de club
-export function Post(props: { post: PostType }) {
+export function Post(props: { post: PostType; onDelete: (postId: number) => void }) {
   const navigate = useNavigate();
   const { type, date, title, club, description, address, info, imageUri } = props.post;
 
+  //Suppression du post
   const handleDelete = () => {
     Swal.fire({
       title: 'Supprimer le post',
@@ -28,7 +29,9 @@ export function Post(props: { post: PostType }) {
           }
         })
           .then(() => {
-            Swal.fire('Supprimé !', 'Le post a été supprimé.', 'success');
+            Swal.fire('Supprimé !', 'Le post a été supprimé.', 'success').then(() =>
+              props.onDelete(props.post.id)
+            );
           })
           .catch((error) => {
             Swal.fire({
@@ -54,11 +57,10 @@ export function Post(props: { post: PostType }) {
         <span className="post-date">{date}</span>
       </div>
       {/* Bannière (environ 400x100) */}
-      {imageUri && (
-        <div className="post-image-container">
-          <img src={imageUri} alt={title} className="post-image" />
-        </div>
-      )}
+      <div className="post-image-container">
+        <img src={imageUri ?? '/empty-image.png'} alt={title} className="post-image" />
+      </div>
+
       <div className="post-title">{title}</div>
       {/* Le club qui a posté */}
       <div className="post-club">
@@ -66,32 +68,37 @@ export function Post(props: { post: PostType }) {
         <span className="post-club-badge">{club.name}</span>
       </div>
       <div className="post-description">{description}</div>
-      {address && (
-        <div className="post-address">
-          <FaMapMarkerAlt className="post-address-icon" />
-          <span>{address}</span>
-        </div>
+      {type === 'event' && (
+        <>
+          {address && (
+            <div className="post-address">
+              <FaMapMarkerAlt className="post-address-icon" />
+              <span>{address}</span>
+            </div>
+          )}
+          <div className="post-infos">
+            {info?.startTime && (
+              <div className="post-info">
+                <span className="post-info-label">DÉBUTE À</span>
+                <span className="post-info-value">{info.startTime}</span>
+              </div>
+            )}
+            {info?.price && (
+              <div className="post-info">
+                <span className="post-info-label">ENTRÉE</span>
+                <span className="post-info-value">{info.price}</span>
+              </div>
+            )}
+            {info?.ageLimit && (
+              <div className="post-info">
+                <span className="post-info-label">AGE MINIMAL</span>
+                <span className="post-info-value">{info.ageLimit} ans</span>
+              </div>
+            )}
+          </div>
+        </>
       )}
-      <div className="post-infos">
-        {info?.startTime && (
-          <div className="post-info">
-            <span className="post-info-label">DÉBUTE À</span>
-            <span className="post-info-value">{info.startTime}</span>
-          </div>
-        )}
-        {info?.price && (
-          <div className="post-info">
-            <span className="post-info-label">ENTRÉE</span>
-            <span className="post-info-value">{info.price} €</span>
-          </div>
-        )}
-        {info?.ageLimit && (
-          <div className="post-info">
-            <span className="post-info-label">AGE MINIMAL</span>
-            <span className="post-info-value">{info.ageLimit} ans</span>
-          </div>
-        )}
-      </div>
+
       <div className="post-actions">
         <button className="post-edit-btn" onClick={handleEdit}>
           Modifier

@@ -43,8 +43,7 @@ form {
   font-size: 1em;
   font-weight: 600;
   color: #fa4747;
-  margin-bottom: 0.1em;
-  margin-left: 0.1em;
+  margin-bottom: 0;
 }
 .postform-textarea {
   border: none;

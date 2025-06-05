@@ -1,6 +1,6 @@
 import { AuthenticatedClubRequest, verifyClubAuth } from '@/middlewares/auth';
 import express from 'express';
-import { addImageToPost, createPost } from './createPost';
+import { addImageToPost, createPost, editPost } from './createPost';
 import { body, param, query } from 'express-validator';
 import Validate from '@/middlewares/validate';
 import { getAllPosts, getClubPosts, getLastPost } from './getPost';
@@ -19,6 +19,18 @@ router.post(
   body('date').isDate().withMessage('Veuillez entrer une date valide !'),
   Validate,
   (req, res) => createPost(req as AuthenticatedClubRequest, res)
+);
+
+//Route pour modifier un post
+router.put(
+  '/',
+  verifyClubAuth,
+  body('postId').isInt().withMessage('Veuillez entrer un postId valide !'),
+  body('type').isString().isIn(['event', 'post']).withMessage('Veuillez entrer un type valide !'),
+  body('title').isString().notEmpty().withMessage('Veuillez entrer un titre valide !'),
+  body('date').isDate().withMessage('Veuillez entrer une date valide !'),
+  Validate,
+  (req, res) => editPost(req as AuthenticatedClubRequest, res)
 );
 
 // Route pour ajouter une image à un post

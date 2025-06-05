@@ -32,6 +32,10 @@ export default function Dashboard() {
     });
   };
 
+  const handleDeletePost = (postId: number) => {
+    setPosts(posts.filter((post) => post.id !== postId));
+  };
+
   useEffect(() => {
     if (club === null || club === undefined) {
       navigate('/');
@@ -49,9 +53,8 @@ export default function Dashboard() {
     }
   }, [club, navigate]);
 
-  if (club === null || club === undefined) {
-    return null;
-  }
+  // On trie les posts par id décroissant
+  posts.sort((a, b) => b.id - a.id);
 
   return (
     <div className="dashboard-container">
@@ -73,7 +76,7 @@ export default function Dashboard() {
         <>
           <div className="posts-list">
             {posts.map((post, index) => (
-              <Post key={'post' + index} post={post} />
+              <Post key={'post' + index} post={post} onDelete={handleDeletePost} />
             ))}
           </div>
           {posts.length === 0 && (
