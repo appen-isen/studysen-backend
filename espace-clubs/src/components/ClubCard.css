@@ -42,6 +42,53 @@
   font-size: 1.05rem;
   font-weight: 500;
 }
-.access-btn {
-  width: 100%;
+.club-admin-status {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #fa4747;
+  margin-top: 0.2em;
+}
+.club-admin-status.enabled {
+  color: #28a745;
+}
+.club-admin-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.admin-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+.admin-edit-btn {
+  background-color: #e7e7e7;
+  color: #222;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 0.5em 2.5em;
+  font-size: 1em;
+  border: none;
+  transition: background 0.2s;
+}
+.admin-edit-btn:hover {
+  background-color: #c8c7c7;
+  cursor: pointer;
+}
+.admin-delete-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fa4747;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 0.8em 0.8em;
+  font-size: 1em;
+  border: none;
+  transition: background 0.2s;
+}
+.admin-delete-btn:hover {
+  background: #c92c2c;
+  cursor: pointer;
 }

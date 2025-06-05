@@ -53,6 +53,10 @@ export default function Dashboard() {
     }
   }, [club, navigate]);
 
+  if (club === null || club === undefined) {
+    return null;
+  }
+
   // On trie les posts par id décroissant
   posts.sort((a, b) => b.id - a.id);
 

@@ -14,6 +14,7 @@ import pingRoutes from '@routes/ping/ping';
 import loginRoutes from '@routes/login/login';
 import clubsRoutes from '@routes/clubs/clubs';
 import postsRoutes from '@routes/posts/posts';
+import adminRoutes from '@routes/admin/admin';
 
 dotenv.config();
 
@@ -39,6 +40,7 @@ app.use('/v1/notifications', notificationsRoutes);
 app.use('/v1/ping', pingRoutes);
 app.use('/v1/clubs', clubsRoutes);
 app.use('/v1/posts', postsRoutes);
+app.use('/v1/admin', adminRoutes);
 
 // Routes non utilisées pour le moment
 // app.use("/v1", loginRoutes);

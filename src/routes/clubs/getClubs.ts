@@ -26,6 +26,26 @@ export async function getClubsByCampus(req: Request, res: Response) {
   }
 }
 
+export async function getAllClubs(req: Request, res: Response) {
+  try {
+    const client = await connectToPool();
+    // On récupère tous les clubs actifs
+    const result = await client.query('SELECT * FROM clubs');
+    client.release();
+    const clubs = result.rows.map((row) => ({
+      clubId: row.club_id,
+      name: row.name,
+      campusId: row.campus_id,
+      imageUrl: row.image_url,
+      enabled: row.enabled
+    }));
+    res.status(200).json(clubs);
+  } catch (error) {
+    console.error('Erreur lors de la récupération des clubs:', error);
+    res.status(500).json({ message: 'Erreur lors de la récupération des clubs' });
+  }
+}
+
 export async function getCurrentClub(req: AuthenticatedClubRequest, res: Response) {
   try {
     const client = await connectToPool();

@@ -7,6 +7,7 @@ export interface AuthenticatedClubRequest extends Request {
   clubId: number;
 }
 
+// Middleware pour vérifier l'authentification d'un club
 export function verifyClubAuth(req: Request, res: Response, next: NextFunction) {
   const token = req.cookies['token'];
 
@@ -25,12 +26,25 @@ export function verifyClubAuth(req: Request, res: Response, next: NextFunction) 
     return;
   }
 }
-
+// Middleware pour vérifier l'authentification d'un administrateur
 export function verifyAdminAuth(req: Request, res: Response, next: NextFunction) {
-  const admin = req.headers['x-admin-key'] as string;
-  if (!admin || admin !== process.env.ADMIN_KEY) {
-    res.status(401).json({ message: 'Clé administrateur invalide !' });
+  const token = req.cookies['adminToken'];
+
+  if (!token) {
+    res.status(401).json({ message: 'Token admin invalide !' });
     return;
   }
-  next();
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    // @ts-ignore
+    if (decoded.admin !== true) {
+      res.status(403).json({ message: 'Accès interdit !' });
+      return;
+    }
+    next();
+  } catch (err) {
+    res.status(401).json({ message: 'Token admin invalide !' });
+    return;
+  }
 }

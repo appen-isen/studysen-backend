@@ -5,7 +5,9 @@ import App from './App.tsx';
 import './index.css';
 import NotFound from './components/NotFound.tsx';
 import Dashboard from './Dashboard.tsx';
-import PostForm from './components/PostForm';
+import PostForm from './PostForm.tsx';
+import AdminLogin from './admin/AdminLogin.tsx';
+import AdminDashboard from './admin/AdminDashboard.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -15,6 +17,8 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/post/new" element={<PostForm mode="create" />} />
         <Route path="/post/edit/:id" element={<PostForm mode="edit" />} />
+        <Route path="/admin" element={<AdminLogin />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

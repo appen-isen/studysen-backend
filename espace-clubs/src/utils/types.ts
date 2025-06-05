@@ -3,6 +3,7 @@ export type Club = {
   name: string;
   campusId: number;
   imageUrl: string;
+  enabled?: boolean;
 };
 
 export type PostType = {

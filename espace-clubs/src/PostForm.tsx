@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import './PostForm.css';
-import { Input } from './Inputs';
-import { MultiToggle } from './Buttons';
+import { Input } from './components/Inputs';
+import { MultiToggle } from './components/Buttons';
 import { FaArrowLeft, FaImage } from 'react-icons/fa6';
 import { useNavigate, useLocation } from 'react-router';
-import type { PostType } from '../utils/types';
+import type { PostType } from './utils/types';
 import Swal from 'sweetalert2';
-import ApiClient from '../utils/http';
-import Loader from './Loader';
+import ApiClient from './utils/http';
+import Loader from './components/Loader';
 
 const POST_TYPES = [
   { label: 'Événement', value: 'event' },
@@ -331,8 +331,13 @@ export default function PostForm({ mode = 'create' }: PostFormProps) {
 
         <div className="postform-actions">
           <button className="btn submit-btn" type="submit">
-            {isLoading && <Loader size={10} color="#fff" />}
-            {!isLoading ? (mode === 'edit' ? 'Enregistrer' : 'Publier') : ''}
+            {isLoading ? (
+              <Loader size={10} color="#fff" />
+            ) : mode === 'edit' ? (
+              'Modifier le post'
+            ) : (
+              'Créer le post'
+            )}
           </button>
         </div>
       </form>

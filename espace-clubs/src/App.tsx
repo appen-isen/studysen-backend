@@ -74,7 +74,7 @@ function App() {
           removeCookie('autoConnect');
         });
     }
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="main-container">

@@ -108,11 +108,11 @@ export async function loginClub(req: Request, res: Response) {
         clubId: club.club_id
       },
       JWT_SECRET,
-      { expiresIn: '24h' }
+      { expiresIn: '7d' }
     );
     // Envoi du token dans le cookie
     res.cookie('token', token, {
-      maxAge: 24 * 3600 * 1000,
+      maxAge: 7 * 24 * 3600 * 1000,
       sameSite: 'lax',
       httpOnly: true
     });

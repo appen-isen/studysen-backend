@@ -5,7 +5,7 @@ import { activateClub, createClub, loginClub } from './clubAuth';
 import { AuthenticatedClubRequest, verifyAdminAuth, verifyClubAuth } from '@/middlewares/auth';
 import multer from 'multer';
 import { addImageToClub, getClubImage } from './clubImage';
-import { getClubsByCampus, getCurrentClub } from './getClubs';
+import { getAllClubs, getClubsByCampus, getCurrentClub } from './getClubs';
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
@@ -14,6 +14,11 @@ const upload = multer({ dest: 'uploads/' });
 router.get('/me', verifyClubAuth, (req, res) => getCurrentClub(req as AuthenticatedClubRequest, res));
 
 // Route pour récupérer tous les clubs
+router.get('/all', verifyAdminAuth, (req, res) => {
+  getAllClubs(req, res);
+});
+
+// Route pour récupérer les clubs par campus
 router.get(
   '/:campusId',
   param('campusId').isInt().withMessage('Veuillez entrer un campusId valide'),
