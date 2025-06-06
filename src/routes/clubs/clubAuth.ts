@@ -125,6 +125,33 @@ export async function loginClub(req: Request, res: Response) {
   }
 }
 
+// Authentification d'un club via le mode administrateur
+export async function adminLoginClub(req: Request, res: Response) {
+  try {
+    const { clubId } = req.body;
+    //Génération du token directement avec l'id du club (mode administrateur)
+    const token = jwt.sign(
+      {
+        clubId: clubId
+      },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+    // Envoi du token dans le cookie
+    res.cookie('token', token, {
+      maxAge: 7 * 24 * 3600 * 1000,
+      sameSite: 'lax',
+      httpOnly: true
+    });
+    res.sendStatus(200);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: 'Internal server error'
+    });
+  }
+}
+
 // Activation d'un club
 export async function activateClub(req: Request, res: Response) {
   try {

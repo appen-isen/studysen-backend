@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import ApiClient from '../utils/http';
 import ClubCard from '../components/ClubCard';
 import Loader from '../components/Loader';
@@ -8,6 +8,7 @@ import type { Club } from '../utils/types';
 import { Input } from '../components/Inputs';
 import { useNavigate } from 'react-router';
 import { MultiToggle } from '../components/Buttons';
+import CreateModal from '../modals/clubs/CreateModal';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -15,8 +16,11 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusIndex, setStatusIndex] = useState(0);
+  // Modale pour la modification d'un club
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [clubToEdit, setClubToEdit] = useState<Club | undefined>(undefined);
 
-  useEffect(() => {
+  const loadClubs = useCallback(() => {
     setLoading(true);
     // Récupère la liste de tous les clubs
     ApiClient.get('/clubs/all')
@@ -32,7 +36,11 @@ export default function AdminDashboard() {
         )
       )
       .finally(() => setLoading(false));
-  }, []);
+  }, [navigate]);
+
+  useEffect(() => {
+    loadClubs();
+  }, [loadClubs]);
 
   const handleEnable = (club: Club) => {
     // Active le club
@@ -46,8 +54,9 @@ export default function AdminDashboard() {
   };
 
   const handleEdit = (club: Club) => {
-    // Redirige vers la page de modification du club (à implémenter)
-    Swal.fire('Fonction à implémenter', '', 'info');
+    // Ouvre la modale de modification de club
+    setClubToEdit(club);
+    setShowEditModal(true);
   };
 
   const handleDelete = (club: Club) => {
@@ -70,6 +79,23 @@ export default function AdminDashboard() {
           .catch(() => Swal.fire({ icon: 'error', title: 'Erreur', text: 'Suppression impossible.' }));
       }
     });
+  };
+
+  const handleAccessAdmin = (club: Club) => {
+    // On se connecte en tant qu'administrateur du club
+    ApiClient.post('/clubs/admin-login', {
+      clubId: club.clubId
+    })
+      .then(() => {
+        navigate('/dashboard', { state: club });
+      })
+      .catch((error) => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Erreur',
+          text: error.response?.data?.message || error.message
+        });
+      });
   };
 
   // On filtre les clubs selon la recherche et le statut
@@ -107,7 +133,7 @@ export default function AdminDashboard() {
             <ClubCard
               key={club.clubId}
               club={club}
-              onAccess={() => {}}
+              onAccess={handleAccessAdmin}
               adminMode
               onEnable={handleEnable}
               onEdit={handleEdit}
@@ -116,6 +142,16 @@ export default function AdminDashboard() {
           ))}
         </div>
       )}
+      {/* Modale de création d'un espace membre */}
+      <CreateModal
+        onClose={() => {
+          setShowEditModal(false);
+          setClubToEdit(undefined);
+          loadClubs(); // Recharge les clubs après modification
+        }}
+        open={showEditModal}
+        clubEdit={clubToEdit}
+      />
     </div>
   );
 }

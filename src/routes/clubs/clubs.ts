@@ -1,12 +1,13 @@
 import express from 'express';
 import Validate from '@/middlewares/validate';
 import { body, param } from 'express-validator';
-import { activateClub, createClub, loginClub } from './clubAuth';
+import { activateClub, adminLoginClub, createClub, loginClub } from './clubAuth';
 import { AuthenticatedClubRequest, verifyAdminAuth, verifyClubAuth } from '@/middlewares/auth';
 import multer from 'multer';
 import { addImageToClub, getClubImage } from './clubImage';
 import { getAllClubs, getClubsByCampus, getCurrentClub } from './getClubs';
 import { deleteClub } from './deleteClub';
+import { editClub } from './editClub';
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
@@ -64,6 +65,15 @@ router.post(
   loginClub
 );
 
+// Route pour se connecter à un club via le mode administrateur
+router.post(
+  '/admin-login',
+  verifyAdminAuth,
+  body('clubId').isInt().withMessage('Veuillez entrer un identifiant valide !'),
+  Validate,
+  adminLoginClub
+);
+
 // Route pour se déconnecter d'un club
 router.post('/logout', (req, res) => {
   res.clearCookie('token', {
@@ -79,6 +89,17 @@ router.post(
   body('clubId').isInt().withMessage('Veuillez entrer un clubId valide'),
   Validate,
   activateClub
+);
+
+//Route pour modifier les informations d'un club
+router.put(
+  '/edit',
+  verifyAdminAuth,
+  body('clubId').isInt().withMessage('Veuillez entrer un clubId valide'),
+  body('name').isLength({ min: 2 }).withMessage('Veuillez entrer un nom valide !'),
+  body('campusId').isInt().withMessage('Veuillez entrer un campusId valide'),
+  Validate,
+  editClub
 );
 
 // Route pour ajouter une image à un club

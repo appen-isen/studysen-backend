@@ -1,11 +1,11 @@
 meta {
-  name: deleteClub
+  name: adminClubLogin
   type: http
-  seq: 11
+  seq: 4
 }
 
-delete {
-  url: http://127.0.0.1:3000/v1/clubs
+post {
+  url: http://127.0.0.1:3000/v1/clubs/admin-login
   body: json
   auth: inherit
 }

@@ -71,7 +71,11 @@ const ClubCard: React.FC<ClubCardProps> = ({
             </button>
           </div>
           {/* Bouton d'accès pour les administrateurs si le club est activé */}
-          {club.enabled === true && <button className="btn access-btn">Accéder</button>}
+          {club.enabled === true && (
+            <button className="btn access-btn" onClick={() => onAccess(club)}>
+              Accéder
+            </button>
+          )}
         </div>
       ) : (
         <button className="btn access-btn">Accéder</button>
