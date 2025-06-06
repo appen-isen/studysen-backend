@@ -1,8 +1,14 @@
+import { verifyAdminAuth } from '@/middlewares/auth';
 import express from 'express';
 import jwt from 'jsonwebtoken';
 const router = express.Router();
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+
+// Route pour vérifier si l'utilisateur est un administrateur
+router.get('/verify', verifyAdminAuth, (req, res) => {
+  res.sendStatus(200);
+});
 
 router.post('/login', (req, res) => {
   const { key } = req.body;

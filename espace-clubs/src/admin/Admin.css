@@ -23,6 +23,7 @@
   align-self: center;
 }
 
+/* Dashboard */
 .admin-dashboard-container {
   max-width: 900px;
   margin: 40px auto;
@@ -30,6 +31,12 @@
   border-radius: 18px;
   box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.07);
   padding: 2.5rem 1.5rem 2rem 1.5rem;
+}
+.filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
 }
 .club-list {
   display: grid;

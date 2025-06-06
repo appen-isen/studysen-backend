@@ -6,6 +6,7 @@ import { AuthenticatedClubRequest, verifyAdminAuth, verifyClubAuth } from '@/mid
 import multer from 'multer';
 import { addImageToClub, getClubImage } from './clubImage';
 import { getAllClubs, getClubsByCampus, getCurrentClub } from './getClubs';
+import { deleteClub } from './deleteClub';
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
@@ -24,6 +25,15 @@ router.get(
   param('campusId').isInt().withMessage('Veuillez entrer un campusId valide'),
   Validate,
   getClubsByCampus
+);
+
+// Route pour supprimer un club (administrateur uniquement)
+router.delete(
+  '/',
+  verifyAdminAuth,
+  body('clubId').isInt().withMessage('Veuillez entrer un clubId valide'),
+  Validate,
+  deleteClub
 );
 
 // Route pour créer un club

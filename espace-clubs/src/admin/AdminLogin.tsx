@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import Swal from 'sweetalert2';
 import ApiClient from '../utils/http';
@@ -36,6 +36,13 @@ export default function AdminLogin() {
         setLoading(false);
       });
   };
+
+  // On vérifie si l'utilisateur est déjà connecté
+  useEffect(() => {
+    ApiClient.get('/admin/verify').then(() => {
+      navigate('/admin/dashboard');
+    });
+  }, [navigate]);
 
   return (
     <div className="admin-container">

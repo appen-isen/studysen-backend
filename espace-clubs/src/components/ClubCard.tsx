@@ -22,20 +22,20 @@ const ClubCard: React.FC<ClubCardProps> = ({
   onDelete
 }) => {
   return (
-    <div
-      className={`club-card${adminMode && club.enabled === false ? ' club-inenabled' : ''}`}
-      onClick={() => !adminMode && onAccess(club)}
-    >
+    <div className="club-card" onClick={() => !adminMode && onAccess(club)}>
       <img src={club.imageUrl} alt={club.name} className="club-logo" />
+      {/* Affiche le nom du club et la ville */}
       <div className="club-info">
         <div className="club-name">{club.name}</div>
         <div className="club-city">{getCampusName(club.campusId)}</div>
+        {/* Affiche si le club est actif ou non pour les administrateurs*/}
         {adminMode && (
           <div className={`club-admin-status ${club.enabled === true ? 'enabled' : ''}`}>
-            Statut : <b>{club.enabled === false ? 'Inactif' : 'Actif'}</b>
+            Statut : <b>{club.enabled === false ? 'Désactivé' : 'Activé'}</b>
           </div>
         )}
       </div>
+      {/* Mode édition pour les administrateurs */}
       {adminMode ? (
         <div className="club-admin-actions">
           {club.enabled === false && (
@@ -70,7 +70,8 @@ const ClubCard: React.FC<ClubCardProps> = ({
               <FaTrash></FaTrash>
             </button>
           </div>
-          <button className="btn access-btn">Accéder</button>
+          {/* Bouton d'accès pour les administrateurs si le club est activé */}
+          {club.enabled === true && <button className="btn access-btn">Accéder</button>}
         </div>
       ) : (
         <button className="btn access-btn">Accéder</button>

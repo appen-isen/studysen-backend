@@ -78,7 +78,11 @@ function App() {
 
   return (
     <div className="main-container">
-      <FaPlus size={20} className="new-btn" onClick={() => setShowCreateModal(true)} />
+      <button className="new-btn" onClick={() => setShowCreateModal(true)}>
+        <FaPlus size={25} />
+        Nouveau
+      </button>
+
       <h1 className="title">Sélectionnez votre club</h1>
       {/* Barre de recherche et sélection de la ville */}
       <div className="filters">

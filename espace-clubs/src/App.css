@@ -14,16 +14,21 @@
   padding: 2.5rem 1.5rem 2rem 1.5rem;
 }
 .new-btn {
-  justify-self: flex-start;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: flex-start;
+  gap: 0.3rem;
   background: #fa4747;
   color: #fff;
   border-radius: 8px;
-  padding: 0.2em 0.2em;
-  font-size: 2rem;
+  padding: 0.5em 0.7em;
+  font-size: 1em;
   font-weight: 700;
   cursor: pointer;
+  border: none;
+  outline: none;
   transition: background 0.2s;
-  z-index: 10;
 }
 .new-btn:hover {
   background: #c92c2c;
