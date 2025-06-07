@@ -211,7 +211,7 @@ export default function CreateModal(props: CreateModalProps) {
 
         <div>
           <button className="btn submit-btn" onClick={handleCreate}>
-            {isLoading ? <Loader size={10} color="#fff" /> : 'Créer'}
+            {isLoading ? <Loader size={10} color="#fff" /> : clubEdit ? 'Modifier' : 'Créer'}
           </button>
           <button className="close-btn" onClick={closeModal}>
             Annuler

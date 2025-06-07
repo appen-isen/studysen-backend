@@ -19,7 +19,7 @@ import adminRoutes from '@routes/admin/admin';
 dotenv.config();
 
 const app: Express = express();
-const port = process.env.PORT || 3000;
+const port = 3000;
 
 app.use(express.json({ limit: '50mb' }));
 app.use(cookieParser());
@@ -50,6 +50,6 @@ app.use('/v1/admin', adminRoutes);
 // app.use("/v1/users", usersRoutes);
 // app.use("/v1/organizations", organizationsRoutes);
 
-app.listen(port, () => {
-  console.log(`[server]: Server is running at http://localhost:${port}`);
+app.listen(port, '0.0.0.0', () => {
+  console.log(`[server]: Server is running at http://0.0.0.0:${port}`);
 });
