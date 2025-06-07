@@ -34,3 +34,10 @@
   cursor: pointer;
   outline: none;
 }
+
+@media (max-width: 600px) {
+  .multi-toggle-option {
+    font-size: 12px;
+    padding: 10px 14px;
+  }
+}

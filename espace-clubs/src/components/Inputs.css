@@ -30,3 +30,9 @@
 .input-container .input-icon:hover {
   cursor: pointer;
 }
+
+@media (max-width: 600px) {
+  .input-container {
+    max-width: 90%;
+  }
+}

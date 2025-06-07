@@ -160,3 +160,12 @@
   background: #c92c2c;
   cursor: pointer;
 }
+
+@media (max-width: 500px) {
+  .post-image {
+    width: 100%;
+  }
+  .post-info {
+    padding: 0.5em 0.5em;
+  }
+}
