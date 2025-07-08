@@ -3,15 +3,9 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
-import eventRoutes from '@routes/event/event';
-import participantsRoutes from '@routes/participants/participants';
-import permissionsRoutes from '@routes/permissions/permissions';
-import usersRoutes from '@routes/users/users';
-import organizationsRoutes from '@routes/organizations/organizations';
 import githubRoutes from '@routes/github/github';
 import notificationsRoutes from '@routes/notifications/notifications';
 import pingRoutes from '@routes/ping/ping';
-import loginRoutes from '@routes/login/login';
 import clubsRoutes from '@routes/clubs/clubs';
 import postsRoutes from '@routes/posts/posts';
 import adminRoutes from '@routes/admin/admin';
@@ -41,14 +35,6 @@ app.use('/v1/ping', pingRoutes);
 app.use('/v1/clubs', clubsRoutes);
 app.use('/v1/posts', postsRoutes);
 app.use('/v1/admin', adminRoutes);
-
-// Routes non utilisées pour le moment
-// app.use("/v1", loginRoutes);
-// app.use("/v1/events", eventRoutes);
-// app.use("/v1/participants", participantsRoutes);
-// app.use("/v1/permissions", permissionsRoutes);
-// app.use("/v1/users", usersRoutes);
-// app.use("/v1/organizations", organizationsRoutes);
 
 app.listen(port, '0.0.0.0', () => {
   console.log(`[server]: Server is running at http://0.0.0.0:${port}`);
