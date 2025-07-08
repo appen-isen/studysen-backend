@@ -3,13 +3,7 @@ import { connectToPool } from '@/utils/database';
 
 let expo = new Expo();
 
-export async function sendNotification(
-  user_id: string,
-  device_id: string,
-  title: string,
-  message: string,
-  date: string
-) {
+export async function sendNotification(device_id: string, title: string, message: string, date: string) {
   // Create the message
   let messages = [];
   if (!Expo.isExpoPushToken(device_id)) {
@@ -28,7 +22,7 @@ export async function sendNotification(
     sound: 'default',
     title: title,
     body: message,
-    data: { user_id, device_id, title, message, date }
+    data: { device_id, title, message, date }
   });
 
   // Send the notification
@@ -67,7 +61,6 @@ async function checkAndSendNotifications() {
       try {
         // Envoi de la notification
         await sendNotification(
-          notification.user_id.toString(),
           notification.device_id,
           notification.title,
           notification.message,
@@ -76,25 +69,24 @@ async function checkAndSendNotifications() {
 
         // Log de la notification envoyée avec la date d'envoi et le titre
         console.log(
-          `✅ Notification envoyée à ${notification.device_id} le ${notification.date.toLocaleString()} avec le titre "${notification.title}"`
+          `Notification envoyée à ${notification.device_id} le ${notification.date.toLocaleString()} avec le titre "${notification.title}"`
         );
 
         // Suppression après envoi réussi
         const deleteQuery = `
                     DELETE FROM notifications
                     WHERE notification_id = $1
-                    RETURNING notification_id, title
                 `;
-        const deleteResult = await client.query(deleteQuery, [notification.notification_id]);
+        await client.query(deleteQuery, [notification.notification_id]);
       } catch (notifError) {
         console.error(
-          `❌ Erreur lors du traitement de la notification ${notification.notification_id}:`,
+          `Erreur lors du traitement de la notification ${notification.notification_id}:`,
           notifError
         );
       }
     }
   } catch (error) {
-    console.error('❌ Erreur lors de la vérification des notifications:', error);
+    console.error('Erreur lors de la vérification des notifications:', error);
   } finally {
     await client.release();
   }

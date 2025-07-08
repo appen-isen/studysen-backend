@@ -1,11 +1,15 @@
--- Création de la table des notifications
+-- Création de la table des notifications (pour envoyer des notifications à une date précise)
 CREATE TABLE notifications (
     notification_id SERIAL PRIMARY KEY, -- Identifiant unique de la notification
     device_id TEXT NOT NULL,            -- Identifiant du périphérique
-    campus_id INT NOT NULL,             -- Numéro du campus
     title TEXT NOT NULL,                -- Titre de la notification
     message TEXT NOT NULL,              -- Message de la notification
     date TIMESTAMP NOT NULL             -- Date de la notification
+);
+-- Création de la table des appareils (pour les notifications)
+CREATE TABLE devices (
+    device_id TEXT PRIMARY KEY,              -- Identifiant unique du périphérique
+    campus_id INT NOT NULL                    -- Numéro du campus
 );
 
 -- Création de la table des clubs

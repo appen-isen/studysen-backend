@@ -1,7 +1,8 @@
 import { AuthenticatedClubRequest } from '@/middlewares/auth';
 import { uploadImageToCDN } from '@/utils/cdn';
 import { connectToPool } from '@/utils/database';
-import e, { Response } from 'express';
+import { Response } from 'express';
+import { sendNotificationToDevices } from '../notifications/clubNotifications';
 
 // Fonction pour créer un post
 export async function createPost(req: AuthenticatedClubRequest, res: Response) {
@@ -31,7 +32,17 @@ export async function createPost(req: AuthenticatedClubRequest, res: Response) {
     ];
 
     const result = await client.query(query, values);
+    // Récupérer le campus_id du club
+    const campusQuery = `SELECT campus_id FROM clubs WHERE club_id = $1`;
+    const campusResult = await client.query(campusQuery, [clubId]);
     client.release();
+    if (campusResult.rowCount === 0) {
+      res.status(404).json({ message: 'Club non trouvé' });
+      return;
+    }
+    // Envoi de la notification aux appareils du campus
+    const campusId = campusResult.rows[0].campus_id;
+    sendNotificationToDevices(campusId, 'Nouveau post', title);
 
     res.status(201).json({
       message: 'Post créé avec succès',
