@@ -2,7 +2,7 @@ import express from 'express';
 import { connectToPool } from '@/utils/database';
 import { sendNotification } from '@/routes/notifications/sendNotifications';
 import Validate from '@/middlewares/validate';
-import { body } from 'express-validator';
+import { body, param } from 'express-validator';
 
 const router = express.Router();
 
@@ -16,6 +16,16 @@ router.post(
     try {
       const { device_id, campus_id } = req.body;
       const client = await connectToPool();
+
+      // On vérifie si le périphérique existe déjà
+      const checkQuery = `SELECT * FROM devices WHERE device_id = $1`;
+      const checkResult = await client.query(checkQuery, [device_id]);
+      if (checkResult.rowCount && checkResult.rowCount > 0) {
+        client.release();
+        res.sendStatus(200);
+        return;
+      }
+
       const query = `
       INSERT INTO devices (device_id, campus_id)
       VALUES ($1, $2) RETURNING *;
@@ -30,9 +40,9 @@ router.post(
 );
 
 // On supprime un périphérique
-router.delete('/delete-device/', body('device_id').notEmpty(), Validate, async (req, res) => {
+router.delete('/delete-device/:device_id', param('device_id').notEmpty(), Validate, async (req, res) => {
   try {
-    const { device_id } = req.body;
+    const { device_id } = req.params;
     const client = await connectToPool();
     const query = `
       DELETE FROM devices
