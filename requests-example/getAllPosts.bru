@@ -1,11 +1,11 @@
 meta {
-  name: getLastPost
+  name: getAllPosts
   type: http
-  seq: 9
+  seq: 13
 }
 
 get {
-  url: http://127.0.0.1:3000/v1/posts/last?campus=1
+  url: http://127.0.0.1:3000/v1/posts/?campus=1
   body: none
   auth: inherit
 }

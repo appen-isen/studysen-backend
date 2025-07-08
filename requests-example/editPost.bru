@@ -1,0 +1,28 @@
+meta {
+  name: editPost
+  type: http
+  seq: 16
+}
+
+put {
+  url: http://127.0.0.1:3000/v1/posts
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "postId": 5,
+    "type": "event",
+    "date": "2024-06-15",
+    "title": "Soirée d'intégration",
+    "description": "Rejoignez-nous pour une soirée inoubliable avec musique, jeux et rencontres !",
+    "link": "https: //example.com/evenement",
+    "location": "123 Rue de l'Université, 59000 Lille",
+    "info": {
+      "startTime": "20:00",
+      "price": 5,
+      "ageLimit": 18
+    }
+  }
+}

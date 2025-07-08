@@ -25,9 +25,9 @@ export async function createPost(req: AuthenticatedClubRequest, res: Response) {
       location ?? null,
       imageUrl ?? null,
       link ?? null,
-      info?.startTime ?? null,
-      info?.price ?? null,
-      info?.ageLimit ?? null
+      info?.startTime === '' ? null : (info?.startTime ?? null),
+      info?.price === '' ? null : (info?.price ?? null),
+      info?.ageLimit === '' ? null : (info?.ageLimit ?? null)
     ];
 
     const result = await client.query(query, values);
@@ -38,7 +38,49 @@ export async function createPost(req: AuthenticatedClubRequest, res: Response) {
       postId: result.rows[0].post_id
     });
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error ' + error });
+    console.error('Error creating post:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+export async function editPost(req: AuthenticatedClubRequest, res: Response) {
+  try {
+    const clubId = (req as AuthenticatedClubRequest).clubId;
+    const { postId, type, title, date, description, link, location, info } = req.body;
+
+    const client = await connectToPool();
+    const query = `
+            UPDATE posts
+            SET title = $1, is_event = $2, date = $3, description = $4, location = $5, link = $6,
+                start_time = $7, price = $8, age_limit = $9
+            WHERE post_id = $10 AND club_id = $11;
+        `;
+    const values = [
+      title,
+      type === 'event',
+      date,
+      description ?? null,
+      location ?? null,
+      link ?? null,
+      info?.startTime === '' ? null : (info?.startTime ?? null),
+      info?.price === '' ? null : (info?.price ?? null),
+      info?.ageLimit === '' ? null : (info?.ageLimit ?? null),
+      postId,
+      clubId
+    ];
+
+    const result = await client.query(query, values);
+    client.release();
+
+    if (result.rowCount === 0) {
+      res.status(404).json({ message: "Post non trouvé ou n'appartient pas au club" });
+      return;
+    }
+
+    res.status(200).json({ message: 'Post modifié avec succès' });
+  } catch (error) {
+    console.error('Error editing post:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 }
 
@@ -78,6 +120,7 @@ export async function addImageToPost(req: AuthenticatedClubRequest, res: Respons
       url: imageUrl
     });
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error ' + error });
+    console.error('Error adding image to post:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 }

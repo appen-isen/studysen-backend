@@ -8,7 +8,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 // Route pour créer un club
 export async function createClub(req: Request, res: Response) {
   try {
-    const { name, password } = req.body;
+    const { name, password, campusId } = req.body;
     const client = await connectToPool();
 
     // Vérifier si le nom du club existe déjà
@@ -23,20 +23,36 @@ export async function createClub(req: Request, res: Response) {
     }
 
     const query = `
-	  INSERT INTO clubs (name, password, enabled)
-	  VALUES ($1, $2, FALSE) 
+	  INSERT INTO clubs (name, password, campus_id, enabled)
+	  VALUES ($1, $2, $3, FALSE) 
 	  RETURNING club_id, name, campus_id;
 	`;
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
 
-    const result = await client.query(query, [name, hash]);
+    const result = await client.query(query, [name, hash, campusId]);
     client.release();
 
     const club = result.rows[0];
+
+    //Génération du token
+    const token = jwt.sign(
+      {
+        clubId: club.club_id
+      },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+    // Envoi du token dans le cookie
+    res.cookie('token', token, {
+      maxAge: 24 * 3600 * 1000,
+      sameSite: 'lax',
+      httpOnly: true
+    });
     res.status(201).json({
       club: {
         clubId: club.club_id,
+        campusId: club.campus_id,
         name: club.name
       },
       message: "Le club a été créé avec succès, veuillez attendre son activation pour l'utiliser !"
@@ -44,7 +60,7 @@ export async function createClub(req: Request, res: Response) {
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      message: 'Internal server error: ' + error
+      message: 'Internal server error'
     });
   }
 }
@@ -92,11 +108,11 @@ export async function loginClub(req: Request, res: Response) {
         clubId: club.club_id
       },
       JWT_SECRET,
-      { expiresIn: '24h' }
+      { expiresIn: '7d' }
     );
     // Envoi du token dans le cookie
     res.cookie('token', token, {
-      maxAge: 24 * 3600 * 1000,
+      maxAge: 7 * 24 * 3600 * 1000,
       sameSite: 'lax',
       httpOnly: true
     });
@@ -104,7 +120,34 @@ export async function loginClub(req: Request, res: Response) {
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      message: 'Internal server error: ' + error
+      message: 'Internal server error'
+    });
+  }
+}
+
+// Authentification d'un club via le mode administrateur
+export async function adminLoginClub(req: Request, res: Response) {
+  try {
+    const { clubId } = req.body;
+    //Génération du token directement avec l'id du club (mode administrateur)
+    const token = jwt.sign(
+      {
+        clubId: clubId
+      },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+    // Envoi du token dans le cookie
+    res.cookie('token', token, {
+      maxAge: 7 * 24 * 3600 * 1000,
+      sameSite: 'lax',
+      httpOnly: true
+    });
+    res.sendStatus(200);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: 'Internal server error'
     });
   }
 }
@@ -129,7 +172,7 @@ export async function activateClub(req: Request, res: Response) {
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      message: 'Internal server error: ' + error
+      message: 'Internal server error'
     });
   }
 }

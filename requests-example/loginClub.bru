@@ -1,18 +1,18 @@
 meta {
-  name: createClub
+  name: loginClub
   type: http
-  seq: 1
+  seq: 3
 }
 
 post {
-  url: http://127.0.0.1:3000/v1/clubs/create
+  url: http://127.0.0.1:3000/v1/clubs/login
   body: json
   auth: inherit
 }
 
 body:json {
   {
-    "name": "TestClubB",
+    "clubId": 1,
     "password": "Test1234*"
   }
 }

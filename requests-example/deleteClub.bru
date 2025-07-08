@@ -1,17 +1,17 @@
 meta {
-  name: deletePost
+  name: deleteClub
   type: http
   seq: 11
 }
 
 delete {
-  url: http://127.0.0.1:3000/v1/posts/
+  url: http://127.0.0.1:3000/v1/clubs
   body: json
   auth: inherit
 }
 
 body:json {
   {
-    "postId": 6
+    "clubId": 1
   }
 }

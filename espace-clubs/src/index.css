@@ -1,0 +1,35 @@
+:root {
+  font-family: 'Roboto', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  background-color: #f9f9f9;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Bouton */
+.btn {
+  background: #fa4747;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7em 1.5em;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn:hover {
+  background: #c92c2c;
+}
+
+/* SweetAlert */
+
+.swal2-confirm {
+  background-color: #fa4747 !important;
+}
+.swal2-confirm:hover {
+  background-color: #c92c2c !important;
+}

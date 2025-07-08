@@ -44,7 +44,7 @@ export async function getAllPosts(req: Request, res: Response) {
 
     res.status(200).json(posts);
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error ' + error });
+    res.status(500).json({ message: 'Internal server error' });
   }
 }
 
@@ -113,6 +113,60 @@ export async function getLastPost(req: Request, res: Response) {
 
     res.status(200).json(post[0]);
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error ' + error });
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+//Fonction pour récupérer les posts d'un club spécifique
+export async function getClubPosts(req: Request, res: Response) {
+  try {
+    const { clubId } = req.params;
+    const client = await connectToPool();
+    const query = `
+      SELECT 
+        posts.*, 
+        clubs.name AS club_name, 
+        clubs.image_url AS club_image_url
+      FROM posts 
+      JOIN clubs ON posts.club_id = clubs.club_id 
+      WHERE clubs.enabled = TRUE AND clubs.club_id = $1;
+    `;
+    const result = await client.query(query, [clubId]);
+    client.release();
+
+    if (result.rows.length === 0) {
+      res.status(404).json({ message: 'Aucun post trouvé pour ce club' });
+      return;
+    }
+
+    const posts = result.rows.map((post) => {
+      return {
+        id: post.post_id,
+        type: post.is_event ? 'event' : 'post',
+        date: new Date(post.date).toLocaleDateString('fr-FR', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit'
+        }),
+        title: post.title,
+        club: {
+          name: post.club_name,
+          image: post.club_image_url
+        },
+        description: post.description,
+        link: post.link,
+        address: post.location,
+        info: {
+          startTime: post.start_time,
+          price: post.price,
+          ageLimit: post.age_limit
+        },
+        imageUri: post.image_url
+      };
+    });
+
+    res.status(200).json(posts);
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error' });
   }
 }

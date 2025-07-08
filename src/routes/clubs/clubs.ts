@@ -1,27 +1,53 @@
 import express from 'express';
 import Validate from '@/middlewares/validate';
 import { body, param } from 'express-validator';
-import { activateClub, createClub, loginClub } from './clubAuth';
+import { activateClub, adminLoginClub, createClub, loginClub } from './clubAuth';
 import { AuthenticatedClubRequest, verifyAdminAuth, verifyClubAuth } from '@/middlewares/auth';
 import multer from 'multer';
 import { addImageToClub, getClubImage } from './clubImage';
+import { getAllClubs, getClubsByCampus, getCurrentClub } from './getClubs';
+import { deleteClub } from './deleteClub';
+import { editClub } from './editClub';
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
 
+// Route récupérer les informations du club actuellement connecté
+router.get('/me', verifyClubAuth, (req, res) => getCurrentClub(req as AuthenticatedClubRequest, res));
+
+// Route pour récupérer tous les clubs
+router.get('/all', verifyAdminAuth, (req, res) => {
+  getAllClubs(req, res);
+});
+
+// Route pour récupérer les clubs par campus
+router.get(
+  '/:campusId',
+  param('campusId').isInt().withMessage('Veuillez entrer un campusId valide'),
+  Validate,
+  getClubsByCampus
+);
+
+// Route pour supprimer un club (administrateur uniquement)
+router.delete(
+  '/',
+  verifyAdminAuth,
+  body('clubId').isInt().withMessage('Veuillez entrer un clubId valide'),
+  Validate,
+  deleteClub
+);
+
 // Route pour créer un club
 router.post(
   '/create',
-  // Les verifications de données
+  // Vérification combinée du mot de passe avec une seule regex
   body('name').isLength({ min: 2 }).withMessage('Veuillez entrer un nom valide !'),
   body('password')
-    .isLength({ min: 8 })
-    .matches(/[a-z]/)
-    .matches(/[A-Z]/)
-    .matches(/\d/)
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/)
     .withMessage(
       'Le mot de passe doit avoir au minimum 8 caractères, une minuscule, une majuscule et un chiffre !'
     ),
+  body('campusId').isInt().withMessage('Veuillez entrer un campusId valide'),
   Validate,
   createClub
 );
@@ -29,12 +55,9 @@ router.post(
 // Route pour se connecter à un club
 router.post(
   '/login',
-  body('clubId').notEmpty().isInt().withMessage('Veuillez entrer un identifiant valide !'),
+  body('clubId').isInt().withMessage('Veuillez entrer un identifiant valide !'),
   body('password')
-    .isLength({ min: 8 })
-    .matches(/[a-z]/)
-    .matches(/[A-Z]/)
-    .matches(/\d/)
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/)
     .withMessage(
       'Le mot de passe doit avoir au minimum 8 caractères, une minuscule, une majuscule et un chiffre !'
     ),
@@ -42,13 +65,41 @@ router.post(
   loginClub
 );
 
+// Route pour se connecter à un club via le mode administrateur
+router.post(
+  '/admin-login',
+  verifyAdminAuth,
+  body('clubId').isInt().withMessage('Veuillez entrer un identifiant valide !'),
+  Validate,
+  adminLoginClub
+);
+
+// Route pour se déconnecter d'un club
+router.post('/logout', (req, res) => {
+  res.clearCookie('token', {
+    httpOnly: true
+  });
+  res.sendStatus(200);
+});
+
 // Route pour activer un club
 router.post(
   '/activate',
   verifyAdminAuth,
-  body('clubId').exists().isInt().withMessage('Veuillez entrer un clubId valide'),
+  body('clubId').isInt().withMessage('Veuillez entrer un clubId valide'),
   Validate,
   activateClub
+);
+
+//Route pour modifier les informations d'un club
+router.put(
+  '/edit',
+  verifyAdminAuth,
+  body('clubId').isInt().withMessage('Veuillez entrer un clubId valide'),
+  body('name').isLength({ min: 2 }).withMessage('Veuillez entrer un nom valide !'),
+  body('campusId').isInt().withMessage('Veuillez entrer un campusId valide'),
+  Validate,
+  editClub
 );
 
 // Route pour ajouter une image à un club
