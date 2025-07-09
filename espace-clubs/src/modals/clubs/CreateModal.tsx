@@ -47,6 +47,10 @@ export default function CreateModal(props: CreateModalProps) {
     //On envoie l'image au format multipart
     const formData = new FormData();
     formData.append('image', image!);
+    // Si on modifie un club, on ajoute l'ID du club
+    if (clubEdit) {
+      formData.append('clubId', clubEdit.clubId.toString());
+    }
 
     ApiClient.put(`/clubs/image`, formData, {
       headers: {

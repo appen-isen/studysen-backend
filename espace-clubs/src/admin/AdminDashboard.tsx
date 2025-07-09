@@ -54,6 +54,16 @@ export default function AdminDashboard() {
   };
 
   const handleEdit = (club: Club) => {
+    // On se connecte en tant qu'administrateur du club
+    ApiClient.post('/clubs/admin-login', {
+      clubId: club.clubId
+    }).catch((error) => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Erreur',
+        text: error.response?.data?.message || error.message
+      });
+    });
     // Ouvre la modale de modification de club
     setClubToEdit(club);
     setShowEditModal(true);
