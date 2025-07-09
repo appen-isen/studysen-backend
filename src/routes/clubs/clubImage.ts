@@ -2,11 +2,15 @@ import { Request, Response } from 'express';
 import { AuthenticatedClubRequest } from '@/middlewares/auth';
 import { uploadImageToCDN } from '@/utils/cdn';
 import { connectToPool } from '@/utils/database';
+import Logger from '@/utils/logger';
+import { log } from 'console';
+
+const logger = new Logger('Clubs');
 
 /// Fonction pour ajouter une image à un club
 export async function addImageToClub(req: AuthenticatedClubRequest, res: Response) {
+  const clubId = (req as AuthenticatedClubRequest).clubId;
   try {
-    const clubId = (req as AuthenticatedClubRequest).clubId;
     const file = req.file;
 
     if (!file) {
@@ -31,7 +35,7 @@ export async function addImageToClub(req: AuthenticatedClubRequest, res: Respons
       url: imageUrl
     });
   } catch (error) {
-    console.error("Erreur lors de l'ajout de l'image au club:", error);
+    logger.error(`Erreur lors de l'ajout de l'image au club (ID: ${clubId}):`, error);
     res.status(500).json({ message: 'Internal server error' });
   }
 }
@@ -71,7 +75,7 @@ export async function getClubImage(req: Request, res: Response) {
       imageUrl: imageUrl
     });
   } catch (error) {
-    console.error("Erreur lors de la récupération de l'image du club:", error);
+    logger.error(`Erreur lors de la récupération de l'image du club:`, error);
     res.status(500).json({ message: 'Internal server error' });
   }
 }

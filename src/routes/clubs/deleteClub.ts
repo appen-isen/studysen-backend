@@ -1,6 +1,8 @@
 import { Response, Request } from 'express';
 import { connectToPool } from '@/utils/database';
 import { deleteImageFromCDN } from '@/utils/cdn';
+import Logger from '@/utils/logger';
+const logger = new Logger('Clubs');
 
 export async function deleteClub(req: Request, res: Response) {
   try {
@@ -26,9 +28,10 @@ export async function deleteClub(req: Request, res: Response) {
     if (imageUrl) {
       await deleteImageFromCDN(imageUrl);
     }
-
+    logger.info(`Club supprimé avec succès (ID: ${clubId})`);
     res.status(200).json({ message: 'Club supprimé avec succès' });
   } catch (error) {
+    logger.error('Erreur lors de la suppression du club:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 }

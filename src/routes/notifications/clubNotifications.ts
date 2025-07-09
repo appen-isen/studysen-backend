@@ -1,5 +1,8 @@
 import { Expo } from 'expo-server-sdk';
 import { connectToPool } from '@/utils/database';
+import Logger from '@/utils/logger';
+
+const logger = new Logger('Notifications');
 
 let expo = new Expo();
 
@@ -12,7 +15,7 @@ export async function sendNotificationToDevices(campus_id: number, title: string
     `;
     const result = await client.query(query, [campus_id]);
     if (result.rowCount === 0) {
-      console.log(`Aucun device trouvé pour le campus ${campus_id}`);
+      logger.info(`Aucun device trouvé pour le campus ${campus_id}`);
       return;
     }
     const devices = result.rows.map((row) => row.device_id);
@@ -21,7 +24,7 @@ export async function sendNotificationToDevices(campus_id: number, title: string
     let messages = [];
     for (let pushToken of devices) {
       if (!Expo.isExpoPushToken(pushToken)) {
-        console.error(`Push token ${pushToken} is not a valid Expo push token`);
+        logger.error(`Le token ${pushToken} n'est pas un token Expo valide`);
         continue;
       }
       messages.push({
@@ -41,11 +44,11 @@ export async function sendNotificationToDevices(campus_id: number, title: string
         let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
         tickets.push(...ticketChunk);
       } catch (error) {
-        console.error(error);
+        logger.error("Erreur lors de l'envoi des notifications:", error);
       }
     }
   } catch (error) {
-    console.error("Erreur lors de l'envoi des notifications:", error);
+    logger.error("Erreur lors de l'envoi des notifications:", error);
   } finally {
     await client.release();
   }

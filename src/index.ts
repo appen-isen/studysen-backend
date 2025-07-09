@@ -9,6 +9,7 @@ import pingRoutes from '@routes/ping/ping';
 import clubsRoutes from '@routes/clubs/clubs';
 import postsRoutes from '@routes/posts/posts';
 import adminRoutes from '@routes/admin/admin';
+import Logger, { initLogger } from './utils/logger';
 
 dotenv.config();
 
@@ -37,5 +38,6 @@ app.use('/v1/posts', postsRoutes);
 app.use('/v1/admin', adminRoutes);
 
 app.listen(port, '0.0.0.0', () => {
-  console.log(`[server]: Server is running at http://0.0.0.0:${port}`);
+  initLogger();
+  new Logger('API').info(`Server is running at http://0.0.0.0:${port}`);
 });

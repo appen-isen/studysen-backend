@@ -3,8 +3,11 @@ import { connectToPool } from '@/utils/database';
 import { sendNotification } from '@/routes/notifications/sendNotifications';
 import Validate from '@/middlewares/validate';
 import { body, param } from 'express-validator';
+import Logger from '@/utils/logger';
 
 const router = express.Router();
+
+const logger = new Logger('Notifications');
 
 // On enregistre un nouveau périphérique pour les notifications
 router.post(
@@ -34,6 +37,7 @@ router.post(
       client.release();
       res.status(201).json(result.rows[0]);
     } catch (error) {
+      logger.error("Erreur lors de l'ajout du périphérique:", error);
       res.status(500).json({ message: 'Internal server error: ' + error });
     }
   }
@@ -52,6 +56,7 @@ router.delete('/delete-device/:device_id', param('device_id').notEmpty(), Valida
     client.release();
     res.sendStatus(200);
   } catch (error) {
+    logger.error('Erreur lors de la suppression du périphérique:', error);
     res.status(500).json({ message: 'Internal server error: ' + error });
   }
 });
@@ -118,7 +123,6 @@ router.get('/:device_id', async (req, res) => {
     }
     res.status(200).json({ message: response.rows });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: 'Internal server error: ' + error });
   }
 });

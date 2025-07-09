@@ -1,10 +1,14 @@
 import { Request, Response } from 'express';
 import { connectToPool } from '@/utils/database';
 import bcrypt from 'bcrypt';
+import Logger from '@/utils/logger';
+
+const logger = new Logger('Clubs');
 
 export async function editClub(req: Request, res: Response) {
+  const { clubId, name, password, campusId } = req.body;
+
   try {
-    const { clubId, name, password, campusId } = req.body;
     const client = await connectToPool();
 
     let updateQuery: string;
@@ -29,14 +33,14 @@ export async function editClub(req: Request, res: Response) {
       queryParams = [name, campusId, clubId];
     }
 
-    const result = await client.query(updateQuery, queryParams);
+    await client.query(updateQuery, queryParams);
     client.release();
-
+    logger.info(`Club mis à jour: ${name} (ID: ${clubId})`);
     res.status(200).json({
       message: 'Club mis à jour avec succès'
     });
   } catch (error) {
-    console.error('Erreur lors de la mise à jour du club:', error);
+    logger.error(`Erreur lors de la mise à jour du club (ID: ${clubId}):`, error);
     res.status(500).json({ message: 'Erreur lors de la mise à jour du club' });
   }
 }

@@ -3,8 +3,11 @@ import { S3, S3ClientConfig } from '@aws-sdk/client-s3';
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
+import Logger from './logger';
 
 dotenv.config();
+
+const logger = new Logger('CDN');
 
 const s3Config: S3ClientConfig = {
   endpoint: process.env.R2_ENDPOINT,
@@ -55,7 +58,7 @@ export async function uploadImageToCDN(file: Express.Multer.File): Promise<strin
     params
   }).done();
   fs.unlinkSync(file.path);
-  console.log('Image uploaded to CDN:', data.Location);
+  logger.info(`Image uploadé sur le CDN: ${data.Location}`);
   return data.Location || '';
 }
 
@@ -77,5 +80,5 @@ export async function deleteImageFromCDN(imageUrl: string): Promise<void> {
   };
 
   await s3.deleteObject(params);
-  console.log('Image deleted from CDN:', imageUrl);
+  logger.info(`Image supprimée du CDN: ${imageUrl}`);
 }

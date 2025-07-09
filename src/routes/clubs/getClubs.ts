@@ -1,6 +1,9 @@
 import { Request, Response } from 'express';
 import { connectToPool } from '@/utils/database';
 import { AuthenticatedClubRequest } from '@/middlewares/auth';
+import Logger from '@/utils/logger';
+
+const logger = new Logger('Clubs');
 
 export async function getClubsByCampus(req: Request, res: Response) {
   try {
@@ -20,7 +23,7 @@ export async function getClubsByCampus(req: Request, res: Response) {
     res.status(200).json(clubs);
     return;
   } catch (error) {
-    console.error('Erreur lors de la récupération des clubs:', error);
+    logger.error('Erreur lors de la récupération des clubs:', error);
     res.status(500).json({ message: 'Erreur lors de la récupération des clubs' });
     return;
   }
@@ -41,15 +44,15 @@ export async function getAllClubs(req: Request, res: Response) {
     }));
     res.status(200).json(clubs);
   } catch (error) {
-    console.error('Erreur lors de la récupération des clubs:', error);
+    logger.error('Erreur lors de la récupération des clubs:', error);
     res.status(500).json({ message: 'Erreur lors de la récupération des clubs' });
   }
 }
 
 export async function getCurrentClub(req: AuthenticatedClubRequest, res: Response) {
+  const clubId = req.clubId;
   try {
     const client = await connectToPool();
-    const clubId = req.clubId;
     // On récupère le club actuellement connecté
     const result = await client.query(
       'SELECT club_id, name, campus_id, image_url FROM clubs WHERE enabled = TRUE AND club_id = $1',
@@ -69,7 +72,7 @@ export async function getCurrentClub(req: AuthenticatedClubRequest, res: Respons
     };
     res.status(200).json(club);
   } catch (error) {
-    console.error('Erreur lors de la récupération du club:', error);
+    logger.error(`Erreur lors de la récupération du club (ID: ${clubId}):`, error);
     res.status(500).json({ message: 'Erreur lors de la récupération du club' });
   }
 }
