@@ -40,8 +40,8 @@ export default class Logger {
   }
   error(message: string, error?: any) {
     if (error) {
-      if (error.code) {
-        message += `: ${error.code}`;
+      if (error.detail) {
+        message += `: ${error.detail}`;
       } else if (error.message) {
         message += `: ${error.message}`;
       } else {

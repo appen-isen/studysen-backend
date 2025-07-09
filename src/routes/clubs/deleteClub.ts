@@ -5,15 +5,18 @@ import Logger from '@/utils/logger';
 const logger = new Logger('Clubs');
 
 export async function deleteClub(req: Request, res: Response) {
+  const { clubId } = req.body;
   try {
-    const { clubId } = req.body;
     const client = await connectToPool();
+    // Supprimer d'abord les posts liés à ce club
+    await client.query('DELETE FROM posts WHERE club_id = $1', [clubId]);
+
     // On supprime le club de la base de données en récupérant l'url de l'image pour la supprimer du CDN
     const query = `
-            DELETE FROM clubs
-            WHERE club_id = $1
-            RETURNING image_url;
-        `;
+              DELETE FROM clubs
+              WHERE club_id = $1
+              RETURNING image_url;
+          `;
     const result = await client.query(query, [clubId]);
     client.release();
 
