@@ -1,18 +1,19 @@
 version: "3.8"
-
+# Ce fichier Docker Compose est utilisé uniquement pour le développement local.
+# Si vous souhaitez travailler sur l'image Docker pour la production,
+# veuillez consulter le fichier docker-images/compose.yml
 services:
     postgres:
         image: postgres
         container_name: dev_postgres
         environment:
-            POSTGRES_USER: devuser
-            POSTGRES_PASSWORD: devpass
-            POSTGRES_DB: devdb
+            POSTGRES_USER: ${DB_USER}
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
+            POSTGRES_DB: ${DB_NAME}
         ports:
             - "5432:5432"
         volumes:
             - pgdata:/var/lib/postgresql/data
-
     minio:
         image: "minio/minio:latest"
         container_name: dev_minio

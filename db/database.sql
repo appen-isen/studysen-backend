@@ -1,5 +1,5 @@
 -- Création de la table des notifications (pour envoyer des notifications à une date précise)
-CREATE TABLE notifications (
+CREATE TABLE IF NOT EXISTS notifications (
     notification_id SERIAL PRIMARY KEY, -- Identifiant unique de la notification
     device_id TEXT NOT NULL,            -- Identifiant du périphérique
     title TEXT NOT NULL,                -- Titre de la notification
@@ -7,13 +7,13 @@ CREATE TABLE notifications (
     date TIMESTAMP NOT NULL             -- Date de la notification
 );
 -- Création de la table des appareils (pour les notifications)
-CREATE TABLE devices (
+CREATE TABLE IF NOT EXISTS devices (
     device_id TEXT PRIMARY KEY,              -- Identifiant unique du périphérique
     campus_id INT NOT NULL                    -- Numéro du campus
 );
 
 -- Création de la table des clubs
-CREATE TABLE clubs (
+CREATE TABLE IF NOT EXISTS clubs (
     club_id SERIAL PRIMARY KEY,        -- Identifiant unique du club
     name VARCHAR(100) NOT NULL,        -- Nom du club
     password TEXT NOT NULL,            -- Mot de passe du club pour l'accès au mode éditeur
@@ -23,7 +23,7 @@ CREATE TABLE clubs (
 );
 
 -- Création de la table des posts des clubs
-CREATE TABLE posts (
+CREATE TABLE IF NOT EXISTS posts (
     post_id SERIAL PRIMARY KEY,       -- Identifiant unique du post
     title VARCHAR(255) NOT NULL,      -- Titre du post
     is_event BOOLEAN NOT NULL,        -- Indique si le post est un événement

@@ -83,6 +83,4 @@ async function checkAndSendNotifications() {
   }
 }
 
-checkAndSendNotifications();
-
 setInterval(checkAndSendNotifications, 60000);

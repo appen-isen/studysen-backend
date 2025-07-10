@@ -10,6 +10,7 @@ import clubsRoutes from '@routes/clubs/clubs';
 import postsRoutes from '@routes/posts/posts';
 import adminRoutes from '@routes/admin/admin';
 import Logger, { initLogger } from './utils/logger';
+import { initializeDatabase } from './utils/database';
 
 dotenv.config();
 
@@ -18,7 +19,7 @@ const port = 3000;
 
 app.use(express.json({ limit: '50mb' }));
 app.use(cookieParser());
-//On autorisera les requêtes CORS uniquement en mode développement
+//On autorisera les requêtes CORS uniquement en localhost:5173
 app.use(
   cors({
     origin: 'http://localhost:5173',
@@ -37,7 +38,16 @@ app.use('/v1/clubs', clubsRoutes);
 app.use('/v1/posts', postsRoutes);
 app.use('/v1/admin', adminRoutes);
 
-app.listen(port, '0.0.0.0', () => {
+app.listen(port, '0.0.0.0', async () => {
   initLogger();
+
+  try {
+    // Initialiser la base de données au démarrage
+    await initializeDatabase();
+  } catch (error) {
+    new Logger('API').error("Impossible d'initialiser la base de données:", error);
+    process.exit(1);
+  }
+
   new Logger('API').info(`Server is running at http://0.0.0.0:${port}`);
 });

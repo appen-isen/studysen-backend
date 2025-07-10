@@ -1,0 +1,13 @@
+node_modules
+dist
+.git
+.gitignore
+.env*
+logs
+*.log
+uploads/*
+docker-images/
+requests-example/
+.vscode/
+.idea/
+*.md
