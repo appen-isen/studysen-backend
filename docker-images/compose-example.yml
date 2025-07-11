@@ -1,6 +1,6 @@
 version: '3.8'
 # Fichier Docker Compose pour la production.
-# Veiller à ce que les variables d'environnement soient définies.
+# Veiller à ce que le fichier .env soit configuré avec les bonnes variables d'environnement.
 services:
   db:
     image: postgres
