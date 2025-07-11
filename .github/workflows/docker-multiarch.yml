@@ -27,8 +27,8 @@ jobs:
       - name: Build & push backend
         uses: docker/build-push-action@v6
         with:
-          context: ..
-          file: ../Dockerfile.backend
+          context: .
+          file: ./Dockerfile.backend
           platforms: linux/amd64,linux/arm64
           push: true
           tags: docker.io/appenisen/studysen_api:latest
@@ -37,8 +37,8 @@ jobs:
       - name: Build & push frontend
         uses: docker/build-push-action@v6
         with:
-          context: ..
-          file: ../espace-clubs/Dockerfile.frontend
+          context: .
+          file: ./espace-clubs/Dockerfile.frontend
           platforms: linux/amd64,linux/arm64
           push: true
           tags: docker.io/appenisen/studysen_espace_clubs:latest
