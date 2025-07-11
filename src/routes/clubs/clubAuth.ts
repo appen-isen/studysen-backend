@@ -2,8 +2,11 @@ import { connectToPool } from '@/utils/database';
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import Logger from '@/utils/logger';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+
+const logger = new Logger('Clubs');
 
 // Route pour créer un club
 export async function createClub(req: Request, res: Response) {
@@ -43,6 +46,8 @@ export async function createClub(req: Request, res: Response) {
       JWT_SECRET,
       { expiresIn: '24h' }
     );
+
+    logger.info(`Club créé: ${club.name} (ID: ${club.club_id})`);
     // Envoi du token dans le cookie
     res.cookie('token', token, {
       maxAge: 24 * 3600 * 1000,
@@ -58,7 +63,7 @@ export async function createClub(req: Request, res: Response) {
       message: "Le club a été créé avec succès, veuillez attendre son activation pour l'utiliser !"
     });
   } catch (error) {
-    console.error(error);
+    logger.error('Erreur lors de la création du club', error);
     res.status(500).json({
       message: 'Internal server error'
     });
@@ -67,8 +72,8 @@ export async function createClub(req: Request, res: Response) {
 
 // Authentification d'un club
 export async function loginClub(req: Request, res: Response) {
+  const { clubId, password } = req.body;
   try {
-    const { clubId, password } = req.body;
     const client = await connectToPool();
     const query = `
       SELECT club_id, password, enabled
@@ -118,7 +123,7 @@ export async function loginClub(req: Request, res: Response) {
     });
     res.sendStatus(200);
   } catch (error) {
-    console.error(error);
+    logger.error(`Erreur lors de la connexion au club (ID: ${clubId})`, error);
     res.status(500).json({
       message: 'Internal server error'
     });
@@ -127,8 +132,8 @@ export async function loginClub(req: Request, res: Response) {
 
 // Authentification d'un club via le mode administrateur
 export async function adminLoginClub(req: Request, res: Response) {
+  const { clubId } = req.body;
   try {
-    const { clubId } = req.body;
     //Génération du token directement avec l'id du club (mode administrateur)
     const token = jwt.sign(
       {
@@ -145,7 +150,7 @@ export async function adminLoginClub(req: Request, res: Response) {
     });
     res.sendStatus(200);
   } catch (error) {
-    console.error(error);
+    logger.error(`Erreur lors de la connexion au club en tant qu'administrateur (ID: ${clubId})`, error);
     res.status(500).json({
       message: 'Internal server error'
     });
@@ -154,8 +159,8 @@ export async function adminLoginClub(req: Request, res: Response) {
 
 // Activation d'un club
 export async function activateClub(req: Request, res: Response) {
+  const { clubId } = req.body;
   try {
-    const { clubId } = req.body;
     const client = await connectToPool();
     const query = `
 	  UPDATE clubs
@@ -165,12 +170,12 @@ export async function activateClub(req: Request, res: Response) {
 
     await client.query(query, [clubId]);
     client.release();
-
+    logger.info(`Club activé: ${clubId}`);
     res.status(200).json({
       message: 'Le club a été activé avec succès !'
     });
   } catch (error) {
-    console.error(error);
+    logger.error(`Erreur lors de l'activation du club (ID: ${clubId})`, error);
     res.status(500).json({
       message: 'Internal server error'
     });

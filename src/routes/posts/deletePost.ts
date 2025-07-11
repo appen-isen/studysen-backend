@@ -2,6 +2,9 @@ import { Response } from 'express';
 import { AuthenticatedClubRequest } from '@/middlewares/auth';
 import { connectToPool } from '@/utils/database';
 import { deleteImageFromCDN } from '@/utils/cdn';
+import Logger from '@/utils/logger';
+
+const logger = new Logger('Posts');
 
 export async function deletePost(req: AuthenticatedClubRequest, res: Response) {
   try {
@@ -27,9 +30,10 @@ export async function deletePost(req: AuthenticatedClubRequest, res: Response) {
     if (imageUrl) {
       await deleteImageFromCDN(imageUrl);
     }
-
+    logger.info(`Post supprimé avec succès pour le club ${req.clubId} (ID: ${postId})`);
     res.status(200).json({ message: 'Post supprimé avec succès' });
   } catch (error) {
+    logger.error('Erreur lors de la suppression du post:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 }

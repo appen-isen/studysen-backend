@@ -10,7 +10,6 @@
 		"build": "tsc && tsc-alias",
 		"start": "node dist/index.js",
 		"dev": "nodemon -r tsconfig-paths/register src/index.ts",
-		"setup-dev-db": "docker exec -i dev_postgres psql -U devuser -d devdb < ./db/database.sql",
 		"open-db": "docker exec -it dev_postgres psql -U devuser -d devdb",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},

@@ -1,5 +1,8 @@
 import { connectToPool } from '@/utils/database';
+import Logger from '@/utils/logger';
 import { Request, Response } from 'express';
+
+const logger = new Logger('Posts');
 
 // Fonction pour récupérer tous les posts
 export async function getAllPosts(req: Request, res: Response) {
@@ -44,6 +47,7 @@ export async function getAllPosts(req: Request, res: Response) {
 
     res.status(200).json(posts);
   } catch (error) {
+    logger.error('Erreur lors de la récupération des posts:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 }
@@ -113,14 +117,15 @@ export async function getLastPost(req: Request, res: Response) {
 
     res.status(200).json(post[0]);
   } catch (error) {
+    logger.error('Erreur lors de la récupération du dernier post:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 }
 
 //Fonction pour récupérer les posts d'un club spécifique
 export async function getClubPosts(req: Request, res: Response) {
+  const { clubId } = req.params;
   try {
-    const { clubId } = req.params;
     const client = await connectToPool();
     const query = `
       SELECT 
@@ -167,6 +172,7 @@ export async function getClubPosts(req: Request, res: Response) {
 
     res.status(200).json(posts);
   } catch (error) {
+    logger.error(`Erreur lors de la récupération des posts du club (${clubId}):`, error);
     res.status(500).json({ message: 'Internal server error' });
   }
 }

@@ -17,4 +17,4 @@ cert/
 .gitignore
 .prettierignore
 dockerfile
-docker-compose.yml
+compose.yml

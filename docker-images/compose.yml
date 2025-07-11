@@ -1,0 +1,23 @@
+version: '3.8'
+# Fichier Docker Compose pour la production.
+services:
+  backend:
+    build:
+      context: ..
+      dockerfile: Dockerfile.backend
+      x-bake:
+        platforms:
+          - linux/amd64
+          - linux/arm64
+    image: docker.io/appenisen/studysen_api:latest
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: espace-clubs/Dockerfile.frontend
+      x-bake:
+        platforms:
+          - linux/amd64
+          - linux/arm64
+    image: docker.io/appenisen/studysen_espace_clubs:latest
+

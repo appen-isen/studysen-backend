@@ -10,6 +10,7 @@ interface ModalProps {
 const Modal: React.FC<ModalProps> = ({ open, onClose, children }) => {
   const [visible, setVisible] = useState(open);
   const [fade, setFade] = useState('');
+  const [mouseDownOnOverlay, setMouseDownOnOverlay] = useState(false);
 
   useEffect(() => {
     if (open) {
@@ -22,9 +23,26 @@ const Modal: React.FC<ModalProps> = ({ open, onClose, children }) => {
     }
   }, [open, visible]);
 
+  const handleOverlayMouseDown = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      setMouseDownOnOverlay(true);
+    }
+  };
+
+  const handleOverlayClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget && mouseDownOnOverlay) {
+      onClose();
+    }
+    setMouseDownOnOverlay(false);
+  };
+
   if (!visible) return null;
   return (
-    <div className={`modal-overlay ${fade}`} onClick={onClose}>
+    <div
+      className={`modal-overlay ${fade}`}
+      onMouseDown={handleOverlayMouseDown}
+      onClick={handleOverlayClick}
+    >
       <div
         className={`modal animated ${fade}`}
         onClick={(e) => e.stopPropagation()}

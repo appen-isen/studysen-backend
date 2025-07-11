@@ -1,6 +1,9 @@
+import Logger from '@/utils/logger';
 import express from 'express';
 
 const router = express.Router();
+
+const logger = new Logger('GitHub Issues');
 
 interface ImageUploadResponse {
   content: {
@@ -45,7 +48,7 @@ router.post('/', async (req, res) => {
 
     // Si une image est fournie, on la télécharge d'abord
     if (image) {
-      console.log('Image détectée, téléchargement en cours...');
+      logger.info('Image détectée, téléchargement en cours...');
       try {
         // Vérifier si le dossier images existe
         try {
@@ -104,14 +107,14 @@ router.post('/', async (req, res) => {
 
         if (!imageUploadResponse.ok) {
           const errorData = await imageUploadResponse.text();
-          console.error("Erreur lors du téléchargement de l'image:", errorData);
+          logger.error("Erreur lors du téléchargement de l'image:", errorData);
           throw new Error(`Échec du téléchargement de l'image: ${errorData}`);
         }
 
         const imageData: ImageUploadResponse = await imageUploadResponse.json();
         finalBodyContent += `\n\n![Screenshot](${imageData.content.download_url})`;
       } catch (error) {
-        console.error("Erreur lors du traitement de l'image:", error);
+        logger.error("Erreur lors du traitement de l'image:", error);
         res.status(500).json({
           message: "Erreur lors du traitement de l'image",
           error: error instanceof Error ? error.message : String(error)
@@ -139,7 +142,7 @@ router.post('/', async (req, res) => {
 
     if (response.status !== 201) {
       const errorData = await response.text();
-      console.error("Réponse de l'API GitHub:", errorData);
+      logger.error("Réponse de l'API GitHub:", errorData);
       res.status(500).json({
         message: 'Internal server error: Unable to create issue',
         status: response.status,
@@ -150,7 +153,7 @@ router.post('/', async (req, res) => {
 
     res.status(200).json({ message: 'Issue created successfully' });
   } catch (error) {
-    console.error("Erreur lors de la création de l'issue:", error);
+    logger.error("Erreur lors de la création de l'issue:", error);
     res.status(500).json({
       message: 'Internal server error',
       error: error instanceof Error ? error.message : String(error)

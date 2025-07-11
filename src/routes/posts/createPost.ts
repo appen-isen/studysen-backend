@@ -1,7 +1,11 @@
 import { AuthenticatedClubRequest } from '@/middlewares/auth';
 import { uploadImageToCDN } from '@/utils/cdn';
 import { connectToPool } from '@/utils/database';
-import e, { Response } from 'express';
+import { Response } from 'express';
+import { sendNotificationToDevices } from '../notifications/clubNotifications';
+import Logger from '@/utils/logger';
+
+const logger = new Logger('Posts');
 
 // Fonction pour créer un post
 export async function createPost(req: AuthenticatedClubRequest, res: Response) {
@@ -31,14 +35,24 @@ export async function createPost(req: AuthenticatedClubRequest, res: Response) {
     ];
 
     const result = await client.query(query, values);
+    // Récupérer le campus_id du club
+    const campusQuery = `SELECT campus_id FROM clubs WHERE club_id = $1`;
+    const campusResult = await client.query(campusQuery, [clubId]);
     client.release();
-
+    if (campusResult.rowCount === 0) {
+      res.status(404).json({ message: 'Club non trouvé' });
+      return;
+    }
+    // Envoi de la notification aux appareils du campus
+    const campusId = campusResult.rows[0].campus_id;
+    sendNotificationToDevices(campusId, 'Nouveau post', title);
+    logger.info(`Post créé avec succès pour le club ${clubId} (ID: ${result.rows[0].post_id})`);
     res.status(201).json({
       message: 'Post créé avec succès',
       postId: result.rows[0].post_id
     });
   } catch (error) {
-    console.error('Error creating post:', error);
+    logger.error('Erreur lors de la création du post:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 }
@@ -76,10 +90,10 @@ export async function editPost(req: AuthenticatedClubRequest, res: Response) {
       res.status(404).json({ message: "Post non trouvé ou n'appartient pas au club" });
       return;
     }
-
+    logger.info(`Post modifié avec succès pour le club ${clubId} (ID: ${postId})`);
     res.status(200).json({ message: 'Post modifié avec succès' });
   } catch (error) {
-    console.error('Error editing post:', error);
+    logger.error('Erreur lors de la modification du post:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 }
@@ -120,7 +134,7 @@ export async function addImageToPost(req: AuthenticatedClubRequest, res: Respons
       url: imageUrl
     });
   } catch (error) {
-    console.error('Error adding image to post:', error);
+    logger.error("Erreur lors de l'ajout de l'image au post:", error);
     res.status(500).json({ message: 'Internal server error' });
   }
 }
