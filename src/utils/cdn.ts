@@ -60,7 +60,7 @@ export async function uploadImageToCDN(file: Express.Multer.File): Promise<strin
   fs.unlinkSync(file.path);
   // On construit l'URL de l'image avec l'adresse externe du CDN
   const cdnUrl = process.env.CDN_URL;
-  const imageKey = `studysen/images/${path.basename(file.path)}`;
+  const imageKey = `images/${path.basename(file.path)}`;
   const imageUrl = cdnUrl ? `${cdnUrl}/${imageKey}` : data.Location || '';
   logger.info(`Image uploadé sur le CDN: ${imageUrl}`);
   return imageUrl;
