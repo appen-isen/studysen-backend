@@ -23,6 +23,7 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: ['http://localhost:5173', 'https://studysen.fr', 'https://clubs.studysen.fr'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true
   })
 );
