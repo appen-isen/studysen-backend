@@ -23,9 +23,7 @@ services:
   backend:
     container_name: studysen_api
     restart: unless-stopped
-    build:
-      context: ..
-      dockerfile: Dockerfile.backend
+    image: docker.io/appenisen/studysen_api:latest
     environment:
       - NODE_ENV=production
     env_file:
@@ -41,9 +39,7 @@ services:
   frontend:
     container_name: espace_clubs
     restart: unless-stopped
-    build:
-      context: ..
-      dockerfile: espace-clubs/Dockerfile.frontend
+    image: docker.io/appenisen/studysen_espace_clubs:latest
     ports:
       - "5173:5173"
     depends_on:
