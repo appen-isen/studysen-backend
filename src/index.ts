@@ -22,7 +22,13 @@ app.use(cookieParser());
 //On autorisera les requêtes CORS uniquement en localhost:5173
 app.use(
   cors({
-    origin: ['http://localhost:5173', 'https://studysen.fr', 'https://clubs.studysen.fr'],
+    origin: [
+      'http://localhost:5173',
+      'https://studysen.fr',
+      'https://clubs.studysen.fr',
+      'tauri://localhost',
+      'https://tauri.localhost'
+    ],
     methods: ['HEAD', 'GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     credentials: true
   })
