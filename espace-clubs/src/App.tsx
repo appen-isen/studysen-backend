@@ -11,7 +11,7 @@ import ApiClient from './utils/http';
 import LoginModal from './modals/clubs/LoginModal';
 import { FaPlus } from 'react-icons/fa6';
 import CreateModal from './modals/clubs/CreateModal';
-import { useNavigate } from 'react-router';
+import { useNavigate, Link } from 'react-router';
 
 function App() {
   const [search, setSearch] = useState('');
@@ -113,6 +113,13 @@ function App() {
       />
       {/* Modale de création d'un espace membre */}
       <CreateModal onClose={() => setShowCreateModal(false)} open={showCreateModal} />
+
+      {/* Lien discret vers la page de contact */}
+      <div className="contact-link-container">
+        <Link to="/contact" className="contact-link-footer">
+          Un problème, une question ? Contactez-nous
+        </Link>
+      </div>
     </div>
   );
 }

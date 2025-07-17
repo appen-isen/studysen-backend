@@ -8,6 +8,7 @@ import Dashboard from './Dashboard.tsx';
 import PostForm from './PostForm.tsx';
 import AdminLogin from './admin/AdminLogin.tsx';
 import AdminDashboard from './admin/AdminDashboard.tsx';
+import Contact from './Contact.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -19,6 +20,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/post/edit/:id" element={<PostForm mode="edit" />} />
         <Route path="/admin" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
