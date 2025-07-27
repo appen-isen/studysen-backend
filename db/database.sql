@@ -39,3 +39,10 @@ CREATE TABLE IF NOT EXISTS posts (
     age_limit INT,                    -- Limite d'âge pour l'événement
     FOREIGN KEY (club_id) REFERENCES clubs(club_id) -- Clé étrangère vers la table clubs
 );
+
+-- Création de la table des données de télémétrie
+CREATE TABLE IF NOT EXISTS telemetry (
+    telemetry_id SERIAL PRIMARY KEY,  -- Identifiant unique de la télémétrie
+    type TEXT NOT NULL,               -- Type de télémétrie (par exemple, "unknownSubject", etc.)
+    data TEXT NOT NULL                -- Valeur de la télémétrie
+);

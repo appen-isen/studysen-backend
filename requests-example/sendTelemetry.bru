@@ -1,0 +1,18 @@
+meta {
+  name: sendTelemetry
+  type: http
+  seq: 21
+}
+
+post {
+  url: http://127.0.0.1:3000/v1/telemetry/submit
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "type": "unknownSubjects",
+    "data": ["salut", "salut2"]
+  }
+}

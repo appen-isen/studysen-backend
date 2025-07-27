@@ -1,0 +1,17 @@
+meta {
+  name: adminLogin
+  type: http
+  seq: 19
+}
+
+post {
+  url: http://127.0.0.1:3000/v1/admin/login
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "key": "your_admin_key"
+  }
+}

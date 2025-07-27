@@ -9,6 +9,7 @@ import pingRoutes from '@routes/ping/ping';
 import clubsRoutes from '@routes/clubs/clubs';
 import postsRoutes from '@routes/posts/posts';
 import adminRoutes from '@routes/admin/admin';
+import telemetryRoutes from '@routes/telemetry/telemetry';
 import Logger, { initLogger } from './utils/logger';
 import { initializeDatabase } from './utils/database';
 import { initializeMailer, verifyConnection } from './utils/email';
@@ -45,6 +46,7 @@ app.use('/v1/ping', pingRoutes);
 app.use('/v1/clubs', clubsRoutes);
 app.use('/v1/posts', postsRoutes);
 app.use('/v1/admin', adminRoutes);
+app.use('/v1/telemetry', telemetryRoutes);
 
 app.listen(port, '0.0.0.0', async () => {
   initLogger();
