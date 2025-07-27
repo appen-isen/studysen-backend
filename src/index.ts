@@ -21,7 +21,6 @@ const port = 3000;
 
 app.use(express.json({ limit: '50mb' }));
 app.use(cookieParser());
-//On autorisera les requêtes CORS uniquement en localhost:5173
 app.use(
   cors({
     origin: [
