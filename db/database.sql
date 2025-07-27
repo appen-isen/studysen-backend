@@ -19,7 +19,8 @@ CREATE TABLE IF NOT EXISTS clubs (
     password TEXT NOT NULL,            -- Mot de passe du club pour l'accès au mode éditeur
     campus_id INT NOT NULL,            -- Numéro du campus
     enabled BOOLEAN NOT NULL,          -- Indique si le club est actif et autorisé à poster
-    image_url TEXT                     -- URL de l'image du club
+    image_url TEXT,                    -- URL de l'image du club
+    contact_email TEXT                -- Email de contact du club
 );
 
 -- Création de la table des posts des clubs

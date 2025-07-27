@@ -6,7 +6,7 @@ import Logger from '@/utils/logger';
 const logger = new Logger('Clubs');
 
 export async function editClub(req: Request, res: Response) {
-  const { clubId, name, password, campusId } = req.body;
+  const { clubId, name, password, campusId, contactEmail } = req.body;
 
   try {
     const client = await connectToPool();
@@ -21,16 +21,16 @@ export async function editClub(req: Request, res: Response) {
 
       updateQuery = `
             UPDATE clubs
-            SET name = $1, password = $2, campus_id = $3
-            WHERE club_id = $4;`;
-      queryParams = [name, hash, campusId, clubId];
+            SET name = $1, password = $2, campus_id = $3, contact_email = $4
+            WHERE club_id = $5;`;
+      queryParams = [name, hash, campusId, contactEmail, clubId];
     } else {
       // On met à jour le nom et le campus
       updateQuery = `
             UPDATE clubs
-            SET name = $1, campus_id = $2
-            WHERE club_id = $3;`;
-      queryParams = [name, campusId, clubId];
+            SET name = $1, campus_id = $2, contact_email = $3
+            WHERE club_id = $4;`;
+      queryParams = [name, campusId, contactEmail, clubId];
     }
 
     await client.query(updateQuery, queryParams);

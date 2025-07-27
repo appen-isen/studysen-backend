@@ -48,6 +48,7 @@ router.post(
       'Le mot de passe doit avoir au minimum 8 caractères, une minuscule, une majuscule et un chiffre !'
     ),
   body('campusId').isInt().withMessage('Veuillez entrer un campusId valide'),
+  body('contactEmail').isEmail().withMessage('Veuillez entrer une adresse email valide !'),
   Validate,
   createClub
 );
@@ -98,6 +99,7 @@ router.put(
   body('clubId').isInt().withMessage('Veuillez entrer un clubId valide'),
   body('name').isLength({ min: 2 }).withMessage('Veuillez entrer un nom valide !'),
   body('campusId').isInt().withMessage('Veuillez entrer un campusId valide'),
+  body('contactEmail').isEmail().withMessage('Veuillez entrer une adresse email valide !'),
   Validate,
   editClub
 );

@@ -3,6 +3,8 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import Logger from '@/utils/logger';
+import { sendEmail } from '@/utils/email';
+import { getCampusName } from '@/utils/campus';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
@@ -11,7 +13,7 @@ const logger = new Logger('Clubs');
 // Route pour créer un club
 export async function createClub(req: Request, res: Response) {
   try {
-    const { name, password, campusId } = req.body;
+    const { name, password, campusId, contactEmail } = req.body;
     const client = await connectToPool();
 
     // Vérifier si le nom du club existe déjà
@@ -26,14 +28,14 @@ export async function createClub(req: Request, res: Response) {
     }
 
     const query = `
-	  INSERT INTO clubs (name, password, campus_id, enabled)
-	  VALUES ($1, $2, $3, FALSE) 
+	  INSERT INTO clubs (name, password, campus_id, enabled, contact_email)
+	  VALUES ($1, $2, $3, FALSE, $4) 
 	  RETURNING club_id, name, campus_id;
 	`;
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
 
-    const result = await client.query(query, [name, hash, campusId]);
+    const result = await client.query(query, [name, hash, campusId, contactEmail]);
     client.release();
 
     const club = result.rows[0];
@@ -48,6 +50,12 @@ export async function createClub(req: Request, res: Response) {
     );
 
     logger.info(`Club créé: ${club.name} (ID: ${club.club_id})`);
+    // Envoi de l'email de création de club
+    sendEmail(contactEmail, 'Club créé - Studysen', 'new-club', {
+      supportEmail: process.env.FROM_MAIL,
+      clubName: name,
+      campusName: getCampusName(campusId)
+    });
     // Envoi du token dans le cookie
     res.cookie('token', token, {
       maxAge: 24 * 3600 * 1000,
@@ -165,12 +173,18 @@ export async function activateClub(req: Request, res: Response) {
     const query = `
 	  UPDATE clubs
 	  SET enabled = TRUE
-	  WHERE club_id = $1;
+	  WHERE club_id = $1 RETURNING name, contact_email, campus_id;
 	`;
 
-    await client.query(query, [clubId]);
+    const result = await client.query(query, [clubId]);
     client.release();
     logger.info(`Club activé: ${clubId}`);
+    // Envoi de l'email d'activation du club
+    sendEmail(result.rows[0].contact_email, 'Club activé - Studysen', 'club-enabled', {
+      supportEmail: process.env.FROM_MAIL,
+      clubName: result.rows[0].name,
+      campusName: getCampusName(result.rows[0].campus_id)
+    });
     res.status(200).json({
       message: 'Le club a été activé avec succès !'
     });

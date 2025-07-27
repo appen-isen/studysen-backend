@@ -11,6 +11,7 @@ import postsRoutes from '@routes/posts/posts';
 import adminRoutes from '@routes/admin/admin';
 import Logger, { initLogger } from './utils/logger';
 import { initializeDatabase } from './utils/database';
+import { initializeMailer, verifyConnection } from './utils/email';
 
 dotenv.config();
 
@@ -54,6 +55,14 @@ app.listen(port, '0.0.0.0', async () => {
   } catch (error) {
     new Logger('API').error("Impossible d'initialiser la base de données:", error);
     process.exit(1);
+  }
+
+  try {
+    // Initialiser le transporteur de mail
+    initializeMailer();
+    await verifyConnection();
+  } catch (error) {
+    new Logger('API').error("Impossible d'initialiser le transporteur de mail:", error);
   }
 
   new Logger('API').info(`Server is running at http://0.0.0.0:${port}`);

@@ -40,6 +40,7 @@ export async function getAllClubs(req: Request, res: Response) {
       name: row.name,
       campusId: row.campus_id,
       imageUrl: row.image_url,
+      contactEmail: row.contact_email,
       enabled: row.enabled
     }));
     res.status(200).json(clubs);

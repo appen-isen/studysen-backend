@@ -1,6 +1,7 @@
 export type Club = {
   clubId: number;
   name: string;
+  contactEmail: string;
   campusId: number;
   imageUrl: string;
   enabled?: boolean;

@@ -22,6 +22,7 @@ export default function CreateModal(props: CreateModalProps) {
   const [confirmPassword, setConfirmPassword] = useState('');
   // Si on modifie un club, on pré-remplit le nom du club et l'index de la ville
   const [clubName, setClubName] = useState('');
+  const [contactEmail, setContactEmail] = useState('');
   const [campusIndex, setCampusIndex] = useState(0);
   const [image, setImage] = useState<File | null>(null);
   const [isLoading, setLoading] = useState(false);
@@ -31,6 +32,7 @@ export default function CreateModal(props: CreateModalProps) {
       setPassword('');
       setConfirmPassword('');
       setClubName('');
+      setContactEmail('');
       setCampusIndex(0);
       setImage(null);
     }, 200);
@@ -86,6 +88,9 @@ export default function CreateModal(props: CreateModalProps) {
     if (clubName.length < 2) {
       errorMessage = 'Veuillez entrer un nom de club valide (plus de 2 caractères)';
     }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail)) {
+      errorMessage = 'Veuillez entrer une adresse email valide';
+    }
     // Si on modifie un club, on ne demande pas de mot de passe
     if (!clubEdit) {
       if (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(password) === false) {
@@ -111,6 +116,7 @@ export default function CreateModal(props: CreateModalProps) {
       //En mode création, on envoie la requête de création de club
       ApiClient.post('/clubs/create', {
         name: clubName,
+        contactEmail,
         password,
         campusId: campusIndex + 1
       })
@@ -133,6 +139,7 @@ export default function CreateModal(props: CreateModalProps) {
       ApiClient.put('/clubs/edit', {
         clubId: clubEdit.clubId,
         name: clubName,
+        contactEmail,
         password,
         campusId: campusIndex + 1
       })
@@ -166,6 +173,7 @@ export default function CreateModal(props: CreateModalProps) {
   useEffect(() => {
     if (clubEdit) {
       setClubName(clubEdit.name);
+      setContactEmail(clubEdit.contactEmail);
       setCampusIndex(clubEdit.campusId - 1);
     }
   }, [clubEdit]);
@@ -179,6 +187,12 @@ export default function CreateModal(props: CreateModalProps) {
           value={clubName}
           onChange={(e) => setClubName(e.target.value)}
           autoFocus
+        />
+        <Input
+          placeholder="Adresse email de contact"
+          value={contactEmail}
+          onChange={(e) => setContactEmail(e.target.value)}
+          type="email"
         />
         <Input
           password={true}
