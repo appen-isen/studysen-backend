@@ -15,7 +15,7 @@ router.get('/', verifyAdminAuth, async (req, res) => {
     const { type } = req.body;
     const client = await connectToPool();
     // On récupère les données de télémétrie, filtrées par type si spécifié
-    let query = 'SELECT * FROM telemetry';
+    let query = 'SELECT *, telemetry_id AS id FROM telemetry';
     let params: any[] = [];
     if (type) {
       query += ' WHERE type = $1';
@@ -61,6 +61,27 @@ router.post(
       logger.error('Erreur lors de la soumission de la télémétrie', error);
       res.status(500).json({ message: 'Erreur interne du serveur' });
       return;
+    }
+  }
+);
+
+// Route pour supprimer des données
+router.delete(
+  '/',
+  body('ids').isArray().withMessage("Un tableau d'ID est requis"),
+  verifyAdminAuth,
+  async (req, res) => {
+    try {
+      const { ids } = req.body;
+      const client = await connectToPool();
+
+      // On supprime les données de télémétrie correspondant au tableau d'IDs
+      const deleteQuery = 'DELETE FROM telemetry WHERE telemetry_id = ANY($1)';
+      await client.query(deleteQuery, [ids]);
+      res.status(200).json({ message: 'Télémétrie supprimée avec succès' });
+    } catch (error) {
+      logger.error('Erreur lors de la suppression de la télémétrie', error);
+      res.status(500).json({ message: 'Erreur interne du serveur' });
     }
   }
 );
