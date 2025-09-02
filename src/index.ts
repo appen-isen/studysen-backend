@@ -28,7 +28,7 @@ app.use(
       'https://studysen.fr',
       'https://clubs.studysen.fr',
       'tauri://localhost',
-      'https://tauri.localhost'
+      'http://tauri.localhost'
     ],
     methods: ['HEAD', 'GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     credentials: true
