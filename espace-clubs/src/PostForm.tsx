@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import './PostForm.css';
 import { Input } from './components/Inputs';
-import { MultiToggle } from './components/Buttons';
+import { MultiToggle, Checkbox } from './components/Buttons';
 import { FaArrowLeft, FaImage } from 'react-icons/fa6';
 import { useNavigate, useLocation } from 'react-router';
 import type { PostType } from './utils/types';
@@ -32,6 +32,7 @@ export default function PostForm({ mode = 'create' }: PostFormProps) {
   const [link, setLink] = useState(post?.link || '');
   const [price, setPrice] = useState(post?.info?.price || '');
   const [ageLimit, setAgeLimit] = useState(post?.info?.ageLimit || '');
+  const [sendNotification, setSendNotification] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | undefined>(post?.imageUri);
   const [image, setImage] = useState<File | null>(null);
   const [isLoading, setLoading] = useState(false);
@@ -117,6 +118,7 @@ export default function PostForm({ mode = 'create' }: PostFormProps) {
       date: typeIndex === 0 ? date : new Date().toISOString().split('T')[0],
       link,
       location: address,
+      sendNotification,
       info: {
         startTime: startTime,
         price: price,
@@ -327,6 +329,16 @@ export default function PostForm({ mode = 'create' }: PostFormProps) {
               />
             </div>
           </>
+        )}
+
+        {mode === 'create' && (
+          <div className="postform-row">
+            <Checkbox
+              checked={sendNotification}
+              onChange={(v) => setSendNotification(v)}
+              label="Envoyer une notification aux étudiants"
+            />
+          </div>
         )}
 
         <div className="postform-actions">

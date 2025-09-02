@@ -11,7 +11,7 @@ const logger = new Logger('Posts');
 export async function createPost(req: AuthenticatedClubRequest, res: Response) {
   try {
     const clubId = (req as AuthenticatedClubRequest).clubId;
-    const { type, date, title, description, link, location, imageUrl, info } = req.body;
+    const { type, date, title, description, link, location, imageUrl, info, sendNotification } = req.body;
 
     const client = await connectToPool();
     const query = `
@@ -45,7 +45,9 @@ export async function createPost(req: AuthenticatedClubRequest, res: Response) {
     }
     // Envoi de la notification aux appareils du campus
     const campusId = campusResult.rows[0].campus_id;
-    sendNotificationToDevices(campusId, 'Nouveau post', title);
+    if (sendNotification) {
+      sendNotificationToDevices(campusId, 'Nouveau post', title);
+    }
     logger.info(`Post créé avec succès pour le club ${clubId} (ID: ${result.rows[0].post_id})`);
     res.status(201).json({
       message: 'Post créé avec succès',

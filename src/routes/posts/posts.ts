@@ -17,6 +17,7 @@ router.post(
   body('type').isString().isIn(['event', 'post']).withMessage('Veuillez entrer un type valide !'),
   body('title').isString().notEmpty().withMessage('Veuillez entrer un titre valide !'),
   body('date').isDate().withMessage('Veuillez entrer une date valide !'),
+  body('sendNotification').isBoolean().withMessage('Veuillez entrer une valeur pour sendNotification !'),
   Validate,
   (req, res) => createPost(req as AuthenticatedClubRequest, res)
 );
