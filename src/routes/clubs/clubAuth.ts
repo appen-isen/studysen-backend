@@ -56,6 +56,19 @@ export async function createClub(req: Request, res: Response) {
       clubName: name,
       campusName: getCampusName(campusId)
     });
+    // Envoi de l'email de vérification aux administrateurs
+    if (process.env.FROM_MAIL) {
+      sendEmail(process.env.FROM_MAIL, 'Vérification de club - Studysen', 'club-verification', {
+        ownerEmail: contactEmail,
+        clubName: name,
+        campusName: getCampusName(campusId)
+      });
+    } else {
+      logger.error(
+        "L'email de vérification n'a pas pu être envoyé car la variable d'environnement FROM_MAIL n'est pas définie."
+      );
+    }
+
     // Envoi du token dans le cookie
     res.cookie('token', token, {
       maxAge: 24 * 3600 * 1000,
