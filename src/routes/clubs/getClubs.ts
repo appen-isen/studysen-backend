@@ -1,20 +1,20 @@
 import { Request, Response } from 'express';
-import { connectToPool } from '@/utils/database';
+import { query } from '@/utils/database';
 import { AuthenticatedClubRequest } from '@/middlewares/auth';
 import Logger from '@/utils/logger';
+import { sql } from 'drizzle-orm';
 
 const logger = new Logger('Clubs');
 
 export async function getClubsByCampus(req: Request, res: Response) {
   try {
-    const client = await connectToPool();
     // On récupère tous les clubs actifs pour le campus donné
-    const result = await client.query(
-      'SELECT club_id, name, campus_id, image_url FROM clubs WHERE enabled = TRUE AND campus_id = $1',
-      [req.params.campusId]
-    );
-    client.release();
-    const clubs = result.rows.map((row) => ({
+    const rows = await query(sql`
+      SELECT club_id, name, campus_id, image_url FROM clubs WHERE enabled = TRUE AND campus_id = ${Number(
+        req.params.campusId
+      )}
+    `);
+    const clubs = rows.map((row: any) => ({
       clubId: row.club_id,
       name: row.name,
       campusId: row.campus_id,
@@ -31,11 +31,9 @@ export async function getClubsByCampus(req: Request, res: Response) {
 
 export async function getAllClubs(req: Request, res: Response) {
   try {
-    const client = await connectToPool();
     // On récupère tous les clubs actifs
-    const result = await client.query('SELECT * FROM clubs');
-    client.release();
-    const clubs = result.rows.map((row) => ({
+    const rows = await query(sql`SELECT * FROM clubs`);
+    const clubs = rows.map((row: any) => ({
       clubId: row.club_id,
       name: row.name,
       campusId: row.campus_id,
@@ -53,18 +51,15 @@ export async function getAllClubs(req: Request, res: Response) {
 export async function getCurrentClub(req: AuthenticatedClubRequest, res: Response) {
   const clubId = req.clubId;
   try {
-    const client = await connectToPool();
     // On récupère le club actuellement connecté
-    const result = await client.query(
-      'SELECT club_id, name, campus_id, image_url FROM clubs WHERE enabled = TRUE AND club_id = $1',
-      [clubId]
-    );
-    client.release();
-    if (result.rows.length === 0) {
+    const rows = await query(sql`
+      SELECT club_id, name, campus_id, image_url FROM clubs WHERE enabled = TRUE AND club_id = ${clubId}
+    `);
+    if (rows.length === 0) {
       res.status(404).json({ message: 'Aucun club trouvé' });
       return;
     }
-    const row = result.rows[0];
+    const row = (rows as any)[0];
     const club = {
       clubId: row.club_id,
       name: row.name,

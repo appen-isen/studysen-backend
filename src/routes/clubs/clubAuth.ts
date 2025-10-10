@@ -1,10 +1,11 @@
-import { connectToPool } from '@/utils/database';
+import { query } from '@/utils/database';
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import Logger from '@/utils/logger';
 import { sendEmail } from '@/utils/email';
 import { getCampusName } from '@/utils/campus';
+import { sql } from 'drizzle-orm';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
@@ -14,31 +15,26 @@ const logger = new Logger('Clubs');
 export async function createClub(req: Request, res: Response) {
   try {
     const { name, password, campusId, contactEmail } = req.body;
-    const client = await connectToPool();
 
     // Vérifier si le nom du club existe déjà
-    const checkQuery = `SELECT club_id FROM clubs WHERE name = $1;`;
-    const checkResult = await client.query(checkQuery, [name]);
-    if (checkResult.rows.length > 0) {
-      client.release();
+    const checkRows = await query(sql`SELECT club_id FROM clubs WHERE name = ${name}`);
+    if (checkRows.length > 0) {
       res.status(409).json({
         message: 'Ce nom de club est déjà utilisé.'
       });
       return;
     }
 
-    const query = `
-	  INSERT INTO clubs (name, password, campus_id, enabled, contact_email)
-	  VALUES ($1, $2, $3, FALSE, $4) 
-	  RETURNING club_id, name, campus_id;
-	`;
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
 
-    const result = await client.query(query, [name, hash, campusId, contactEmail]);
-    client.release();
+    const rows = await query(sql`
+	  INSERT INTO clubs (name, password, campus_id, enabled, contact_email)
+	  VALUES (${name}, ${hash}, ${campusId}, FALSE, ${contactEmail}) 
+	  RETURNING club_id, name, campus_id;
+	`);
 
-    const club = result.rows[0];
+    const club = (rows as any)[0];
 
     //Génération du token
     const token = jwt.sign(
@@ -95,21 +91,15 @@ export async function createClub(req: Request, res: Response) {
 export async function loginClub(req: Request, res: Response) {
   const { clubId, password } = req.body;
   try {
-    const client = await connectToPool();
-    const query = `
-      SELECT club_id, password, enabled
-      FROM clubs
-      WHERE club_id = $1;
-    `;
+    const rows = await query(sql`
+      SELECT club_id, password, enabled FROM clubs WHERE club_id = ${clubId}
+    `);
 
-    const result = await client.query(query, [clubId]);
-    client.release();
-
-    if (result.rows.length === 0) {
+    if (rows.length === 0) {
       res.status(404).json({ message: "Le club n'existe pas !" });
       return;
     }
-    const club = result.rows[0];
+    const club = (rows as any)[0];
     // Vérification du mot de passe
     const isPasswordValid = await bcrypt.compare(password, club.password);
 
@@ -182,21 +172,17 @@ export async function adminLoginClub(req: Request, res: Response) {
 export async function activateClub(req: Request, res: Response) {
   const { clubId } = req.body;
   try {
-    const client = await connectToPool();
-    const query = `
+    const rows = await query(sql`
 	  UPDATE clubs
 	  SET enabled = TRUE
-	  WHERE club_id = $1 RETURNING name, contact_email, campus_id;
-	`;
-
-    const result = await client.query(query, [clubId]);
-    client.release();
+	  WHERE club_id = ${clubId} RETURNING name, contact_email, campus_id;
+	`);
     logger.info(`Club activé: ${clubId}`);
     // Envoi de l'email d'activation du club
-    sendEmail(result.rows[0].contact_email, 'Club activé - Studysen', 'club-enabled', {
+    sendEmail((rows as any)[0].contact_email, 'Club activé - Studysen', 'club-enabled', {
       supportEmail: process.env.FROM_MAIL,
-      clubName: result.rows[0].name,
-      campusName: getCampusName(result.rows[0].campus_id)
+      clubName: (rows as any)[0].name,
+      campusName: getCampusName((rows as any)[0].campus_id)
     });
     res.status(200).json({
       message: 'Le club a été activé avec succès !'

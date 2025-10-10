@@ -11,8 +11,8 @@ import postsRoutes from '@routes/posts/posts';
 import adminRoutes from '@routes/admin/admin';
 import telemetryRoutes from '@routes/telemetry/telemetry';
 import Logger, { initLogger } from './utils/logger';
-import { initializeDatabase } from './utils/database';
 import { initializeMailer, verifyConnection } from './utils/email';
+import { initDatabase } from './utils/database';
 
 dotenv.config();
 
@@ -50,13 +50,8 @@ app.use('/v1/telemetry', telemetryRoutes);
 app.listen(port, '0.0.0.0', async () => {
   initLogger();
 
-  try {
-    // Initialiser la base de données au démarrage
-    await initializeDatabase();
-  } catch (error) {
-    new Logger('API').error("Impossible d'initialiser la base de données:", error);
-    process.exit(1);
-  }
+  // Initialiser la base de données au démarrage
+  await initDatabase();
 
   try {
     // Initialiser le transporteur de mail

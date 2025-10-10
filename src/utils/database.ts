@@ -1,66 +1,52 @@
-import pg from 'pg';
+import { SQL, sql } from 'drizzle-orm';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { migrate } from 'drizzle-orm/node-postgres/migrator';
+import Logger from './logger';
 import dotenv from 'dotenv';
-import fs from 'fs/promises';
-import path from 'path';
 
 dotenv.config();
 
-let pools: pg.Pool[] = [];
+const logger = new Logger('DB');
 
-export async function initializeDatabase() {
-  try {
-    // Créer un pool de connexion pour l'initialisation
-    const initPool = new pg.Pool({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      port: parseInt(process.env.DB_PORT as string)
-    });
-
-    // Lire le fichier database.sql
-    const sqlFilePath = path.join(__dirname, '..', '..', 'db', 'database.sql');
-    const sqlSchema = await fs.readFile(sqlFilePath, 'utf8');
-    // Exécuter le schéma SQL
-    const client = await initPool.connect();
-    try {
-      await client.query(sqlSchema);
-    } finally {
-      client.release();
-    }
-    await initPool.end();
-  } catch (error) {
-    throw error;
-  }
-}
-
-export async function connectToPool() {
-  // Parcourir les pools pour trouver un pool disponible
-  for (const pool of pools) {
-    if (pool.totalCount < pool.getMaxListeners() - 1) {
-      // Si le pool est disponible, le selectionner
-      return await pool.connect();
-    } else {
-      // Si aucune pool n'est disponible, en créer une nouvelle
-      const newPool = new pg.Pool({
-        host: process.env.DB_HOST,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-        database: process.env.DB_NAME,
-        port: parseInt(process.env.DB_PORT as string)
-      });
-      pools.push(newPool);
-      return await newPool.connect();
-    }
-  }
-  // Si aucune pool n'est disponible, en créer une nouvelle
-  const newPool = new pg.Pool({
+const db = drizzle({
+  connection: {
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     port: parseInt(process.env.DB_PORT as string)
-  });
-  pools.push(newPool);
-  return await newPool.connect();
+  }
+});
+
+// Wait for the database to be ready (with retry)
+async function waitForDatabaseReady() {
+  const attempts = 5;
+  const delayMs = 1500;
+
+  for (let i = 1; i <= attempts; i++) {
+    try {
+      await db.execute(sql`SELECT 1`);
+      return;
+    } catch (e) {
+      if (i === attempts) throw e;
+      await new Promise((res) => setTimeout(res, delayMs));
+    }
+  }
+}
+
+// Run database migrations
+export async function initDatabase() {
+  try {
+    await waitForDatabaseReady();
+    await migrate(db, { migrationsFolder: './drizzle' });
+    logger.info('Database migrations executed successfully.');
+  } catch (err) {
+    logger.error('Failed to run database migrations', err);
+  }
+}
+
+// Send a SQL query
+export async function query<T = unknown>(q: SQL): Promise<T[]> {
+  const result = await db.execute(q);
+  return result.rows as T[];
 }

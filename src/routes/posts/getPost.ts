@@ -1,6 +1,7 @@
-import { connectToPool } from '@/utils/database';
+import { query } from '@/utils/database';
 import Logger from '@/utils/logger';
 import { Request, Response } from 'express';
+import { sql } from 'drizzle-orm';
 
 const logger = new Logger('Posts');
 
@@ -8,18 +9,18 @@ const logger = new Logger('Posts');
 export async function getAllPosts(req: Request, res: Response) {
   try {
     const { campus } = req.query;
+    const campusId = Number(campus);
     // On récupère les posts et le club associé à chaque post
-    const client = await connectToPool();
-    const query = `
-			SELECT 
-				posts.*, 
-				clubs.name AS club_name, 
-				clubs.image_url AS club_image_url
-			FROM posts JOIN clubs ON posts.club_id = clubs.club_id WHERE clubs.enabled = TRUE AND clubs.campus_id = $1;
-            `;
-    const result = await client.query(query, [campus]);
-    client.release();
-    const posts = result.rows.map((post) => {
+    const rows = await query(
+      sql`SELECT 
+            posts.*, 
+            clubs.name AS club_name, 
+            clubs.image_url AS club_image_url
+          FROM posts 
+          JOIN clubs ON posts.club_id = clubs.club_id 
+          WHERE clubs.enabled = TRUE AND clubs.campus_id = ${campusId}`
+    );
+    const posts = rows.map((post: any) => {
       return {
         id: post.post_id,
         type: post.is_event ? 'event' : 'post',
@@ -57,39 +58,27 @@ export async function getAllPosts(req: Request, res: Response) {
 export async function getLastPost(req: Request, res: Response) {
   try {
     const { offset, campus } = req.query;
-    const client = await connectToPool();
-    let query = ``;
-    let result = null;
-    if (!offset || isNaN(Number(offset))) {
-      // Si aucun offset n'est fourni, on récupère le dernier post
-      query = `
-                SELECT 
-                    posts.*, 
-                    clubs.name AS club_name, 
-                    clubs.image_url AS club_image_url
-                FROM posts JOIN clubs ON posts.club_id = clubs.club_id WHERE clubs.enabled = TRUE AND clubs.campus_id = $1
-                ORDER BY posts.post_id DESC LIMIT 1;
-            `;
-      result = await client.query(query, [campus]);
-    } else {
-      // Sinon, on récupère le dernier post avec l'offset fourni
-      query = `
-                SELECT 
-                    posts.*, 
-                    clubs.name AS club_name, 
-                    clubs.image_url AS club_image_url
-                FROM posts JOIN clubs ON posts.club_id = clubs.club_id WHERE clubs.enabled = TRUE AND clubs.campus_id = $1
-                ORDER BY posts.post_id DESC OFFSET $2 LIMIT 1;
-            `;
-      result = await client.query(query, [campus, offset]);
-    }
-    client.release();
-    if (result.rows.length === 0) {
+    const campusId = Number(campus);
+    const off = Number(offset);
+    const base = sql`SELECT 
+                      posts.*, 
+                      clubs.name AS club_name, 
+                      clubs.image_url AS club_image_url
+                    FROM posts 
+                    JOIN clubs ON posts.club_id = clubs.club_id 
+                    WHERE clubs.enabled = TRUE AND clubs.campus_id = ${campusId}
+                    ORDER BY posts.post_id DESC`;
+    const rows =
+      !offset || isNaN(off)
+        ? await query(sql`${base} LIMIT 1`)
+        : await query(sql`${base} OFFSET ${off} LIMIT 1`);
+
+    if (rows.length === 0) {
       res.status(404).json({ message: 'Aucun post trouvé' });
       return;
     }
     // On retourne le post trouvé
-    const post = result.rows.map((post) => {
+    const post = rows.map((post: any) => {
       return {
         id: post.post_id,
         type: post.is_event ? 'event' : 'post',
@@ -126,25 +115,22 @@ export async function getLastPost(req: Request, res: Response) {
 export async function getClubPosts(req: Request, res: Response) {
   const { clubId } = req.params;
   try {
-    const client = await connectToPool();
-    const query = `
+    const rows = await query(sql`
       SELECT 
         posts.*, 
         clubs.name AS club_name, 
         clubs.image_url AS club_image_url
       FROM posts 
       JOIN clubs ON posts.club_id = clubs.club_id 
-      WHERE clubs.enabled = TRUE AND clubs.club_id = $1;
-    `;
-    const result = await client.query(query, [clubId]);
-    client.release();
+      WHERE clubs.enabled = TRUE AND clubs.club_id = ${Number(clubId)};
+    `);
 
-    if (result.rows.length === 0) {
+    if (rows.length === 0) {
       res.status(404).json({ message: 'Aucun post trouvé pour ce club' });
       return;
     }
 
-    const posts = result.rows.map((post) => {
+    const posts = rows.map((post: any) => {
       return {
         id: post.post_id,
         type: post.is_event ? 'event' : 'post',

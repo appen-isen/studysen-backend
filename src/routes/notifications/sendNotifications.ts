@@ -1,6 +1,7 @@
 import { Expo } from 'expo-server-sdk';
-import { connectToPool } from '@/utils/database';
+import { query } from '@/utils/database';
 import Logger from '@/utils/logger';
+import { sql } from 'drizzle-orm';
 
 let expo = new Expo();
 const logger = new Logger('Notifications');
@@ -36,25 +37,20 @@ export async function sendNotification(device_id: string, title: string, message
 }
 
 async function checkAndSendNotifications() {
-  const client = await connectToPool();
-
   try {
     // Définition de la fenêtre de temps pour les notifications
     const currentDate = new Date();
     const futureDate = new Date(currentDate.getTime() + 60000);
     // Requête principale simplifiée
-    const query = `
+    const rows = await query(sql`
             SELECT * FROM notifications 
-            WHERE date >= $1::timestamp
-            AND date <= $2::timestamp
-            ORDER BY date ASC;
-        `;
-
-    // Exécution de la requête principale
-    const result = await client.query(query, [currentDate.toISOString(), futureDate.toISOString()]);
+            WHERE date >= ${currentDate.toISOString()}::timestamp
+            AND date <= ${futureDate.toISOString()}::timestamp
+            ORDER BY date ASC
+        `);
 
     // Traitement des notifications trouvées
-    for (const notification of result.rows) {
+    for (const notification of rows as any) {
       try {
         // Envoi de la notification
         await sendNotification(
@@ -64,11 +60,7 @@ async function checkAndSendNotifications() {
           notification.date
         );
         // Suppression après envoi réussi
-        const deleteQuery = `
-                    DELETE FROM notifications
-                    WHERE notification_id = $1
-                `;
-        await client.query(deleteQuery, [notification.notification_id]);
+        await query(sql`DELETE FROM notifications WHERE notification_id = ${notification.notification_id}`);
       } catch (notifError) {
         logger.error(
           `Erreur lors du traitement de la notification ${notification.notification_id}:`,
@@ -78,8 +70,6 @@ async function checkAndSendNotifications() {
     }
   } catch (error) {
     logger.error('Erreur lors de la vérification des notifications:', error);
-  } finally {
-    await client.release();
   }
 }
 

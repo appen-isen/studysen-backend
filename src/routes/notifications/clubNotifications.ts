@@ -1,24 +1,21 @@
 import { Expo } from 'expo-server-sdk';
-import { connectToPool } from '@/utils/database';
+import { query } from '@/utils/database';
 import Logger from '@/utils/logger';
+import { sql } from 'drizzle-orm';
 
 const logger = new Logger('Notifications');
 
 let expo = new Expo();
 
 export async function sendNotificationToDevices(campus_id: number, title: string, message: string) {
-  const client = await connectToPool();
   try {
     // Récupérer tous les devices pour le campus spécifié
-    const query = `
-      SELECT device_id FROM devices WHERE campus_id = $1;
-    `;
-    const result = await client.query(query, [campus_id]);
-    if (result.rowCount === 0) {
+    const rows = await query(sql`SELECT device_id FROM devices WHERE campus_id = ${campus_id}`);
+    if (rows.length === 0) {
       logger.info(`Aucun device trouvé pour le campus ${campus_id}`);
       return;
     }
-    const devices = result.rows.map((row) => row.device_id);
+    const devices = (rows as any).map((row: any) => row.device_id);
 
     // On créé la notification pour chaque device
     let messages = [];
@@ -49,7 +46,5 @@ export async function sendNotificationToDevices(campus_id: number, title: string
     }
   } catch (error) {
     logger.error("Erreur lors de l'envoi des notifications:", error);
-  } finally {
-    await client.release();
   }
 }

@@ -1,33 +1,31 @@
 import { Response, Request } from 'express';
-import { connectToPool } from '@/utils/database';
+import { query } from '@/utils/database';
 import { deleteImageFromCDN } from '@/utils/cdn';
 import Logger from '@/utils/logger';
+import { sql } from 'drizzle-orm';
 const logger = new Logger('Clubs');
 
 export async function deleteClub(req: Request, res: Response) {
   const { clubId } = req.body;
   try {
-    const client = await connectToPool();
     // Supprimer d'abord les posts liés à ce club
-    await client.query('DELETE FROM posts WHERE club_id = $1', [clubId]);
+    await query(sql`DELETE FROM posts WHERE club_id = ${clubId}`);
 
     // On supprime le club de la base de données en récupérant l'url de l'image pour la supprimer du CDN
-    const query = `
+    const rows = await query(sql`
               DELETE FROM clubs
-              WHERE club_id = $1
+              WHERE club_id = ${clubId}
               RETURNING image_url;
-          `;
-    const result = await client.query(query, [clubId]);
-    client.release();
+          `);
 
     // Vérifier si le club existe
-    if (result.rowCount === 0) {
+    if (rows.length === 0) {
       res.status(404).json({ message: 'Club non trouvé' });
       return;
     }
 
     // Si le club a été supprimé, on supprime l'image du CDN
-    const imageUrl = result.rows[0].image_url;
+    const imageUrl = (rows as any)[0].image_url;
     if (imageUrl) {
       await deleteImageFromCDN(imageUrl);
     }

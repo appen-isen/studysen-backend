@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
 import { AuthenticatedClubRequest } from '@/middlewares/auth';
 import { uploadImageToCDN } from '@/utils/cdn';
-import { connectToPool } from '@/utils/database';
+import { query } from '@/utils/database';
 import Logger from '@/utils/logger';
 import { log } from 'console';
+import { sql } from 'drizzle-orm';
 
 const logger = new Logger('Clubs');
 
@@ -21,14 +22,7 @@ export async function addImageToClub(req: AuthenticatedClubRequest, res: Respons
     const imageUrl = await uploadImageToCDN(file);
 
     // Enregistrer l'URL de l'image dans la base de données
-    const client = await connectToPool();
-    const query = `
-            UPDATE clubs
-            SET image_url = $1
-            WHERE club_id = $2;
-        `;
-    await client.query(query, [imageUrl, clubId]);
-    client.release();
+    await query(sql`UPDATE clubs SET image_url = ${imageUrl} WHERE club_id = ${clubId}`);
 
     res.status(200).json({
       message: 'Image ajoutée avec succès',
@@ -46,23 +40,18 @@ export async function getClubImage(req: Request, res: Response) {
     // Vérifier si l'identifiant du club est valide
     const clubId = parseInt(req.params.id, 10);
 
-    const client = await connectToPool();
-    const query = `
-            SELECT image_url
-            FROM clubs
-            WHERE club_id = $1;
-        `;
-    const result = await client.query(query, [clubId]);
-    client.release();
+    const rows = await query(sql`
+            SELECT image_url FROM clubs WHERE club_id = ${clubId}
+        `);
 
-    if (result.rows.length === 0) {
+    if (rows.length === 0) {
       res.status(404).json({
         message: 'Aucun club trouvé avec cet identifiant'
       });
       return;
     }
 
-    const imageUrl = result.rows[0].image_url;
+    const imageUrl = (rows as any)[0].image_url;
 
     // Vérifier s'il y a une image associée au club'
     if (!imageUrl) {

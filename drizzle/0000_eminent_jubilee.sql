@@ -1,0 +1,47 @@
+-- Current sql file was generated after introspecting the database
+-- If you want to run this migration please uncomment this code before executing migrations
+
+-- CREATE TABLE "notifications" (
+-- 	"notification_id" serial PRIMARY KEY NOT NULL,
+-- 	"device_id" text NOT NULL,
+-- 	"title" text NOT NULL,
+-- 	"message" text NOT NULL,
+-- 	"date" timestamp NOT NULL
+-- );
+-- --> statement-breakpoint
+-- CREATE TABLE "devices" (
+-- 	"device_id" text PRIMARY KEY NOT NULL,
+-- 	"campus_id" integer NOT NULL
+-- );
+-- --> statement-breakpoint
+-- CREATE TABLE "clubs" (
+-- 	"club_id" serial PRIMARY KEY NOT NULL,
+-- 	"name" varchar(100) NOT NULL,
+-- 	"password" text NOT NULL,
+-- 	"campus_id" integer NOT NULL,
+-- 	"enabled" boolean NOT NULL,
+-- 	"image_url" text
+-- );
+-- --> statement-breakpoint
+-- CREATE TABLE "posts" (
+-- 	"post_id" serial PRIMARY KEY NOT NULL,
+-- 	"title" varchar(255) NOT NULL,
+-- 	"is_event" boolean NOT NULL,
+-- 	"date" date NOT NULL,
+-- 	"club_id" integer NOT NULL,
+-- 	"description" text,
+-- 	"location" text,
+-- 	"image_url" text,
+-- 	"link" text,
+-- 	"start_time" varchar(10),
+-- 	"price" text,
+-- 	"age_limit" integer
+-- );
+-- --> statement-breakpoint
+-- CREATE TABLE "telemetry" (
+-- 	"telemetry_id" serial PRIMARY KEY NOT NULL,
+-- 	"type" text NOT NULL,
+-- 	"data" text NOT NULL
+-- );
+-- --> statement-breakpoint
+-- ALTER TABLE "posts" ADD CONSTRAINT "posts_club_id_fkey" FOREIGN KEY ("club_id") REFERENCES "public"."clubs"("club_id") ON DELETE no action ON UPDATE no action;
