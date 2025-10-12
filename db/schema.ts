@@ -34,7 +34,8 @@ export const clubs = pgTable('clubs', {
   password: text().notNull(), // Mot de passe du club pour l'accès au mode éditeur
   campusId: integer('campus_id').notNull(), // Numéro du campus
   enabled: boolean().notNull(), // Indique si le club est actif et autorisé à poster
-  imageUrl: text('image_url') // URL de l'image du club
+  imageUrl: text('image_url'), // URL de l'image du club
+  contactEmail: text('contact_email') // Email de contact
 });
 
 export const posts = pgTable(

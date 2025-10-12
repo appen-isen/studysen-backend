@@ -39,9 +39,9 @@ export async function initDatabase() {
   try {
     await waitForDatabaseReady();
     await migrate(db, { migrationsFolder: './drizzle' });
-    logger.info('Database migrations executed successfully.');
+    logger.info('Migration de la base de données réussie.');
   } catch (err) {
-    logger.error('Failed to run database migrations', err);
+    logger.error("Échec de l'exécution des migrations de la base de données", err);
   }
 }
 

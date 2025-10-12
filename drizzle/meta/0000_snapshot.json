@@ -111,6 +111,12 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false
+        },
+        "contact_email": {
+          "name": "contact_email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},

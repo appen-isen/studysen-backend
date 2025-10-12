@@ -20,7 +20,8 @@
 -- 	"password" text NOT NULL,
 -- 	"campus_id" integer NOT NULL,
 -- 	"enabled" boolean NOT NULL,
--- 	"image_url" text
+-- 	"image_url" text,
+-- 	"contact_email" text
 -- );
 -- --> statement-breakpoint
 -- CREATE TABLE "posts" (

@@ -63,13 +63,22 @@ router.post(
 router.delete(
   '/',
   body('ids').isArray().withMessage("Un tableau d'ID est requis"),
+  body('ids.*').isInt().withMessage('Chaque ID doit être un entier'),
   verifyAdminAuth,
+  Validate,
   async (req, res) => {
     try {
-      const { ids } = req.body;
+      const ids: number[] = req.body.ids;
+      if (!ids || ids.length === 0) {
+        res.status(400).json({ message: "Le tableau d'IDs est vide" });
+        return;
+      }
 
       // On supprime les données de télémétrie correspondant au tableau d'IDs
-      await query(sql`DELETE FROM telemetry WHERE telemetry_id = ANY(${ids})`);
+      const placeholders = ids.map((id) => sql`${id}`);
+      await query(
+        sql` DELETE FROM telemetry WHERE telemetry_id IN (${sql.join(placeholders, sql.raw(','))})`
+      );
       res.status(200).json({ message: 'Télémétrie supprimée avec succès' });
     } catch (error) {
       logger.error('Erreur lors de la suppression de la télémétrie', error);
