@@ -100,7 +100,7 @@ router.post('/', async (req, res) => {
             body: JSON.stringify({
               message: `Upload image for issue: ${title}`,
               content: cleanedBase64,
-              branch: 'dev'
+              branch: 'issues-screenshots'
             })
           }
         );
@@ -150,7 +150,7 @@ router.post('/', async (req, res) => {
       });
       return;
     }
-
+    logger.info(`Issue créée avec succès: ${title}`);
     res.status(200).json({ message: 'Issue created successfully' });
   } catch (error) {
     logger.error("Erreur lors de la création de l'issue:", error);
