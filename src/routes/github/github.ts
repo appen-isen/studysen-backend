@@ -100,7 +100,7 @@ router.post('/', async (req, res) => {
             body: JSON.stringify({
               message: `Upload image for issue: ${title}`,
               content: cleanedBase64,
-              branch: 'main'
+              branch: 'dev'
             })
           }
         );
