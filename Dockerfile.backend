@@ -24,6 +24,7 @@ RUN npm ci --only=production
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/src/emails ./dist/emails
 COPY ./db ./db
+COPY ./static ./static
 COPY ./drizzle ./drizzle
 
 EXPOSE 3000

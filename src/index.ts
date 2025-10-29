@@ -2,6 +2,7 @@ import express, { Express } from 'express';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import path from 'path';
 
 import githubRoutes from '@routes/github/github';
 import notificationsRoutes from '@routes/notifications/notifications';
@@ -36,6 +37,9 @@ app.use(
 );
 
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+// Servir les fichiers statiques pour la landing page
+app.use(express.static(path.join(__dirname, '../static')));
 
 // Définition des routes
 
