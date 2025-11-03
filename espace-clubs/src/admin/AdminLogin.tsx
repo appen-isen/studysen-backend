@@ -26,6 +26,15 @@ export default function AdminLogin() {
         navigate('/admin/dashboard');
       })
       .catch((err) => {
+        // If too many requests
+        if (err?.response?.status === 429) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Trop de demandes',
+            text: 'Vous avez envoyé trop de demandes. Veuillez réessayer plus tard.'
+          });
+          return;
+        }
         Swal.fire({
           icon: 'error',
           title: 'Clé invalide',

@@ -1,6 +1,6 @@
 import express from 'express';
 import { query } from '@/utils/database';
-import { sendNotification } from '@/routes/notifications/sendNotifications';
+import { sendNotification } from '@/controllers/notifications/sendNotifications';
 import Validate from '@/middlewares/validate';
 import { body, param } from 'express-validator';
 import Logger from '@/utils/logger';

@@ -1,18 +1,27 @@
 import { AuthenticatedClubRequest, verifyClubAuth } from '@/middlewares/auth';
 import express from 'express';
-import { addImageToPost, createPost, editPost } from './createPost';
+import { addImageToPost, createPost, editPost } from '@/controllers/posts/createPost';
 import { body, param, query } from 'express-validator';
 import Validate from '@/middlewares/validate';
-import { getAllPosts, getClubPosts, getLastPost } from './getPost';
+import { getAllPosts, getClubPosts, getLastPost } from '@/controllers/posts/getPost';
 import multer from 'multer';
-import { deletePost } from './deletePost';
+import { deletePost } from '@/controllers/posts/deletePost';
+import rateLimit from 'express-rate-limit';
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
 
+const postsLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  limit: 10, // each IP can make up to 10 requests per `windowsMs` (10 minutes)
+  standardHeaders: true, // add the `RateLimit-*` headers to the response
+  legacyHeaders: false // remove the `X-RateLimit-*` headers from the response
+});
+
 // Route pour créer un post
 router.post(
   '/',
+  postsLimiter,
   verifyClubAuth,
   body('type').isString().isIn(['event', 'post']).withMessage('Veuillez entrer un type valide !'),
   body('title').isString().notEmpty().withMessage('Veuillez entrer un titre valide !'),

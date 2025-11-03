@@ -161,6 +161,15 @@ export default function PostForm({ mode = 'create' }: PostFormProps) {
         }
       })
       .catch((error) => {
+        // Too many requests
+        if (error.response?.status === 429) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Trop de demandes',
+            text: 'Vous avez envoyé trop de demandes. Veuillez réessayer plus tard.'
+          });
+          return;
+        }
         Swal.fire({
           icon: 'error',
           title: 'Erreur lors de la création du post',

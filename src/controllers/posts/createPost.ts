@@ -2,7 +2,7 @@ import { AuthenticatedClubRequest } from '@/middlewares/auth';
 import { uploadImageToCDN } from '@/utils/cdn';
 import { query } from '@/utils/database';
 import { Response } from 'express';
-import { sendNotificationToDevices } from '../notifications/clubNotifications';
+import { sendNotificationToDevices } from '../../controllers/notifications/clubNotifications';
 import Logger from '@/utils/logger';
 import { sql } from 'drizzle-orm';
 
