@@ -3,7 +3,7 @@ import express from 'express';
 import { addImageToPost, createPost, editPost } from '@/controllers/posts/createPost';
 import { body, param, query } from 'express-validator';
 import Validate from '@/middlewares/validate';
-import { getAllPosts, getClubPosts, getLastPost } from '@/controllers/posts/getPost';
+import { getAllPosts, getClubPosts, getLastPost, getLastPostId } from '@/controllers/posts/getPost';
 import multer from 'multer';
 import { deletePost } from '@/controllers/posts/deletePost';
 import rateLimit from 'express-rate-limit';
@@ -76,6 +76,14 @@ router.get(
   query('campus').isInt().withMessage('Veuillez entrer un numéro de campus !'),
   Validate,
   getLastPost
+);
+
+// Route pour récupérer uniquement l'ID du dernier post
+router.get(
+  '/last/id',
+  query('campus').isInt().withMessage('Veuillez entrer un numéro de campus !'),
+  Validate,
+  getLastPostId
 );
 
 // Route pour récupérer les posts d'un club spécifique

@@ -162,3 +162,27 @@ export async function getClubPosts(req: Request, res: Response) {
     res.status(500).json({ message: 'Internal server error' });
   }
 }
+
+// Fonction pour récupérer uniquement l'ID du dernier post
+export async function getLastPostId(req: Request, res: Response) {
+  try {
+    const { campus } = req.query;
+    const campusId = Number(campus);
+    const rows = await query<{ post_id: number }>(
+      sql`SELECT posts.post_id
+          FROM posts
+          JOIN clubs ON posts.club_id = clubs.club_id
+          WHERE clubs.enabled = TRUE AND clubs.campus_id = ${campusId}
+          ORDER BY posts.post_id DESC
+          LIMIT 1`
+    );
+    if (rows.length === 0) {
+      res.status(404).json({ message: 'Aucun post trouvé' });
+      return;
+    }
+    res.status(200).json({ id: rows[0].post_id });
+  } catch (error) {
+    logger.error("Erreur lors de la récupération de l'ID du dernier post:", error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
