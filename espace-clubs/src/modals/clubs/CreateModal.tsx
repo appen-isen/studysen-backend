@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import Modal from '../../components/Modal';
-import { Input } from '../../components/Inputs';
-import { MultiToggle } from '../../components/Buttons';
-import { CITIES } from '../../utils/campus';
 import { FaImage } from 'react-icons/fa6';
+import { MultiToggle } from '../../components/Buttons';
+import { Input } from '../../components/Inputs';
+import Modal from '../../components/Modal';
+import { CITIES } from '../../utils/campus';
 import './LoginModal.css';
 import Swal from 'sweetalert2';
-import ApiClient from '../../utils/http';
 import Loader from '../../components/Loader';
+import ApiClient from '../../utils/http';
 import type { Club } from '../../utils/types';
 
 type CreateModalProps = {
@@ -40,7 +40,7 @@ export default function CreateModal(props: CreateModalProps) {
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
+    if (e.target.files?.[0]) {
       setImage(e.target.files[0]);
     }
   };
@@ -48,7 +48,9 @@ export default function CreateModal(props: CreateModalProps) {
   const uploadImage = async (editMode: boolean) => {
     //On envoie l'image au format multipart
     const formData = new FormData();
-    formData.append('image', image!);
+    if (image) {
+      formData.append('image', image);
+    }
     // Si on modifie un club, on ajoute l'ID du club
     if (clubEdit) {
       formData.append('clubId', clubEdit.clubId.toString());

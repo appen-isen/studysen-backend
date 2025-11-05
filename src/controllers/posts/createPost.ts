@@ -1,10 +1,10 @@
-import { AuthenticatedClubRequest } from '@/middlewares/auth';
+import { sql } from 'drizzle-orm';
+import type { Response } from 'express';
+import type { AuthenticatedClubRequest } from '@/middlewares/auth';
 import { uploadImageToCDN } from '@/utils/cdn';
 import { query } from '@/utils/database';
-import { Response } from 'express';
-import { sendNotificationToDevices } from '../../controllers/notifications/clubNotifications';
 import Logger from '@/utils/logger';
-import { sql } from 'drizzle-orm';
+import { sendNotificationToDevices } from '../../controllers/notifications/clubNotifications';
 
 const logger = new Logger('Posts');
 

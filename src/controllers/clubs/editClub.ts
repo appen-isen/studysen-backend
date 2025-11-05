@@ -1,8 +1,8 @@
-import { Request, Response } from 'express';
-import { query } from '@/utils/database';
 import bcrypt from 'bcrypt';
-import Logger from '@/utils/logger';
 import { sql } from 'drizzle-orm';
+import type { Request, Response } from 'express';
+import { query } from '@/utils/database';
+import Logger from '@/utils/logger';
 
 const logger = new Logger('Clubs');
 
@@ -10,8 +10,8 @@ export async function editClub(req: Request, res: Response) {
   const { clubId, name, password, campusId, contactEmail } = req.body;
 
   try {
-    let updateQuery: string;
-    let queryParams: any[];
+    let _updateQuery: string;
+    let _queryParams: any[];
 
     if (password && password.trim() !== '') {
       // On met à jour le mot de passe seulement si un mot de passe est fourni

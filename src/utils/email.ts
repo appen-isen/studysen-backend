@@ -1,8 +1,7 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
 import Logger from './logger';
-import path from 'path';
-import fs from 'fs';
 
 const logger = new Logger('Mail');
 
@@ -22,7 +21,7 @@ export function initializeMailer(): void {
     }
     transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || '465'),
+      port: parseInt(process.env.SMTP_PORT || '465', 10),
       secure: process.env.SMTP_SECURE === 'true',
       auth: {
         user: process.env.SMTP_USER,

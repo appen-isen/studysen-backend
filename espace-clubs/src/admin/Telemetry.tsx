@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
-import ApiClient from '../utils/http';
-import Loader from '../components/Loader';
 import Swal from 'sweetalert2';
+import Loader from '../components/Loader';
+import ApiClient from '../utils/http';
 import './Admin.css';
-import { Input } from '../components/Inputs';
 import { useNavigate } from 'react-router';
+import { Input } from '../components/Inputs';
 
 type TelemetryData = {
   id: number;

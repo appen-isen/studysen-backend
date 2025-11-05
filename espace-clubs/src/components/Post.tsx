@@ -2,8 +2,8 @@ import { FaMapMarkerAlt } from 'react-icons/fa';
 import type { PostType } from '../utils/types';
 import './Post.css';
 import { FaTrash } from 'react-icons/fa6';
-import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router';
+import Swal from 'sweetalert2';
 import ApiClient from '../utils/http';
 
 //Composant qui représente un post de club

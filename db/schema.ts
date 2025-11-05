@@ -1,13 +1,13 @@
 import {
+  boolean,
+  date,
+  foreignKey,
+  integer,
   pgTable,
   serial,
   text,
   timestamp,
-  integer,
-  varchar,
-  boolean,
-  foreignKey,
-  date
+  varchar
 } from 'drizzle-orm/pg-core';
 
 // Création de la table des notifications (pour envoyer des notifications à une date précise)

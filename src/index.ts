@@ -1,19 +1,18 @@
-import express, { Express } from 'express';
-import dotenv from 'dotenv';
+import path from 'node:path';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import path from 'path';
-
+import dotenv from 'dotenv';
+import express, { type Express } from 'express';
+import adminRoutes from '@/routes/admin';
+import clubsRoutes from '@/routes/clubs';
 import githubRoutes from '@/routes/github';
 import notificationsRoutes from '@/routes/notifications';
 import pingRoutes from '@/routes/ping';
-import clubsRoutes from '@/routes/clubs';
 import postsRoutes from '@/routes/posts';
-import adminRoutes from '@/routes/admin';
 import telemetryRoutes from '@/routes/telemetry';
-import Logger, { initLogger } from './utils/logger';
-import { initializeMailer, verifyConnection } from './utils/email';
 import { initDatabase } from './utils/database';
+import { initializeMailer, verifyConnection } from './utils/email';
+import Logger, { initLogger } from './utils/logger';
 
 dotenv.config();
 

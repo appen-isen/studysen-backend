@@ -1,8 +1,8 @@
-import { Request, Response } from 'express';
-import { query } from '@/utils/database';
-import { AuthenticatedClubRequest } from '@/middlewares/auth';
-import Logger from '@/utils/logger';
 import { sql } from 'drizzle-orm';
+import type { Request, Response } from 'express';
+import type { AuthenticatedClubRequest } from '@/middlewares/auth';
+import { query } from '@/utils/database';
+import Logger from '@/utils/logger';
 
 const logger = new Logger('Clubs');
 
@@ -29,7 +29,7 @@ export async function getClubsByCampus(req: Request, res: Response) {
   }
 }
 
-export async function getAllClubs(req: Request, res: Response) {
+export async function getAllClubs(_req: Request, res: Response) {
   try {
     // On récupère tous les clubs actifs
     const rows = await query(sql`SELECT * FROM clubs`);

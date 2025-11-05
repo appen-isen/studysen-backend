@@ -3,15 +3,19 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router';
 import App from './App.tsx';
 import './index.css';
+import AdminDashboard from './admin/AdminDashboard.tsx';
+import AdminLogin from './admin/AdminLogin.tsx';
+import Telemetry from './admin/Telemetry.tsx';
+import Contact from './Contact.tsx';
 import NotFound from './components/NotFound.tsx';
 import Dashboard from './Dashboard.tsx';
 import PostForm from './PostForm.tsx';
-import AdminLogin from './admin/AdminLogin.tsx';
-import AdminDashboard from './admin/AdminDashboard.tsx';
-import Contact from './Contact.tsx';
-import Telemetry from './admin/Telemetry.tsx';
 
-createRoot(document.getElementById('root')!).render(
+const element = document.getElementById('root');
+if (!element) {
+  throw new Error('Root element not found');
+}
+createRoot(element).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>

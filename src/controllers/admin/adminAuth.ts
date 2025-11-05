@@ -1,10 +1,10 @@
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 // Route pour vérifier si l'utilisateur est un administrateur
-export async function verifyAdmin(req: Request, res: Response) {
+export async function verifyAdmin(_req: Request, res: Response) {
   res.sendStatus(200);
 }
 

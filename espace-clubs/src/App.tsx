@@ -1,24 +1,24 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
+import { FaPlus } from 'react-icons/fa6';
+import { Link, useNavigate } from 'react-router';
+import { MultiToggle } from './components/Buttons';
 import ClubCard from './components/ClubCard';
 import { Input } from './components/Inputs';
-import { MultiToggle } from './components/Buttons';
-import { getCookie, removeCookie, setCookie } from './utils/cookies';
 import Loader from './components/Loader';
-import type { Club } from './utils/types';
-import { CITIES } from './utils/campus';
-import ApiClient from './utils/http';
-import LoginModal from './modals/clubs/LoginModal';
-import { FaPlus } from 'react-icons/fa6';
 import CreateModal from './modals/clubs/CreateModal';
-import { useNavigate, Link } from 'react-router';
+import LoginModal from './modals/clubs/LoginModal';
+import { CITIES } from './utils/campus';
+import { getCookie, removeCookie, setCookie } from './utils/cookies';
+import ApiClient from './utils/http';
+import type { Club } from './utils/types';
 
 function App() {
   const [search, setSearch] = useState('');
   // État pour l'index de la ville sélectionnée, initialisé depuis le cookie si présent
   const [cityIndex, setCityIndex] = useState(() => {
     const saved = getCookie('selectedCityIndex');
-    return saved !== null && !isNaN(Number(saved)) ? Number(saved) : 0;
+    return saved !== null && !Number.isNaN(Number(saved)) ? Number(saved) : 0;
   });
   // Les clubs
   const [clubs, setClubs] = useState<Club[]>([]);
@@ -43,7 +43,7 @@ function App() {
   // On récupère les clubs depuis le backend
   useEffect(() => {
     setLoading(true);
-    ApiClient.get('/clubs/' + Number(cityIndex + 1))
+    ApiClient.get(`/clubs/${Number(cityIndex + 1)}`)
       .then((response) => {
         setClubs(response.data);
         setLoading(false);

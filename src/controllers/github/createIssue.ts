@@ -1,5 +1,5 @@
+import type { Request, Response } from 'express';
 import Logger from '@/utils/logger';
-import { Request, Response } from 'express';
 
 const logger = new Logger('GitHub Issues');
 

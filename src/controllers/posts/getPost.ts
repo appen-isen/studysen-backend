@@ -1,7 +1,7 @@
+import { sql } from 'drizzle-orm';
+import type { Request, Response } from 'express';
 import { query } from '@/utils/database';
 import Logger from '@/utils/logger';
-import { Request, Response } from 'express';
-import { sql } from 'drizzle-orm';
 
 const logger = new Logger('Posts');
 
@@ -69,7 +69,7 @@ export async function getLastPost(req: Request, res: Response) {
                     WHERE clubs.enabled = TRUE AND clubs.campus_id = ${campusId}
                     ORDER BY posts.post_id DESC`;
     const rows =
-      !offset || isNaN(off)
+      !offset || Number.isNaN(off)
         ? await query(sql`${base} LIMIT 1`)
         : await query(sql`${base} OFFSET ${off} LIMIT 1`);
 

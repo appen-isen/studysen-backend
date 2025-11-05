@@ -1,13 +1,13 @@
 import { FaArrowRightFromBracket } from 'react-icons/fa6';
 import './Dashboard.css';
-import { useLocation, useNavigate } from 'react-router';
-import type { PostType, Club } from './utils/types';
-import ApiClient from './utils/http';
 import { useEffect, useState } from 'react';
-import { removeCookie } from './utils/cookies';
-import { Post } from './components/Post';
-import Loader from './components/Loader';
+import { useLocation, useNavigate } from 'react-router';
 import Swal from 'sweetalert2';
+import Loader from './components/Loader';
+import { Post } from './components/Post';
+import { removeCookie } from './utils/cookies';
+import ApiClient from './utils/http';
+import type { Club, PostType } from './utils/types';
 
 export default function Dashboard() {
   const [isLoading, setLoading] = useState(true);
@@ -80,7 +80,7 @@ export default function Dashboard() {
         <>
           <div className="posts-list">
             {posts.map((post, index) => (
-              <Post key={'post' + index} post={post} onDelete={handleDeletePost} />
+              <Post key={`post${index}`} post={post} onDelete={handleDeletePost} />
             ))}
           </div>
           {posts.length === 0 && (

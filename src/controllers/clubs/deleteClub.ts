@@ -1,8 +1,9 @@
-import { Response, Request } from 'express';
-import { query } from '@/utils/database';
-import { deleteImageFromCDN } from '@/utils/cdn';
-import Logger from '@/utils/logger';
 import { sql } from 'drizzle-orm';
+import type { Request, Response } from 'express';
+import { deleteImageFromCDN } from '@/utils/cdn';
+import { query } from '@/utils/database';
+import Logger from '@/utils/logger';
+
 const logger = new Logger('Clubs');
 
 export async function deleteClub(req: Request, res: Response) {

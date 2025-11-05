@@ -1,10 +1,9 @@
-import { Request, Response } from 'express';
-import { AuthenticatedClubRequest } from '@/middlewares/auth';
+import { sql } from 'drizzle-orm';
+import type { Request, Response } from 'express';
+import type { AuthenticatedClubRequest } from '@/middlewares/auth';
 import { uploadImageToCDN } from '@/utils/cdn';
 import { query } from '@/utils/database';
 import Logger from '@/utils/logger';
-import { log } from 'console';
-import { sql } from 'drizzle-orm';
 
 const logger = new Logger('Clubs');
 

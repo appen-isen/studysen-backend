@@ -1,5 +1,5 @@
 :root {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   line-height: 1.5;
   font-weight: 400;
   background-color: #f9f9f9;
@@ -28,8 +28,8 @@
 /* SweetAlert */
 
 .swal2-confirm {
-  background-color: #fa4747 !important;
+  background-color: #fa4747;
 }
 .swal2-confirm:hover {
-  background-color: #c92c2c !important;
+  background-color: #c92c2c;
 }

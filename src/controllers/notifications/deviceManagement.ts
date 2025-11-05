@@ -1,7 +1,7 @@
+import { sql } from 'drizzle-orm';
+import type { Request, Response } from 'express';
 import { query } from '@/utils/database';
 import Logger from '@/utils/logger';
-import { Request, Response } from 'express';
-import { sql } from 'drizzle-orm';
 
 const logger = new Logger('Notifications');
 
@@ -23,7 +23,7 @@ export async function addDevice(req: Request, res: Response) {
     res.status(201).json((rows as any)[0]);
   } catch (error) {
     logger.error("Erreur lors de l'ajout du périphérique:", error);
-    res.status(500).json({ message: 'Internal server error: ' + error });
+    res.status(500).json({ message: `Internal server error: ${error}` });
   }
 }
 
@@ -35,6 +35,6 @@ export async function deleteDevice(req: Request, res: Response) {
     res.sendStatus(200);
   } catch (error) {
     logger.error('Erreur lors de la suppression du périphérique:', error);
-    res.status(500).json({ message: 'Internal server error: ' + error });
+    res.status(500).json({ message: `Internal server error: ${error}` });
   }
 }

@@ -1,17 +1,17 @@
-import { AuthenticatedClubRequest, verifyClubAuth } from '@/middlewares/auth';
 import express from 'express';
-import { addImageToPost, createPost, editPost } from '@/controllers/posts/createPost';
-import { body, param, query } from 'express-validator';
-import Validate from '@/middlewares/validate';
-import { getAllPosts, getClubPosts, getLastPost, getLastPostId } from '@/controllers/posts/getPost';
-import multer from 'multer';
-import { deletePost } from '@/controllers/posts/deletePost';
 import rateLimit from 'express-rate-limit';
+import { body, param, query } from 'express-validator';
+import multer from 'multer';
+import { addImageToPost, createPost, editPost } from '@/controllers/posts/createPost';
+import { deletePost } from '@/controllers/posts/deletePost';
+import { getAllPosts, getClubPosts, getLastPost, getLastPostId } from '@/controllers/posts/getPost';
+import { type AuthenticatedClubRequest, verifyClubAuth } from '@/middlewares/auth';
+import Validate from '@/middlewares/validate';
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
 
-const postsLimiter = rateLimit({
+const _postsLimiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
   limit: 10, // each IP can make up to 10 requests per `windowsMs` (10 minutes)
   standardHeaders: true, // add the `RateLimit-*` headers to the response

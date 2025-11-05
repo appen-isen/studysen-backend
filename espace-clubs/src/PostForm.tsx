@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import './PostForm.css';
-import { Input } from './components/Inputs';
-import { MultiToggle, Checkbox } from './components/Buttons';
 import { FaArrowLeft, FaImage } from 'react-icons/fa6';
-import { useNavigate, useLocation } from 'react-router';
-import type { PostType } from './utils/types';
+import { useLocation, useNavigate } from 'react-router';
 import Swal from 'sweetalert2';
-import ApiClient from './utils/http';
+import { Checkbox, MultiToggle } from './components/Buttons';
+import { Input } from './components/Inputs';
 import Loader from './components/Loader';
+import ApiClient from './utils/http';
+import type { PostType } from './utils/types';
 
 const POST_TYPES = [
   { label: 'Événement', value: 'event' },
@@ -58,7 +58,7 @@ export default function PostForm({ mode = 'create' }: PostFormProps) {
   }, [mode, post]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
+    if (e.target.files?.[0]) {
       setImagePreview(URL.createObjectURL(e.target.files[0]));
       setImage(e.target.files[0]);
     }
@@ -91,7 +91,7 @@ export default function PostForm({ mode = 'create' }: PostFormProps) {
         Swal.fire({ icon: 'error', title: 'Erreur', text: "L'heure de début est obligatoire." });
         return;
       }
-      if (ageLimit && isNaN(Number(ageLimit))) {
+      if (ageLimit && Number.isNaN(Number(ageLimit))) {
         Swal.fire({
           icon: 'error',
           title: 'Erreur',

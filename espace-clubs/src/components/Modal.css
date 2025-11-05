@@ -11,14 +11,19 @@
   z-index: 1000;
   opacity: 1;
   transition: opacity 0.25s;
+  border: none;
+  appearance: none;
+  -webkit-appearance: none;
+  font: inherit;
+  text-align: left;
 }
 
 .modal-fade-in {
-  opacity: 1 !important;
+  opacity: 1;
 }
 
 .modal-fade-out {
-  opacity: 0 !important;
+  opacity: 0;
   pointer-events: none;
 }
 

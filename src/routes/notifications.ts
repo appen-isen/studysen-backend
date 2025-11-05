@@ -1,13 +1,13 @@
 import express from 'express';
-import Validate from '@/middlewares/validate';
 import { body, param } from 'express-validator';
 import { addDevice, deleteDevice } from '@/controllers/notifications/deviceManagement';
 import {
   addNotification,
-  sendNotificationHandler,
   deleteNotifications,
-  getNotifications
+  getNotifications,
+  sendNotificationHandler
 } from '@/controllers/notifications/notificationManagement';
+import Validate from '@/middlewares/validate';
 
 const router = express.Router();
 

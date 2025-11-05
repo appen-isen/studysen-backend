@@ -1,7 +1,7 @@
+import { sql } from 'drizzle-orm';
+import type { Request, Response } from 'express';
 import { query } from '@/utils/database';
 import Logger from '@/utils/logger';
-import { Request, Response } from 'express';
-import { sql } from 'drizzle-orm';
 
 const logger = new Logger('Telemetry');
 

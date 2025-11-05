@@ -1,12 +1,12 @@
 import { useState } from 'react';
+import { Input } from '../../components/Inputs';
 import Modal from '../../components/Modal';
 import type { Club } from '../../utils/types';
-import { Input } from '../../components/Inputs';
 import './LoginModal.css';
-import Swal from 'sweetalert2';
-import ApiClient from '../../utils/http';
 import { useNavigate } from 'react-router';
+import Swal from 'sweetalert2';
 import { setCookie } from '../../utils/cookies';
+import ApiClient from '../../utils/http';
 
 type LoginModalProps = {
   open: boolean;

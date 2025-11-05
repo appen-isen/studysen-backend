@@ -1,4 +1,3 @@
-version: "3.8"
 # Ce fichier Docker Compose est utilisé uniquement pour le développement local.
 # Si vous souhaitez travailler sur l'image Docker pour la production,
 # veuillez consulter le fichier docker-images/compose.yml
@@ -13,7 +12,7 @@ services:
         ports:
             - "5432:5432"
         volumes:
-            - pgdata:/var/lib/postgresql/data
+            - pgdata:/var/lib/postgresql
     minio:
         image: "minio/minio:latest"
         container_name: dev_minio

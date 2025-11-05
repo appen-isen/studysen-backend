@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './Buttons.css';
 
 type MultiToggleProps = {
@@ -13,11 +13,12 @@ export const MultiToggle: React.FC<MultiToggleProps> = ({ options, selectedIndex
   const [sliderStyle, setSliderStyle] = useState<{ left: number; width: number }>({ left: 0, width: 0 });
 
   useEffect(() => {
-    if (optionRefs.current[selectedIndex]) {
-      const { offsetLeft, offsetWidth } = optionRefs.current[selectedIndex]!;
+    const element = optionRefs.current[selectedIndex];
+    if (element) {
+      const { offsetLeft, offsetWidth } = element;
       setSliderStyle({ left: offsetLeft, width: offsetWidth });
     }
-  }, [selectedIndex, options]);
+  }, [selectedIndex]);
 
   return (
     <div className="multi-toggle-container" ref={containerRef}>

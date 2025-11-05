@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import './Modal.css';
 
 interface ModalProps {
@@ -38,21 +39,28 @@ const Modal: React.FC<ModalProps> = ({ open, onClose, children }) => {
 
   if (!visible) return null;
   return (
-    <div
+    <button
       className={`modal-overlay ${fade}`}
       onMouseDown={handleOverlayMouseDown}
       onClick={handleOverlayClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') {
+          onClose();
+        }
+      }}
+      type="button"
     >
       <div
         className={`modal animated ${fade}`}
         onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
         tabIndex={-1}
         role="dialog"
         aria-modal="true"
       >
         {children}
       </div>
-    </div>
+    </button>
   );
 };
 

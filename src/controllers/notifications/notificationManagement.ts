@@ -1,7 +1,7 @@
-import { query } from '@/utils/database';
-import { Request, Response } from 'express';
-import { sendNotification } from './sendNotifications';
 import { sql } from 'drizzle-orm';
+import type { Request, Response } from 'express';
+import { query } from '@/utils/database';
+import { sendNotification } from './sendNotifications';
 
 // Ajouter une notification à la base de données
 export async function addNotification(req: Request, res: Response) {
@@ -13,7 +13,7 @@ export async function addNotification(req: Request, res: Response) {
     `);
     res.status(201).json((rows as any)[0]);
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error: ' + error });
+    res.status(500).json({ message: `Internal server error: ${error}` });
   }
 }
 
@@ -24,7 +24,7 @@ export async function sendNotificationHandler(req: Request, res: Response) {
     await sendNotification(device_id, title, message, date);
     res.status(200).json({ message: 'Notification sent successfully' });
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error: ' + error });
+    res.status(500).json({ message: `Internal server error: ${error}` });
   }
 }
 
@@ -37,7 +37,7 @@ export async function deleteNotifications(req: Request, res: Response) {
       message: 'All notifications deleted successfully'
     });
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error: ' + error });
+    res.status(500).json({ message: `Internal server error: ${error}` });
   }
 }
 
@@ -52,6 +52,6 @@ export async function getNotifications(req: Request, res: Response) {
     }
     res.status(200).json({ message: rows });
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error: ' + error });
+    res.status(500).json({ message: `Internal server error: ${error}` });
   }
 }

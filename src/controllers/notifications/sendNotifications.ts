@@ -1,14 +1,14 @@
+import { sql } from 'drizzle-orm';
 import { Expo } from 'expo-server-sdk';
 import { query } from '@/utils/database';
 import Logger from '@/utils/logger';
-import { sql } from 'drizzle-orm';
 
-let expo = new Expo();
+const expo = new Expo();
 const logger = new Logger('Notifications');
 
 export async function sendNotification(device_id: string, title: string, message: string, date: string) {
   // Create the message
-  let messages = [];
+  const messages = [];
   if (!Expo.isExpoPushToken(device_id)) {
     logger.error(`Le token ${device_id} n'est pas un token Expo valide`);
     return;
@@ -24,11 +24,11 @@ export async function sendNotification(device_id: string, title: string, message
   });
 
   // Send the notification
-  let chunks = expo.chunkPushNotifications(messages);
-  let tickets = [];
-  for (let chunk of chunks) {
+  const chunks = expo.chunkPushNotifications(messages);
+  const tickets = [];
+  for (const chunk of chunks) {
     try {
-      let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+      const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
       tickets.push(...ticketChunk);
     } catch (error) {
       logger.error("Erreur lors de l'envoi des notifications:", error);

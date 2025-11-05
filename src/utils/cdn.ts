@@ -1,7 +1,7 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { S3, type S3ClientConfig } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
-import { S3, S3ClientConfig } from '@aws-sdk/client-s3';
-import fs from 'fs';
-import path from 'path';
 import dotenv from 'dotenv';
 import Logger from './logger';
 

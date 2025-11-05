@@ -1,9 +1,9 @@
-import { Response } from 'express';
-import { AuthenticatedClubRequest } from '@/middlewares/auth';
-import { query } from '@/utils/database';
-import { deleteImageFromCDN } from '@/utils/cdn';
-import Logger from '@/utils/logger';
 import { sql } from 'drizzle-orm';
+import type { Response } from 'express';
+import type { AuthenticatedClubRequest } from '@/middlewares/auth';
+import { deleteImageFromCDN } from '@/utils/cdn';
+import { query } from '@/utils/database';
+import Logger from '@/utils/logger';
 
 const logger = new Logger('Posts');
 

@@ -15,10 +15,10 @@ export function Input({ password, ...rest }: InputProps) {
       <input {...rest} type={password && !textVisible ? 'password' : 'text'} />
       {/* Le bouton pour cacher/afficher le mot de passe */}
       {password && (
-        <div onClick={() => setTextVisible(!textVisible)}>
+        <button onClick={() => setTextVisible(!textVisible)} type="button">
           {textVisible && <FaRegEyeSlash className="input-icon" />}
           {!textVisible && <FaRegEye className="input-icon" />}
-        </div>
+        </button>
       )}
     </div>
   );

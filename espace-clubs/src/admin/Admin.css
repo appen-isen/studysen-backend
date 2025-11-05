@@ -88,7 +88,7 @@
 }
 
 .telemetry-table tr.selected {
-  background-color: #f0f8ff !important;
+  background-color: #f0f8ff;
 }
 
 .type-badge {

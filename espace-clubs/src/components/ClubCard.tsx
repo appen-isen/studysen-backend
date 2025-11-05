@@ -1,8 +1,8 @@
-import React from 'react';
+import type React from 'react';
 import './ClubCard.css';
-import type { Club } from '../utils/types';
-import { getCampusName } from '../utils/campus';
 import { FaTrash } from 'react-icons/fa6';
+import { getCampusName } from '../utils/campus';
+import type { Club } from '../utils/types';
 
 interface ClubCardProps {
   club: Club;
@@ -22,7 +22,7 @@ const ClubCard: React.FC<ClubCardProps> = ({
   onDelete
 }) => {
   return (
-    <div className="club-card" onClick={() => !adminMode && onAccess(club)}>
+    <button className="club-card" onClick={() => !adminMode && onAccess(club)} type="button">
       <img src={club.imageUrl} alt={club.name} className="club-logo" />
       {/* Affiche le nom du club et la ville */}
       <div className="club-info">
@@ -80,7 +80,7 @@ const ClubCard: React.FC<ClubCardProps> = ({
       ) : (
         <button className="btn access-btn">Accéder</button>
       )}
-    </div>
+    </button>
   );
 };
 

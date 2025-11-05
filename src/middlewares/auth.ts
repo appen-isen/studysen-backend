@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
@@ -9,7 +9,7 @@ export interface AuthenticatedClubRequest extends Request {
 
 // Middleware pour vérifier l'authentification d'un club
 export function verifyClubAuth(req: Request, res: Response, next: NextFunction) {
-  const token = req.cookies['token'];
+  const token = req.cookies.token;
 
   if (!token) {
     res.status(401).json({ message: 'Token invalide !' });
@@ -18,17 +18,17 @@ export function verifyClubAuth(req: Request, res: Response, next: NextFunction) 
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    // @ts-ignore
+    // @ts-expect-error
     req.clubId = decoded.clubId;
     next();
-  } catch (err) {
+  } catch (_err) {
     res.status(401).json({ message: 'Token invalide !' });
     return;
   }
 }
 // Middleware pour vérifier l'authentification d'un administrateur
 export function verifyAdminAuth(req: Request, res: Response, next: NextFunction) {
-  const token = req.cookies['adminToken'];
+  const token = req.cookies.adminToken;
 
   if (!token) {
     res.status(401).json({ message: 'Token admin invalide !' });
@@ -37,13 +37,13 @@ export function verifyAdminAuth(req: Request, res: Response, next: NextFunction)
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    // @ts-ignore
+    // @ts-expect-error
     if (decoded.admin !== true) {
       res.status(403).json({ message: 'Accès interdit !' });
       return;
     }
     next();
-  } catch (err) {
+  } catch (_err) {
     res.status(401).json({ message: 'Token admin invalide !' });
     return;
   }

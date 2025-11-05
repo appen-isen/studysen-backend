@@ -12,6 +12,11 @@
   transition:
     box-shadow 0.2s,
     border 0.2s;
+  border: none;
+  appearance: none;
+  -webkit-appearance: none;
+  font: inherit;
+  text-align: left;
 }
 
 .club-card:hover {

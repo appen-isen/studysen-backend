@@ -1,8 +1,8 @@
 import express from 'express';
-import Validate from '@/middlewares/validate';
 import { body } from 'express-validator';
+import { deleteTelemetry, getTelemetry, submitTelemetry } from '@/controllers/telemetry';
 import { verifyAdminAuth } from '@/middlewares/auth';
-import { getTelemetry, submitTelemetry, deleteTelemetry } from '@/controllers/telemetry';
+import Validate from '@/middlewares/validate';
 
 const router = express.Router();
 

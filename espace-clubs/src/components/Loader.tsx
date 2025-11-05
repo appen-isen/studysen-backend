@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import './Loader.css';
 
 interface LoaderProps {
@@ -14,7 +14,7 @@ const Loader: React.FC<LoaderProps> = ({ size = 32, color = '#fa4747' }) => {
         width: size,
         height: size,
         alignSelf: 'center',
-        border: '2px solid ' + color,
+        border: `2px solid ${color}`,
         borderTop: '2px solid transparent'
       }}
       aria-label="Chargement..."

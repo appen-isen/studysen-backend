@@ -1,16 +1,16 @@
 import express from 'express';
-import Validate from '@/middlewares/validate';
+import rateLimit from 'express-rate-limit';
 import { body, param } from 'express-validator';
-import { activateClub, adminLoginClub, createClub, loginClub } from '../controllers/clubs/clubAuth';
-import { AuthenticatedClubRequest, verifyAdminAuth, verifyClubAuth } from '@/middlewares/auth';
 import multer from 'multer';
+import { type AuthenticatedClubRequest, verifyAdminAuth, verifyClubAuth } from '@/middlewares/auth';
+import Validate from '@/middlewares/validate';
+import { activateClub, adminLoginClub, createClub, loginClub } from '../controllers/clubs/clubAuth';
 import { addImageToClub, getClubImage } from '../controllers/clubs/clubImage';
-import { getAllClubs, getClubsByCampus, getCurrentClub } from '../controllers/clubs/getClubs';
 import { deleteClub } from '../controllers/clubs/deleteClub';
 import { editClub } from '../controllers/clubs/editClub';
-import rateLimit from 'express-rate-limit';
+import { getAllClubs, getClubsByCampus, getCurrentClub } from '../controllers/clubs/getClubs';
 
-const authLimiter = rateLimit({
+const _authLimiter = rateLimit({
   windowMs: 5 * 60 * 1000, // 5 minutes
   limit: 50, // each IP can make up to 50 requests per `windowsMs` (5 minutes)
   standardHeaders: true, // add the `RateLimit-*` headers to the response
@@ -50,7 +50,9 @@ router.post(
   '/create',
   // authLimiter,
   // Vérification combinée du mot de passe avec une seule regex
-  body('name').isLength({ min: 2 }).withMessage('Veuillez entrer un nom valide !'),
+  body('name')
+    .isLength({ min: 2 })
+    .withMessage('Veuillez entrer un nom valide !'),
   body('password')
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/)
     .withMessage(
@@ -66,7 +68,9 @@ router.post(
 router.post(
   '/login',
   // authLimiter,
-  body('clubId').isInt().withMessage('Veuillez entrer un identifiant valide !'),
+  body('clubId')
+    .isInt()
+    .withMessage('Veuillez entrer un identifiant valide !'),
   body('password')
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/)
     .withMessage(
@@ -86,7 +90,7 @@ router.post(
 );
 
 // Route pour se déconnecter d'un club
-router.post('/logout', (req, res) => {
+router.post('/logout', (_req, res) => {
   res.clearCookie('token', {
     httpOnly: true
   });
