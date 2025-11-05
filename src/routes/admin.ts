@@ -16,6 +16,7 @@ const adminLimiter = rateLimit({
 router.get('/verify', verifyAdminAuth, verifyAdmin);
 
 // Route pour se connecter en tant qu'administrateur
-router.post('/login', adminLimiter, loginAdmin);
+//router.post('/login', adminLimiter, loginAdmin);
+router.post('/login', loginAdmin);
 
 export default router;

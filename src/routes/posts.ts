@@ -21,7 +21,7 @@ const postsLimiter = rateLimit({
 // Route pour créer un post
 router.post(
   '/',
-  postsLimiter,
+  // postsLimiter,
   verifyClubAuth,
   body('type').isString().isIn(['event', 'post']).withMessage('Veuillez entrer un type valide !'),
   body('title').isString().notEmpty().withMessage('Veuillez entrer un titre valide !'),

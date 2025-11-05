@@ -48,7 +48,7 @@ router.delete(
 // Route pour créer un club
 router.post(
   '/create',
-  authLimiter,
+  // authLimiter,
   // Vérification combinée du mot de passe avec une seule regex
   body('name').isLength({ min: 2 }).withMessage('Veuillez entrer un nom valide !'),
   body('password')
@@ -65,7 +65,7 @@ router.post(
 // Route pour se connecter à un club
 router.post(
   '/login',
-  authLimiter,
+  // authLimiter,
   body('clubId').isInt().withMessage('Veuillez entrer un identifiant valide !'),
   body('password')
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/)
