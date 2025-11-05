@@ -35,7 +35,7 @@ export const clubs = pgTable('clubs', {
   campusId: integer('campus_id').notNull(), // Numéro du campus
   enabled: boolean().notNull(), // Indique si le club est actif et autorisé à poster
   imageUrl: text('image_url'), // URL de l'image du club
-  contactEmail: text('contact_email') // Email de contact
+  contactEmail: text('contact_email').unique() // Email de contact
 });
 
 export const posts = pgTable(

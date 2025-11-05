@@ -25,6 +25,14 @@ export async function createClub(req: Request, res: Response) {
       return;
     }
 
+    const checkEmailRows = await query(sql`SELECT club_id FROM clubs WHERE contact_email = ${contactEmail}`);
+    if (checkEmailRows.length > 0) {
+      res.status(409).json({
+        message: 'Cette adresse email est déjà utilisée pour un autre club.'
+      });
+      return;
+      }
+
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
 
