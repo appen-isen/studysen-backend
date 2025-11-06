@@ -15,13 +15,14 @@ const postsLimiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
   limit: 10, // each IP can make up to 10 requests per `windowsMs` (10 minutes)
   standardHeaders: true, // add the `RateLimit-*` headers to the response
-  legacyHeaders: false // remove the `X-RateLimit-*` headers from the response
+  legacyHeaders: false, // remove the `X-RateLimit-*` headers from the response
+  validate: { trustProxy: false }
 });
 
 // Route pour créer un post
 router.post(
   '/',
-  // postsLimiter,
+  postsLimiter,
   verifyClubAuth,
   body('type').isString().isIn(['event', 'post']).withMessage('Veuillez entrer un type valide !'),
   body('title').isString().notEmpty().withMessage('Veuillez entrer un titre valide !'),

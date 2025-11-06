@@ -20,6 +20,8 @@ dotenv.config();
 const app: Express = express();
 const port = 3000;
 
+app.set('trust proxy', true);
+
 app.use(express.json({ limit: '50mb' }));
 app.use(cookieParser());
 app.use(
