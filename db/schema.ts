@@ -7,8 +7,15 @@ import {
   varchar,
   boolean,
   foreignKey,
-  date
+  date,
+  time
 } from 'drizzle-orm/pg-core';
+
+// Après avoir modifié  ce fichier, pensez à executer cette commande :
+// npx drizzle-kit generate
+
+// WARNING : npx drizzle-kit push sert a GENERER UNE NOUVELLE BASE DE DONNEES
+//           DONC, A NE PAS FAIRE =)
 
 // Création de la table des notifications (pour envoyer des notifications à une date précise)
 export const notifications = pgTable('notifications', {
@@ -69,3 +76,31 @@ export const telemetry = pgTable('telemetry', {
   type: text().notNull(), // Type de télémétrie (par exemple, "unknownSubject", etc.)
   data: text().notNull() // Valeur de la télémétrie
 });
+
+// NOTE : Modification du code original pour la partie covoiturage
+// NOTE : Noter que "time" a été importé en plus, pour cette table
+
+export const carpool = pgTable('carpool', {
+    deviceId: text('device_id').primaryKey().notNull(), // Identifiant unique du périphérique
+    firstName: varchar({ length: 255 }).notNull(), // Prénom du profil
+    lastName: varchar({ length: 255 }).notNull(), // Nom de famille du profil
+    isConductor: boolean().notNull(), // Indique si le profil est conducteur
+    isPassenger: boolean().notNull(), // Indique si le profil est passager
+    housing: varchar({ length: 255 }).notNull(), // Indique le logement ou arret de bus du passager
+    contactEmail: varchar({ length: 255 }).notNull(), // Addresse email ISEN du profil
+    discordId: varchar({ length: 255 }), // Identifiant discord du profil (optionnel)
+    instagramId: varchar({ length: 255 }), // Identifiant Instagram du profil (optionnel)
+    phoneNumber: varchar({ length: 255 }), // Numéro de téléphone du profil (optionnel)
+    // spécifications de dates de départ et d'arrivée
+    // NOTE :faudrait-il faire une nouvelle table pour ces dates? ça serait plus propre.
+    mondayDeparture: time({withTimezone: true}),
+    mondayReturn: time({withTimezone: true}),
+    tuesdayDeparture: time({withTimezone: true}),
+    tuesdayReturn: time({withTimezone: true}),
+    wednesdayDeparture: time({withTimezone: true}),
+    wednesdayReturn: time({withTimezone: true}),
+    thursdayDeparture: time({withTimezone: true}),
+    thursdayReturn: time({withTimezone: true}),
+    fridayDeparture: time({withTimezone: true}),
+    fridayReturn: time({withTimezone: true}),    
+  });
